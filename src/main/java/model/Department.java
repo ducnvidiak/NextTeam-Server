@@ -2,21 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Modell;
+package model;
 
 /**
  *
  * @author admin
  */
-public class User {
-    public String id;
-    public String name;
-    public int age;
+public class Department {
+    private String id;
+    private String name;
 
-    public User(String id, String name, int age) {
-        this.id = id;
+    public Department(String name) {
         this.name = name;
-        this.age = age;
     }
 
     public String getId() {
@@ -34,14 +31,6 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
- 
+    
     
 }
