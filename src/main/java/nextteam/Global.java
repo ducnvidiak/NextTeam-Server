@@ -19,7 +19,7 @@ public class Global {
     public static String server = "localhost";
     public static String database = "NextTeam";
     public static String user = "sa";
-    public static String pass = "12345678";
+    public static String pass = "Phanbao@123";
 
     private static Connection conn;
 
