@@ -23,35 +23,14 @@ import java.util.logging.Logger;
 public abstract class SQLDatabase {
 
     private Connection conn;
-    private String server;
-    private String database;
-    private String user;
-    private String password;
 
     /**
      * Create connection when calling to this constructor
      *
-     * @param server
-     * @param database
-     * @param user
-     * @param password
+     * @param connection
      */
-    public SQLDatabase(String server, String database, String user, String password) {
-        this.server = server;
-        this.database = database;
-        this.user = user;
-        this.password = password;
-    }
-
-    public void setConnection() {
-        try {
-            Class<?> clazz = Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            DriverManager.registerDriver((Driver) clazz.getDeclaredConstructor().newInstance());
-            String url = "jdbc:sqlserver://" + server + ";databaseName=" + database + ";user=" + user + ";password=" + password + ";encrypt=true;trustServerCertificate=true";
-            conn = DriverManager.getConnection(url);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public SQLDatabase(Connection connection) {
+        this.conn = connection;
     }
 
     public Connection getConnection() {
@@ -65,19 +44,6 @@ public abstract class SQLDatabase {
      */
     public boolean isConnected() {
         return conn != null;
-    }
-
-    /**
-     * Close connection
-     */
-    public void close() {
-        try {
-            if (conn != null) {
-                conn.close();
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SQLDatabase.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     public Statement getStatement() {
