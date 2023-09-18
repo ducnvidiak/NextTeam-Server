@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import model.Engagement;
 
-public class EngagementDao extends DBContext {
+public class EngagementDAO extends DBContext {
 
     public List<Engagement> getAllEngagements() {
         List<Engagement> engagementList = new ArrayList<>();

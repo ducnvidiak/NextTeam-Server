@@ -20,7 +20,7 @@ public class PointsHistory {
     private Date createdAt;
     private Date updatedAt;
 
-    public PointsHistory(int createdBy, int receivedBy, int clubId, int amount, String reason, Date createdAt, Date updatedAt) {
+    public PointsHistory(int id,int createdBy, int receivedBy, int clubId, int amount, String reason, Date createdAt, Date updatedAt) {
         this.createdBy = createdBy;
         this.receivedBy = receivedBy;
         this.clubId = clubId;
@@ -28,6 +28,7 @@ public class PointsHistory {
         this.reason = reason;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+         this.id = id;
     }
 
     public int getId() {

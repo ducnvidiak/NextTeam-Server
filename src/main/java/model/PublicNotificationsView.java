@@ -16,10 +16,11 @@ public class PublicNotificationsView {
     private int hasSeenBy;
     private Date markTime;
 
-    public PublicNotificationsView(int publicNotificationId, int hasSeenBy, Date markTime) {
+    public PublicNotificationsView(int id,int publicNotificationId, int hasSeenBy, Date markTime) {
         this.publicNotificationId = publicNotificationId;
         this.hasSeenBy = hasSeenBy;
         this.markTime = markTime;
+         this.id = id;
     }
 
     public int getId() {

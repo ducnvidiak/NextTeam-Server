@@ -12,8 +12,9 @@ public class Major {
     private int id;
     private String name;
 
-    public Major(String name) {
+    public Major(int id,String name) {
         this.name = name;
+         this.id = id;
     }
 
     public int getId() {

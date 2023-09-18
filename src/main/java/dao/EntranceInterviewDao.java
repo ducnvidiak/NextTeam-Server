@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import model.EntranceInterview;
 //
-public class EntranceInterviewDao extends DBContext {
+public class EntranceInterviewDAO extends DBContext {
 //
 //    public List<EntranceInterview> getAllEntranceInterviews() {
 //        List<EntranceInterview> entranceInterviewList = new ArrayList<>();

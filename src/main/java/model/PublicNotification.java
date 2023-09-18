@@ -18,12 +18,13 @@ public class PublicNotification {
     private Date createdAt;
     private Date updatedAt;
 
-    public PublicNotification(int clubId, String title, String content, Date createdAt, Date updatedAt) {
+    public PublicNotification(int id,int clubId, String title, String content, Date createdAt, Date updatedAt) {
         this.clubId = clubId;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+         this.id = id;
     }
 
     public int getId() {

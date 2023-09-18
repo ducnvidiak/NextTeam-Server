@@ -10,12 +10,13 @@ package model;
  */
 public class PostComment {
     private int id;
-    private int newsPostId;
-    private int refPostComment;
+    private int postId;
+    private int repPostCommentId;
 
-    public PostComment(int newsPostId, int refPostComment) {
-        this.newsPostId = newsPostId;
-        this.refPostComment = refPostComment;
+    public PostComment(int id,int postId, int repPostCommentId) {
+        this.postId = postId;
+        this.repPostCommentId = repPostCommentId;
+         this.id = id;
     }
 
     public int getId() {
@@ -26,21 +27,22 @@ public class PostComment {
         this.id = id;
     }
 
-    public int getNewsPostId() {
-        return newsPostId;
+    public int getPostId() {
+        return postId;
     }
 
-    public void setNewsPostId(int newsPostId) {
-        this.newsPostId = newsPostId;
+    public void setPostId(int postId) {
+        this.postId = postId;
     }
 
-    public int getRefPostComment() {
-        return refPostComment;
+    public int getRepPostCommentId() {
+        return repPostCommentId;
     }
 
-    public void setRefPostComment(int refPostComment) {
-        this.refPostComment = refPostComment;
+    public void setRepPostCommentId(int repPostCommentId) {
+        this.repPostCommentId = repPostCommentId;
     }
+
     
     
 }

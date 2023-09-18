@@ -21,7 +21,7 @@ public class PrivateNotification {
     private Date createdAt;
     private Date updatedAt;
 
-    public PrivateNotification(int clubId, int sendTo, boolean hasSeen, Date markTime, String title, String content, Date createdAt, Date updatedAt) {
+    public PrivateNotification(int id,int clubId, int sendTo, boolean hasSeen, Date markTime, String title, String content, Date createdAt, Date updatedAt) {
         this.clubId = clubId;
         this.sendTo = sendTo;
         this.hasSeen = hasSeen;
@@ -30,6 +30,7 @@ public class PrivateNotification {
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+         this.id = id;
     }
 
     public int getId() {

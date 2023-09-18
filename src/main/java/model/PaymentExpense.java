@@ -19,13 +19,14 @@ public class PaymentExpense {
     private Date createdAt;
     private Date updatedAt;
 
-    public PaymentExpense(String title, String description, int clubId, double amount, Date createdAt, Date updatedAt) {
+    public PaymentExpense(int id,String title, String description, int clubId, double amount, Date createdAt, Date updatedAt) {
         this.title = title;
         this.description = description;
         this.clubId = clubId;
         this.amount = amount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+         this.id = id;
     }
 
     public int getId() {

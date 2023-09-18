@@ -15,11 +15,12 @@ public class NewsPost {
     private String videoUrl;
     private String content;
 
-    public NewsPost(int clubId, String imageUrl, String videoUrl, String content) {
+    public NewsPost(int id,int clubId, String imageUrl, String videoUrl, String content) {
         this.clubId = clubId;
         this.imageUrl = imageUrl;
         this.videoUrl = videoUrl;
         this.content = content;
+        this.id = id;
     }
 
     public int getId() {

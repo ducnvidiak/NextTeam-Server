@@ -17,19 +17,20 @@ public class Plan {
     private String content;
     private String attachmentUrl;
     private String response;
-    private boolean isApprovedByAdmin;
+    private boolean isApproved;
     private Date createdAt;
     private Date updatedAt;
 
-    public Plan(int clubId, String title, String content, String attachmentUrl, String response, boolean isApprovedByAdmin, Date createdAt, Date updatedAt) {
+    public Plan(int id,int clubId, String title, String content, String attachmentUrl, String response, boolean isApproved, Date createdAt, Date updatedAt) {
         this.clubId = clubId;
         this.title = title;
         this.content = content;
         this.attachmentUrl = attachmentUrl;
         this.response = response;
-        this.isApprovedByAdmin = isApprovedByAdmin;
+        this.isApproved = isApproved;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+         this.id = id;
     }
 
     public int getId() {
@@ -81,11 +82,11 @@ public class Plan {
     }
 
     public boolean isIsApprovedByAdmin() {
-        return isApprovedByAdmin;
+        return isApproved;
     }
 
-    public void setIsApprovedByAdmin(boolean isApprovedByAdmin) {
-        this.isApprovedByAdmin = isApprovedByAdmin;
+    public void setIsApprovedByAdmin(boolean isApproved) {
+        this.isApproved = isApproved;
     }
 
     public Date getCreatedAt() {

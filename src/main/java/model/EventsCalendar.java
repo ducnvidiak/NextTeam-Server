@@ -26,7 +26,7 @@ public class EventsCalendar {
     private Date createdAt;
     private Date updatedAt;
 
-    public EventsCalendar(String name, String description, int registeredBy, String location, String checkInCode, Date startTime, Date endTime, String type, boolean isApproved, String response, int clubId, Date createdAt, Date updatedAt) {
+    public EventsCalendar(int id,String name, String description, int registeredBy, String location, String checkInCode, Date startTime, Date endTime, String type, boolean isApproved, String response, int clubId, Date createdAt, Date updatedAt) {
         this.name = name;
         this.description = description;
         this.registeredBy = registeredBy;
@@ -40,6 +40,7 @@ public class EventsCalendar {
         this.clubId = clubId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.id = id;
     }
 
     public int getId() {

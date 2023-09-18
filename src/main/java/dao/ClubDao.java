@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import model.Club;
 
-public class ClubDao extends DBContext {
+public class ClubDAO extends DBContext {
 
     public List<Club> getAllClubs() {
         List<Club> clubList = new ArrayList<>();

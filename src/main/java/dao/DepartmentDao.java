@@ -15,7 +15,7 @@ import model.Department;
  *
  * @author bravee06
  */
-public class DepartmentDao extends DBContext {
+public class DepartmentDAO extends DBContext {
 
     public List<Department> getDepartmentBySearch(String find_keyword) {
         List<Department> listDepartment = new ArrayList<>();

@@ -26,6 +26,7 @@ public class EventRegistration {
         this.reasonForAbsence = reasonForAbsence;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.id = id;
     }
 
     public int getId() {

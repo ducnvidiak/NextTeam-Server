@@ -28,6 +28,7 @@ public class EntranceInterview {
         this.isApproved = isApproved;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.id = id;
     }
 
     public int getId() {

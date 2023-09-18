@@ -20,7 +20,7 @@ public class Proposal {
     private Date createdAt;
     private Date updatedAt;
 
-    public Proposal(int clubId, String title, String content, int sendBy, boolean isApproved, Date createdAt, Date updatedAt) {
+    public Proposal(int id,int clubId, String title, String content, int sendBy, boolean isApproved, Date createdAt, Date updatedAt) {
         this.clubId = clubId;
         this.title = title;
         this.content = content;
@@ -28,6 +28,7 @@ public class Proposal {
         this.isApproved = isApproved;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+         this.id = id;
     }
 
     public int getId() {

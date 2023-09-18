@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.User;
 
-public class UserDao extends DBContext {
+public class UserDAO extends DBContext {
 
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();

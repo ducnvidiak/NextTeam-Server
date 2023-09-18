@@ -13,9 +13,10 @@ public class HomeTown {
     private String country;
     private String city;
 
-    public HomeTown(String country, String city) {
+    public HomeTown(int id,String country, String city) {
         this.country = country;
         this.city = city;
+        this.id = id;
     }
 
     public int getId() {

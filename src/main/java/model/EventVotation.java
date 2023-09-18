@@ -18,12 +18,13 @@ public class EventVotation {
     private Date createdAt;
     private Date updatedAt;
 
-    public EventVotation(int eventId, int userId, boolean isAgreed, Date createdAt, Date updatedAt) {
+    public EventVotation(int id,int eventId, int userId, boolean isAgreed, Date createdAt, Date updatedAt) {
         this.eventId = eventId;
         this.userId = userId;
         this.isAgreed = isAgreed;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.id = id;
     }
 
     public int getId() {

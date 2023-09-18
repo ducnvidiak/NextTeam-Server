@@ -18,12 +18,13 @@ public class TransactionHistory {
     private Date createdAt;
     private Date updatedAt;
 
-    public TransactionHistory(int paidby, int clubId, int categoryId, Date createdAt, Date updatedAt) {
+    public TransactionHistory(int id,int paidby, int clubId, int categoryId, Date createdAt, Date updatedAt) {
         this.paidby = paidby;
         this.clubId = clubId;
         this.categoryId = categoryId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+         this.id = id;
     }
 
     public int getId() {

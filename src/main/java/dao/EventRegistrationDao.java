@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import model.EventRegistration;
 
-public class EventRegistrationDao extends DBContext {
+public class EventRegistrationDAO extends DBContext {
 
     public List<EventRegistration> getAllEventRegistrations() {
         List<EventRegistration> eventRegistrationList = new ArrayList<>();
