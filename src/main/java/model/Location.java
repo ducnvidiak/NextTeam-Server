@@ -8,19 +8,14 @@ package model;
  *
  * @author admin
  */
-public class Department {
+public class Location {
     private int id;
-    private int clubId;
     private String name;
+    private String description;
 
-    public Department(int id,int clubId, String name) {
-        this.clubId = clubId;
+    public Location(String name, String description) {
         this.name = name;
-        this.id = id;
-    }
-
-    public Department() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.description = description;
     }
 
     public int getId() {
@@ -30,14 +25,6 @@ public class Department {
     public void setId(int id) {
         this.id = id;
     }
-    
-    public int getClubId() {
-        return clubId;
-    }
-
-    public void setClubId(int clubId) {
-        this.clubId = clubId;
-    }
 
     public String getName() {
         return name;
@@ -45,6 +32,14 @@ public class Department {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     
