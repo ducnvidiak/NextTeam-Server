@@ -8,6 +8,9 @@
         <servlet-name>TestServlet</servlet-name>
         <url-pattern>/TestServlet</url-pattern>
     </servlet-mapping>
+    <listener>
+        <listener-class>nextteam.listeners.ServerContextListener</listener-class>
+    </listener>
     <session-config>
         <session-timeout>
             30
