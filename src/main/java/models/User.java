@@ -39,6 +39,15 @@ public class User {
         this.gender = gender;
     }
 
+    public User(String email, String password, String firstname, String lastname, String studentCode) {
+        this.email = email;
+        this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.studentCode = studentCode;
+    }
+    
+
     public User(String email, String username, String password, String avatarURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, Date createdAt, Date updatedAt) {
         this.email = email;
         this.username = username;

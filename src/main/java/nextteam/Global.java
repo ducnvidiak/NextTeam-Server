@@ -9,21 +9,22 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import nextteam.utils.database.MajorDAO;
-
+import nextteam.utils.database.UserDAO;
 /**
  *
  * @author vnitd
  */
 public class Global {
 
-    public static String server = "LAPTOP-2LB0M5DN";
+    public static String server = "localhost";
     public static String database = "NextTeam";
     public static String user = "sa";
-    public static String pass = "1";
+    public static String pass = "Phanbao@123";
 
     private static Connection conn;
 
     public static MajorDAO major;
+    public static UserDAO userDAO ;
 
     public static Connection generateConnection() {
         try {
@@ -43,6 +44,7 @@ public class Global {
             throw new RuntimeException("Error while trying connect to SQL Server!");
         }
         major = new MajorDAO(conn);
+        userDAO = new UserDAO(conn);
     }
 
     public static void closeDAOConnection() {

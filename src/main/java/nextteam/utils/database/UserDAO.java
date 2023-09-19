@@ -92,6 +92,20 @@ public class UserDAO extends SQLDatabase {
         );
         return ketQua;
     }
+    public int register(final User t) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "INSERT INTO users (email, username, password, firstname, lastname, studentCode)  VALUES (?,?,?,?,?,?)",
+                t.getEmail(),
+                t.getUsername(),
+                t.getPassword(),
+                t.getFirstname(),
+                t.getLastname(),
+                t.getStudentCode()
+             
+        );
+        return ketQua;
+    }
 
     public int insertAll(ArrayList<User> arr) {
         int dem = 0;
@@ -134,7 +148,7 @@ public class UserDAO extends SQLDatabase {
             }
         } catch (Exception e) {
         }
-
+        
         return ketQua;
     }
 
@@ -155,6 +169,6 @@ public class UserDAO extends SQLDatabase {
     public static void main(String... args) {
         User user = new UserDAO(Global.generateConnection()).getListUserByIdString("2");
         System.out.println("Data from mssql: " + user.getFirstname());
-    }
+}
 
 }
