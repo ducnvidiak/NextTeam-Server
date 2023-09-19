@@ -16,16 +16,16 @@ import nextteam.utils.database.MajorDAO;
  */
 public class Global {
 
-    public static String server = "localhost";
+    public static String server = "LAPTOP-2LB0M5DN";
     public static String database = "NextTeam";
     public static String user = "sa";
-    public static String pass = "Phanbao@123";
+    public static String pass = "1";
 
     private static Connection conn;
 
     public static MajorDAO major;
 
-    private static Connection generateConnection() {
+    public static Connection generateConnection() {
         try {
             Class<?> clazz = Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             DriverManager.registerDriver((Driver) clazz.getDeclaredConstructor().newInstance());
