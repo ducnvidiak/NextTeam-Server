@@ -9,7 +9,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import nextteam.utils.database.MajorDAO;
-
+import nextteam.utils.database.UserDAO;
 /**
  *
  * @author vnitd
@@ -24,8 +24,9 @@ public class Global {
     private static Connection conn;
 
     public static MajorDAO major;
+    public static UserDAO userDAO ;
 
-    private static Connection generateConnection() {
+    public static Connection generateConnection() {
         try {
             Class<?> clazz = Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             DriverManager.registerDriver((Driver) clazz.getDeclaredConstructor().newInstance());
@@ -43,6 +44,7 @@ public class Global {
             throw new RuntimeException("Error while trying connect to SQL Server!");
         }
         major = new MajorDAO(conn);
+        userDAO = new UserDAO(conn);
     }
 
     public static void closeDAOConnection() {
