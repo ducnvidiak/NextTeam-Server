@@ -14,14 +14,14 @@ public class TransactionHistory {
 
     private int id;
     private int paidby;
-    private int clubId;
+//    private int clubId;
     private int categoryId;
     private Date createdAt;
     private Date updatedAt;
 
-    public TransactionHistory(int id, int paidby, int clubId, int categoryId, Date createdAt, Date updatedAt) {
+    public TransactionHistory(int id, int paidby, /* int clubId, */ int categoryId, Date createdAt, Date updatedAt) {
         this.paidby = paidby;
-        this.clubId = clubId;
+//        this.clubId = clubId;
         this.categoryId = categoryId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -44,14 +44,13 @@ public class TransactionHistory {
         this.paidby = paidby;
     }
 
-    public int getClubId() {
-        return clubId;
-    }
-
-    public void setClubId(int clubId) {
-        this.clubId = clubId;
-    }
-
+//    public int getClubId() {
+//        return clubId;
+//    }
+//
+//    public void setClubId(int clubId) {
+//        this.clubId = clubId;
+//    }
     public int getCategoryId() {
         return categoryId;
     }

@@ -21,13 +21,15 @@ public class Event {
     private Date startTime;
     private Date endTime;
     private String type;
+    private String planUrl;
     private boolean isApproved;
     private String response;
     private int clubId;
     private Date createdAt;
     private Date updatedAt;
 
-    public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Date startTime, Date endTime, String type, boolean isApproved, String response, int clubId, Date createdAt, Date updatedAt) {
+    public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Date startTime, Date endTime, String type, String planUrl, boolean isApproved, String response, int clubId, Date createdAt, Date updatedAt) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.registeredBy = registeredBy;
@@ -36,12 +38,12 @@ public class Event {
         this.startTime = startTime;
         this.endTime = endTime;
         this.type = type;
+        this.planUrl = planUrl;
         this.isApproved = isApproved;
         this.response = response;
         this.clubId = clubId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.id = id;
     }
 
     public int getId() {
@@ -76,11 +78,11 @@ public class Event {
         this.registeredBy = registeredBy;
     }
 
-    public int getLocation() {
+    public int getLocationId() {
         return locationId;
     }
 
-    public void setLocation(int locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
 
@@ -114,6 +116,14 @@ public class Event {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getPlanUrl() {
+        return planUrl;
+    }
+
+    public void setPlanUrl(String planUrl) {
+        this.planUrl = planUrl;
     }
 
     public boolean isIsApproved() {
@@ -155,4 +165,5 @@ public class Event {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
 }

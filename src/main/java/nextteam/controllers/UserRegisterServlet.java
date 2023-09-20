@@ -81,21 +81,17 @@ public class UserRegisterServlet extends HttpServlet {
         BufferedReader reader = request.getReader();
         User user = this.gson.fromJson(reader, User.class);
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
-        response.setHeader("Access-Control-Allow-Headers", "*");
         System.out.println("Yêu cầu đăng ký");
         PrintWriter out = response.getWriter();
         // Sử dụng phương thức indexOf để tìm vị trí của ký tự "@"
         String email = user.getEmail();
         int atIndex = email.indexOf('@');
-        String username="";
+        String username = "";
         // Kiểm tra xem có ký tự "@" trong chuỗi email hay không
         if (atIndex != -1) {
             // Sử dụng phương thức substring để lấy chuỗi trước ký tự "@"
             username = email.substring(0, atIndex);
-        } 
+        }
         user.setUsername(username);
         int status = new UserDAO(Global.generateConnection()).register(user);
         User addedUser = new UserDAO(Global.generateConnection()).selectByEmailAndPassword(user);
@@ -104,7 +100,7 @@ public class UserRegisterServlet extends HttpServlet {
             String userJsonString = this.gson.toJson(addedUser);
             out.print(userJsonString);
             out.flush();
-        }else{
+        } else {
             System.out.println("Đăng ký thất bại");
             String error = "Bạn chưa đăng ký thành công!";
             String errorJsonString = this.gson.toJson(error);

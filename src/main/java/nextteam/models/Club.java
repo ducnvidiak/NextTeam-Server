@@ -16,15 +16,20 @@ public class Club {
     private String name;
     private String description;
     private String avatarUrl;
+    private String bannerUrl;
     private int movementPoint;
+    private double balance;
     private Date createdAt;
     private Date updatedAt;
 
-    public Club(int id, String name, String description, String avatarUrl, int movementPoint, Date createdAt, Date updatedAt) {
+    public Club(int id, String name, String description, String avatarUrl, String bannerUrl, int movementPoint, Date createdAt, Date updatedAt, int balance) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.avatarUrl = avatarUrl;
+        this.bannerUrl = bannerUrl;
         this.movementPoint = movementPoint;
+        this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -61,12 +66,28 @@ public class Club {
         this.avatarUrl = avatarUrl;
     }
 
+    public String getBannerUrl() {
+        return bannerUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
+    }
+
     public int getMovementPoint() {
         return movementPoint;
     }
 
     public void setMovementPoint(int movementPoint) {
         this.movementPoint = movementPoint;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public Date getCreatedAt() {
@@ -84,4 +105,5 @@ public class Club {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
 }

@@ -12,6 +12,7 @@ import java.util.Date;
  */
 public class EventRegistration {
 
+    private int id;
     private int eventId;
     private int registeredBy;
     private boolean isJoined;
@@ -19,13 +20,22 @@ public class EventRegistration {
     private Date createdAt;
     private Date updatedAt;
 
-    public EventRegistration(int eventId, int registeredBy, boolean isJoined, String reasonForAbsence, Date createdAt, Date updatedAt) {
+    public EventRegistration(int id, int eventId, int registeredBy, boolean isJoined, String reasonForAbsence, Date createdAt, Date updatedAt) {
+        this.id = id;
         this.eventId = eventId;
         this.registeredBy = registeredBy;
         this.isJoined = isJoined;
         this.reasonForAbsence = reasonForAbsence;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getEventId() {
@@ -75,4 +85,5 @@ public class EventRegistration {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
 }

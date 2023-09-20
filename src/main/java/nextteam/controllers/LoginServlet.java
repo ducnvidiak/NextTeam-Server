@@ -74,9 +74,6 @@ public class LoginServlet extends HttpServlet {
         User user = this.gson.fromJson(reader, User.class);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
-        response.setHeader("Access-Control-Allow-Headers", "*");
         System.out.println("Yêu cầu đăng nhập");
         PrintWriter out = response.getWriter();
         final User userLogin = Global.userDao.selectByEmailAndPassword(user);
