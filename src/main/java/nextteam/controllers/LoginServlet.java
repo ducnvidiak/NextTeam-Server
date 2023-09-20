@@ -4,6 +4,7 @@
  */
 package nextteam.controllers;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -15,13 +16,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import nextteam.Global;
 import nextteam.models.User;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  *
  * @author baopg
  */
-@WebServlet(name = "Login", urlPatterns = {"/login"})
-public class Login extends HttpServlet {
+@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
+public class LoginServlet extends HttpServlet {
+
+    private final Gson gson = new Gson();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,16 +39,7 @@ public class Login extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-        response.setHeader("Access-Control-Allow-Orgin", "*");
-        String action = request.getParameter("action");
-        if (action.equals("login")) {
-            login(request, response);
-        } else if (action.equals("logout")) {
-            logout(request, response);
-        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -51,14 +47,14 @@ public class Login extends HttpServlet {
      * Handles the HTTP <code>GET</code> method.
      *
      * @param request servlet request
-     * @param response servlet respone
+     * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
     }
 
     /**
@@ -72,29 +68,34 @@ public class Login extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = request.getParameter("username");
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
-        final User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
+        BufferedReader reader = request.getReader();
+        User user = this.gson.fromJson(reader, User.class);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        System.out.println("Yêu cầu đăng nhập");
+        PrintWriter out = response.getWriter();
         final User userLogin = Global.userDao.selectByEmailAndPassword(user);
-        String url = "";
-        System.out.println(user.getUsername());
         if (userLogin != null) {
+            System.out.println("Đăng nhập thành công");
             final HttpSession session = request.getSession();
+            userLogin.setPassword("No Data");
             session.setAttribute("userLogin", (Object) userLogin);
-            url = "/index.html";
+            String userJsonString = this.gson.toJson(userLogin);
+            System.out.println(userJsonString);
+            out.print(userJsonString);
+            out.flush();
         } else {
-            request.setAttribute("baoLoi", (Object) "Mật khẩu hoặc email không đúng!");
-            url = "/index.html";
+            System.out.println("Đăng nhập thất bại");
+            String error = "Thông tin đăng nhập chưa đúng!";
+            String errorJsonString = this.gson.toJson(error);
+            out.print(errorJsonString);
+            out.flush();
         }
-        final RequestDispatcher rd = this.getServletContext().getRequestDispatcher(url);
-        rd.forward(request, response);
-
     }
 
     private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

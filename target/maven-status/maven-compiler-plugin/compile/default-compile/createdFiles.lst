@@ -4,6 +4,7 @@ nextteam\filters\AllFilter.class
 nextteam\models\PrivateNotification.class
 nextteam\models\PaymentCategory.class
 nextteam\models\User.class
+nextteam\controllers\LoginServlet.class
 nextteam\models\EventVotation.class
 nextteam\models\PointsHistory.class
 nextteam\models\PostComment.class
@@ -11,17 +12,18 @@ nextteam\utils\database\UserDAO.class
 nextteam\models\Event.class
 nextteam\models\PublicNotificationView.class
 nextteam\models\Proposal.class
+nextteam\models\GoogleUserDTO.class
 nextteam\models\Post.class
 nextteam\models\Plan.class
 nextteam\models\HomeTown.class
 nextteam\models\PublicNotification.class
 nextteam\models\Role.class
 nextteam\models\Department.class
+nextteam\controllers\UserServlet.class
 nextteam\models\EntranceInterview.class
 nextteam\models\Major.class
 nextteam\utils\RandomGenerator.class
 nextteam\utils\database\MajorDAO.class
-nextteam\controllers\Login.class
 nextteam\models\TransactionHistory.class
 nextteam\exception\NoRandomCommandException.class
 nextteam\models\EventRegistration.class
@@ -29,6 +31,9 @@ nextteam\models\PaymentExpense.class
 nextteam\controllers\ForgotPasswordServlet.class
 nextteam\listeners\ServerContextListener.class
 nextteam\models\Club.class
+nextteam\controllers\LoginGoogleHandler.class
+nextteam\controllers\UserRegisterServlet.class
 nextteam\models\Engagement.class
 nextteam\models\Location.class
 nextteam\utils\database\HomeTownDAO.class
+nextteam\controllers\Constants.class

@@ -28,8 +28,8 @@ public class User {
     private String homeTown;
     private String facebookUrl;
     private String linkedInUrl;
-    private Date createdAt;
-    private Date updatedAt;
+    private String createdAt;
+    private String updatedAt;
 
     public User() {
     }
@@ -43,7 +43,7 @@ public class User {
         this.gender = gender;
     }
 
-    public User(int id, String email, String username, String password, String avatarURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, Date createdAt, Date updatedAt) {
+    public User(int id, String email, String username, String password, String avatarURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -192,19 +192,19 @@ public class User {
         this.linkedInUrl = linkedInUrl;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

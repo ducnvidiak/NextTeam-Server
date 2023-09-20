@@ -27,7 +27,7 @@ public class Global {
     public static MajorDAO major;
     public static UserDAO userDao;
 
-    private static Connection generateConnection() {
+    public static Connection generateConnection() {
         try {
             Class<?> clazz = Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             DriverManager.registerDriver((Driver) clazz.getDeclaredConstructor().newInstance());
@@ -57,5 +57,10 @@ public class Global {
             }
             conn = null;
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(generateConnection());
+
     }
 }
