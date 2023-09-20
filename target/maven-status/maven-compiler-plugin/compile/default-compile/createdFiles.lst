@@ -19,9 +19,11 @@ nextteam\models\Role.class
 nextteam\models\Department.class
 nextteam\models\EntranceInterview.class
 nextteam\models\Major.class
+nextteam\utils\RandomGenerator.class
 nextteam\utils\database\MajorDAO.class
 nextteam\controllers\Login.class
 nextteam\models\TransactionHistory.class
+nextteam\exception\NoRandomCommandException.class
 nextteam\models\EventRegistration.class
 nextteam\models\PaymentExpense.class
 nextteam\controllers\ForgotPasswordServlet.class

@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nextteam.utils.RandomGenerator;
 
 /**
  *
@@ -29,9 +30,10 @@ public class ForgotPasswordServlet extends HttpServlet {
         if (command.equals("1")) {
             String email = req.getParameter("email");
             System.out.println(email);
-            out.println("{\"code\": \"0\", \"msg\": \"success\"}");
+            String rand = RandomGenerator.randString(RandomGenerator.NUMERIC_CHARACTER, 6);
+            out.println("{\"code\": \"0\", \"msg\": \"Success!\", \"res\": {\"code\": \"" + rand + "\"}}");
         } else {
-            out.println("{\"code\": \"1\", \"msg\": \"Error!\"}");
+            out.println("{\"code\": \"-1\", \"msg\": \"Error!\"}");
         }
     }
 
