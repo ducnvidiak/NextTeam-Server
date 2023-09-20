@@ -83,8 +83,8 @@ public class UserRegisterServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
         System.out.println("Yêu cầu đăng ký");
         PrintWriter out = response.getWriter();
         // Sử dụng phương thức indexOf để tìm vị trí của ký tự "@"

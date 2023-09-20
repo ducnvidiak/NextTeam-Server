@@ -41,6 +41,8 @@ public class LoginGoogleHandler extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         String code = request.getParameter("code");
         String accessToken = getToken(code);
         GoogleUserDTO user = getUserInfo(accessToken);
@@ -64,7 +66,6 @@ public class LoginGoogleHandler extends HttpServlet {
             out.print(errorJsonString);
             out.flush();
         }
-        
     }
 
     public static String getToken(String code) throws ClientProtocolException, IOException {

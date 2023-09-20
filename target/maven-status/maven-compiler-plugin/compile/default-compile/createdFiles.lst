@@ -31,6 +31,7 @@ nextteam/models/PublicNotification.class
 controllers/UserRegisterServlet.class
 nextteam/utils/database/MajorDAO.class
 nextteam/models/Location.class
+AllFilter.class
 models/EntranceInterview.class
 models/Engagement.class
 models/Plan.class
