@@ -26,7 +26,7 @@ public class HomeTownDAO extends SQLDatabase {
 
     public List<HomeTown> getAllHomeTowns() {
         List<HomeTown> homeTowns = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM majors");
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM homeTowns");
         try {
             while (rs.next()) {
                 HomeTown ht = new HomeTown(rs.getInt(1), rs.getNString(2), rs.getNString(3));

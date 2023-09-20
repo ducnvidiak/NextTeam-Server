@@ -17,19 +17,21 @@ public class EntranceInterview {
     private Date endTime;
     private int engagementId;
     private String comment;
+    private int approvedBy;
     private boolean isApproved;
     private Date createdAt;
     private Date updatedAt;
 
-    public EntranceInterview(int id, Date startTime, Date endTime, int engagementId, String comment, boolean isApproved, Date createdAt, Date updatedAt) {
+    public EntranceInterview(int id, Date startTime, Date endTime, int engagementId, String comment, int approvedBy, boolean isApproved, Date createdAt, Date updatedAt) {
+        this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.engagementId = engagementId;
         this.comment = comment;
+        this.approvedBy = approvedBy;
         this.isApproved = isApproved;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.id = id;
     }
 
     public int getId() {
@@ -72,6 +74,14 @@ public class EntranceInterview {
         this.comment = comment;
     }
 
+    public int getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(int approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
     public boolean isIsApproved() {
         return isApproved;
     }
@@ -96,7 +106,4 @@ public class EntranceInterview {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isApproved() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

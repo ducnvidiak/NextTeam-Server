@@ -17,6 +17,7 @@ public class User {
     private String username;
     private String password;
     private String avatarURL;
+    private String bannerURL;
     private String firstname;
     private String lastname;
     private String studentCode;
@@ -43,11 +44,12 @@ public class User {
         this.gender = gender;
     }
 
-    public User(int id, String email, String username, String password, String avatarURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt) {
+    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt) {
         this.email = email;
         this.username = username;
         this.password = password;
         this.avatarURL = avatarURL;
+        this.bannerURL = bannerURL;
         this.firstname = firstname;
         this.lastname = lastname;
         this.studentCode = studentCode;
@@ -102,6 +104,14 @@ public class User {
 
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
+    }
+
+    public String getBannerURL() {
+        return bannerURL;
+    }
+
+    public void setBannerURL(String bannerURL) {
+        this.bannerURL = bannerURL;
     }
 
     public String getFirstname() {

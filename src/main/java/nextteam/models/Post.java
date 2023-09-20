@@ -4,6 +4,8 @@
  */
 package nextteam.models;
 
+import java.util.Date;
+
 /**
  *
  * @author vnitd
@@ -16,14 +18,18 @@ public class Post {
     private String videoUrl;
     private String title;
     private String content;
+    private Date createdAt;
+    private Date updatedAt;
 
-    public Post(int id, int clubId, String imageUrl, String videoUrl, String title, String content) {
+    public Post(int id, int clubId, String imageUrl, String videoUrl, String title, String content, Date createdAt, Date updatedAt) {
+        this.id = id;
         this.clubId = clubId;
         this.imageUrl = imageUrl;
         this.videoUrl = videoUrl;
         this.title = title;
         this.content = content;
-        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public int getId() {
@@ -73,4 +79,21 @@ public class Post {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
 }

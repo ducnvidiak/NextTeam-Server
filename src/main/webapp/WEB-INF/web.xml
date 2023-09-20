@@ -3,13 +3,13 @@
     <listener>
         <listener-class>nextteam.listeners.ServerContextListener</listener-class>
     </listener>
-<!--    <filter>
+    <!--    <filter>
         <filter-name>CORS</filter-name>
         <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
     </filter>-->
     <servlet>
         <servlet-name>UserServlet</servlet-name>
-        <servlet-class>controllers.UserServlet</servlet-class>
+        <servlet-class>nextteam.controllers.UserServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
