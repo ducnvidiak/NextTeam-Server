@@ -5,13 +5,25 @@
 package controllers;
 
 import com.google.gson.Gson;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import nextteam.Global;
 import nextteam.models.User;
 import nextteam.utils.database.UserDAO;
@@ -20,6 +32,11 @@ import nextteam.utils.database.UserDAO;
  *
  * @author admin
  */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // Kích thước tệp tạm thời trước khi lưu vào đĩa (1MB)
+        maxFileSize = 1024 * 1024 * 10, // Kích thước tối đa cho mỗi tệp (10MB)
+        maxRequestSize = 1024 * 1024 * 50 // Kích thước tối đa cho một yêu cầu (50MB)
+)
 public class UserServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
@@ -66,7 +83,6 @@ public class UserServlet extends HttpServlet {
         User user = new UserDAO(Global.generateConnection()).getListUserByIdString(request.getParameter("id"));
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
 
         String userJsonString = this.gson.toJson(user);
 
@@ -89,15 +105,8 @@ public class UserServlet extends HttpServlet {
 //        processRequest(request, response);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        
-        System.out.println("Logged -------------1");
         BufferedReader reader = request.getReader();
-        System.out.println("Logged -------------2");
         User user = this.gson.fromJson(reader, User.class);
-        System.out.println("Logged -------------3" + user.getUsername());
 
         int status = new UserDAO(Global.generateConnection()).insert(user);
 
@@ -114,21 +123,39 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BufferedReader reader = request.getReader();
-        User user = this.gson.fromJson(reader, User.class);
-        System.out.println("Logged -------------" + user.getUsername());
 
-        int status = new UserDAO(Global.generateConnection()).update(user);
-
-        User updatedUser = new UserDAO(Global.generateConnection()).getListUserByIdString("" + user.getId());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "PUT");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+        Part jsonPart = request.getPart("data");
+        InputStream jsonStream = jsonPart.getInputStream();
+        BufferedReader jsonReader = new BufferedReader(new InputStreamReader(jsonStream));
+
+        User user = this.gson.fromJson(jsonReader, User.class);
+
+        Part imagePart = request.getPart("image");
+
+        if (imagePart != null) {
+            String fileName = "userAvatar_" + user.getId() + ".jpg";
+            InputStream inputStream = imagePart.getInputStream();
+            byte[] imageBytes = inputStream.readAllBytes();
+
+            byte[] decodeBytes = Base64.getDecoder().decode(imageBytes);
+            String savePath = "E:/Fall23/project/NextTeam-Server/src/main/webapp/images";
+            String filePath = savePath + File.separator + fileName;
+            try ( OutputStream outputStream = new FileOutputStream(filePath)) {
+                outputStream.write(decodeBytes);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            user.setAvatarURL("http://localhost:8080/NextTeam/images/" + fileName);
+        }
+        
+        int status = new UserDAO(Global.generateConnection()).update(user);
+        User updatedUser = new UserDAO(Global.generateConnection()).getListUserByIdString("" + user.getId());
         String userJsonString = this.gson.toJson(updatedUser);
-
         PrintWriter out = response.getWriter();
         out.print(userJsonString);
         out.flush();
