@@ -52,12 +52,12 @@ public class ClubDAO extends SQLDatabase {
             while (rs.next()) {
                 //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
 
-                list.add(new Club(rs.getInt(1), rs.getNString(2), rs.getNString(3)));
+                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3)));
             
             }   
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
     }
