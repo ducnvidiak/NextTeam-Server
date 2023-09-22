@@ -69,7 +69,7 @@ public class PublicNotificationListSearchServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<PublicNotification> publicNotifications = Global.publicNotificationDAO.getNotificationByNameString(search,clubId);
+        List<PublicNotification> publicNotifications = Global.publicNotification.getNotificationByNameString(search,clubId);
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(publicNotifications);

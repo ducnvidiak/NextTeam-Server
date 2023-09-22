@@ -9,7 +9,9 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import nextteam.utils.database.ClubDAO;
+import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.MajorDAO;
+import nextteam.utils.database.OtpCodeDAO;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.UserDAO;
 
@@ -27,8 +29,10 @@ public class Global {
     private static Connection conn;
     public static ClubDAO clubDAO;
     public static MajorDAO major;
-    public static UserDAO userDao;
-    public static PublicNotificationDAO publicNotificationDAO;
+    public static EventDAO eventDao;
+    public static UserDAO user;
+    public static OtpCodeDAO otpCode;
+    public static PublicNotificationDAO publicNotification;
 
     public static Connection generateConnection() {
         try {
@@ -49,8 +53,10 @@ public class Global {
         }
         clubDAO = new ClubDAO(conn);
         major = new MajorDAO(conn);
-        userDao = new UserDAO(conn);
-        publicNotificationDAO = new PublicNotificationDAO(conn);
+        eventDao = new EventDAO(conn);
+        user = new UserDAO(conn);
+        otpCode = new OtpCodeDAO(conn);
+        publicNotification = new PublicNotificationDAO(conn);
     }
 
     public static void closeDAOConnection() {

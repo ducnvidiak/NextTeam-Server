@@ -68,16 +68,15 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
-        
+
         BufferedReader reader = request.getReader();
         User user = this.gson.fromJson(reader, User.class);
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
         System.out.println("Yêu cầu đăng nhập");
         PrintWriter out = response.getWriter();
         String password = user.getPassword();
         user.setPassword(ConvertPassword.toSHA1(password));
-        final User userLogin = Global.userDao.selectByEmailAndPassword(user);
+        final User userLogin = Global.user.selectByEmailAndPassword(user);
         if (userLogin != null) {
             System.out.println("Đăng nhập thành công");
             final HttpSession session = request.getSession();

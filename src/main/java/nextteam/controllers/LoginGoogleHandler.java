@@ -48,7 +48,7 @@ public class LoginGoogleHandler extends HttpServlet {
         GoogleUserDTO user = getUserInfo(accessToken);
         User userLog = new User();
         userLog.setEmail(user.getEmail());
-        User userAuth = Global.userDao.selectByEmail(userLog);
+        User userAuth = Global.user.selectByEmail(userLog.getEmail());
         PrintWriter out = response.getWriter();
 
         if (userAuth != null) {
