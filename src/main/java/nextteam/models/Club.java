@@ -15,6 +15,7 @@ public class Club {
     private int id;
     private String name;
     private String subname;
+    private int categoryId;
     private String description;
     private String avatarUrl;
     private String bannerUrl;
@@ -23,10 +24,11 @@ public class Club {
     private Date createdAt;
     private Date updatedAt;
 
-    public Club(int id, String name, String subname, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
+    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
         this.subname = subname;
+        this.categoryId = categoryId;
         this.description = description;
         this.avatarUrl = avatarUrl;
         this.bannerUrl = bannerUrl;
@@ -58,6 +60,14 @@ public class Club {
 
     public void setSubname(String subname) {
         this.subname = subname;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getDescription() {
