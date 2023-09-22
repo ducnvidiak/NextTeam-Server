@@ -22,21 +22,22 @@ public class EventDAO extends SQLDatabase {
         try {
             while (rs.next()) {
                 Event event = new Event(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getInt("registeredBy"),
-                    rs.getInt("locationId"),
-                    rs.getString("checkInCode"),
-                    rs.getDate("startTime"),
-                    rs.getDate("endTime"),
-                    rs.getString("type"),
-                    rs.getString("planUrl"),
-                    rs.getBoolean("isApproved"),
-                    rs.getString("response"),
-                    rs.getInt("clubId"),
-                    rs.getDate("createdAt"),
-                    rs.getDate("updatedAt")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getInt("registeredBy"),
+                        rs.getInt("locationId"),
+                        rs.getString("checkInCode"),
+                        rs.getDate("startTime"),
+                        rs.getDate("endTime"),
+                        rs.getString("type"),
+                        rs.getString("planUrl"),
+                        rs.getString("planUrl"),
+                        rs.getBoolean("bannerUrl"),
+                        rs.getString("response"),
+                        rs.getInt("clubId"),
+                        rs.getDate("createdAt"),
+                        rs.getDate("updatedAt")
                 );
                 events.add(event);
             }
@@ -46,5 +47,4 @@ public class EventDAO extends SQLDatabase {
         return events;
     }
 
-    
 }

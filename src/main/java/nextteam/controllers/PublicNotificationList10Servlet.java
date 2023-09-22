@@ -5,22 +5,23 @@
 package nextteam.controllers;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
-import nextteam.models.User;
-import nextteam.utils.database.UserDAO;
+import nextteam.models.PublicNotification;
 
 /**
  *
- * @author admin
+ * @author baopg
  */
-public class UserServlet extends HttpServlet {
+@WebServlet(name = "PublicNotificationListServlet", urlPatterns = {"/public-notification-list-10"})
+public class PublicNotificationList10Servlet extends HttpServlet {
 
     private final Gson gson = new Gson();
 
@@ -41,10 +42,10 @@ public class UserServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UserServlet</title>");
+            out.println("<title>Servlet PublicNotificationListServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UserServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet PublicNotificationListServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,16 +63,19 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        processRequest(request, response);
-        User user = new UserDAO(Global.generateConnection()).getListUserByIdString(request.getParameter("id"));
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-
-        String userJsonString = this.gson.toJson(user);
 
         PrintWriter out = response.getWriter();
-        out.print(userJsonString);
+
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        List<PublicNotification> publicNotifications = Global.publicNotification.get10PublicNotifications();
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(publicNotifications);
+
+        // Gửi JSON response về client
+        out.print(json);
         out.flush();
     }
 
@@ -86,52 +90,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        processRequest(request, response);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
-        response.setHeader("Access-Control-Allow-Headers", "*");
 
-        System.out.println("Logged -------------1");
-        BufferedReader reader = request.getReader();
-        System.out.println("Logged -------------2");
-        User user = this.gson.fromJson(reader, User.class);
-        System.out.println("Logged -------------3" + user.getUsername());
-
-        int status = new UserDAO(Global.generateConnection()).insert(user);
-
-        User addedUser = new UserDAO(Global.generateConnection()).selectByEmail(user.getEmail());
-
-        String userJsonString = this.gson.toJson(addedUser);
-
-        PrintWriter out = response.getWriter();
-        out.print(userJsonString);
-        out.flush();
-
-    }
-
-    @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        BufferedReader reader = request.getReader();
-        User user = this.gson.fromJson(reader, User.class);
-        System.out.println("Logged -------------" + user.getUsername());
-
-        int status = new UserDAO(Global.generateConnection()).update(user);
-
-        User updatedUser = new UserDAO(Global.generateConnection()).getListUserByIdString("" + user.getId());
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "PUT");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-        String userJsonString = this.gson.toJson(updatedUser);
-
-        PrintWriter out = response.getWriter();
-        out.print(userJsonString);
-        out.flush();
     }
 
     /**

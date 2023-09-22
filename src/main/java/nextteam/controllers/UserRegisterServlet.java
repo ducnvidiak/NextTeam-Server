@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
 import nextteam.models.User;
+import nextteam.utils.ConvertPassword;
 import nextteam.utils.database.UserDAO;
 
 /**
@@ -93,19 +94,30 @@ public class UserRegisterServlet extends HttpServlet {
             username = email.substring(0, atIndex);
         }
         user.setUsername(username);
-        int status = new UserDAO(Global.generateConnection()).register(user);
-        User addedUser = new UserDAO(Global.generateConnection()).selectByEmailAndPassword(user);
-        if (addedUser != null) {
-            System.out.println("Đăng ký thành công");
-            String userJsonString = this.gson.toJson(addedUser);
-            out.print(userJsonString);
-            out.flush();
-        } else {
-            System.out.println("Đăng ký thất bại");
-            String error = "Bạn chưa đăng ký thành công!";
+        boolean StudentCodeCheck = new UserDAO(Global.generateConnection()).StudentCodeCheck(user.getStudentCode());
+        if (StudentCodeCheck) {
+            System.out.println("Đăng ký thất bại - Mã số sinh viên đã đăng ký trên nền tảng");
+            String error = "Mã số sinh viên " + user.getStudentCode() + " của bạn đã tồn tại trên hệ thống!";
             String errorJsonString = this.gson.toJson(error);
             out.print(errorJsonString);
             out.flush();
+        } else {
+             String password = user.getPassword();
+            user.setPassword(ConvertPassword.toSHA1(password));
+            int status = new UserDAO(Global.generateConnection()).register(user);
+            User addedUser = new UserDAO(Global.generateConnection()).selectByEmailAndPassword(user);
+            if (addedUser != null) {
+                System.out.println("Đăng ký thành công");
+                String userJsonString = this.gson.toJson(addedUser);
+                out.print(userJsonString);
+                out.flush();
+            } else {
+                System.out.println("Đăng ký thất bại");
+                String error = "Bạn chưa đăng ký thành công!";
+                String errorJsonString = this.gson.toJson(error);
+                out.print(errorJsonString);
+                out.flush();
+            }
         }
 
     }

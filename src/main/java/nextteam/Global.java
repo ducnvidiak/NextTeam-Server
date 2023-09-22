@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.MajorDAO;
+import nextteam.utils.database.OtpCodeDAO;
+import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.UserDAO;
 
 /**
@@ -26,8 +28,10 @@ public class Global {
     private static Connection conn;
 
     public static MajorDAO major;
-    public static UserDAO userDao;
     public static EventDAO eventDao;
+    public static UserDAO user;
+    public static OtpCodeDAO otpCode;
+    public static PublicNotificationDAO publicNotification;
 
     public static Connection generateConnection() {
         try {
@@ -47,8 +51,10 @@ public class Global {
             throw new RuntimeException("Error while trying connect to SQL Server!");
         }
         major = new MajorDAO(conn);
-        userDao = new UserDAO(conn);
         eventDao = new EventDAO(conn);
+        user = new UserDAO(conn);
+        otpCode = new OtpCodeDAO(conn);
+        publicNotification = new PublicNotificationDAO(conn);
     }
 
     public static void closeDAOConnection() {

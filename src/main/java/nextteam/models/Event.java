@@ -22,13 +22,14 @@ public class Event {
     private Date endTime;
     private String type;
     private String planUrl;
+    private String bannerUrl;
     private boolean isApproved;
     private String response;
     private int clubId;
     private Date createdAt;
     private Date updatedAt;
 
-    public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Date startTime, Date endTime, String type, String planUrl, boolean isApproved, String response, int clubId, Date createdAt, Date updatedAt) {
+    public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Date startTime, Date endTime, String type, String planUrl, String bannerUrl, boolean isApproved, String response, int clubId, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -39,6 +40,7 @@ public class Event {
         this.endTime = endTime;
         this.type = type;
         this.planUrl = planUrl;
+        this.bannerUrl = bannerUrl;
         this.isApproved = isApproved;
         this.response = response;
         this.clubId = clubId;
@@ -124,6 +126,14 @@ public class Event {
 
     public void setPlanUrl(String planUrl) {
         this.planUrl = planUrl;
+    }
+
+    public String getBannerUrl() {
+        return bannerUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
     }
 
     public boolean isIsApproved() {

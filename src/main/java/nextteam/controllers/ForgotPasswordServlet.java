@@ -11,7 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import nextteam.utils.RandomGenerator;
+import nextteam.Global;
+import nextteam.models.User;
 
 /**
  *
@@ -30,8 +31,22 @@ public class ForgotPasswordServlet extends HttpServlet {
         if (command.equals("1")) {
             String email = req.getParameter("email");
             System.out.println(email);
-            String rand = RandomGenerator.randString(RandomGenerator.NUMERIC_CHARACTER, 6);
-            out.println("{\"code\": \"0\", \"msg\": \"Success!\", \"res\": {\"code\": \"" + rand + "\"}}");
+            User user = Global.user.selectByEmail(email);
+            if (user != null) {
+                String type = Global.otpCode.generateOtp(120, user.getId());
+                out.println("{\"code\": \"0\", \"msg\": \"Success!\", \"result\": {\"type\": \"" + type + "\"}}");
+            } else {
+                out.println("{\"code\": \"1\", \"msg\": \"Email không khớp với bất kỳ người dùng nào!\"}");
+            }
+        } else if (command.equals("2")) {
+            String code = req.getParameter("code");
+            String type = req.getParameter("type");
+            int[] chance = {0};
+            if (Global.otpCode.verifyOtp(code, type, chance)) {
+                out.println("{\"code\": \"0\", \"msg\": \"Success!\"}");
+            } else {
+                out.println("{\"code\": \"1\", \"msg\": \"Bạn đã nhập sai mã xác minh. Vui lòng nhập lại. Bạn còn __res lần.\", \"res\": \"" + chance[0] + "\"}");
+            }
         } else {
             out.println("{\"code\": \"-1\", \"msg\": \"Error!\"}");
         }

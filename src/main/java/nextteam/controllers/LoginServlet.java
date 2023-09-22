@@ -7,7 +7,6 @@ package nextteam.controllers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpSession;
 import nextteam.Global;
 import nextteam.models.User;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import nextteam.utils.ConvertPassword;
 
 /**
  *
@@ -69,14 +68,15 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
+
         BufferedReader reader = request.getReader();
         User user = this.gson.fromJson(reader, User.class);
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
         System.out.println("Yêu cầu đăng nhập");
         PrintWriter out = response.getWriter();
-        final User userLogin = Global.userDao.selectByEmailAndPassword(user);
+        String password = user.getPassword();
+        user.setPassword(ConvertPassword.toSHA1(password));
+        final User userLogin = Global.user.selectByEmailAndPassword(user);
         if (userLogin != null) {
             System.out.println("Đăng nhập thành công");
             final HttpSession session = request.getSession();
