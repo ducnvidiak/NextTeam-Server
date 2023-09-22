@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.Global;
 import nextteam.models.User;
+import nextteam.utils.ConvertPassword;
 import nextteam.utils.SQLDatabase;
 
 /**
@@ -167,11 +168,11 @@ public class UserDAO extends SQLDatabase {
 
         return ketQua;
     }
-    
-    public boolean StudentCodeCheck( String studentCode) {
+
+    public boolean StudentCodeCheck(String studentCode) {
         boolean ketQua = false;
         try {
-            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE studentCode = ?",studentCode);
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE studentCode = ?", studentCode);
             while (rs.next()) {
                 ketQua = true;
             }
@@ -179,7 +180,12 @@ public class UserDAO extends SQLDatabase {
         }
         return ketQua;
     }
+
     // test connection 
+    public void changePassword(String studentCode, String password) {
+        password = ConvertPassword.toSHA1(password);
+        executeUpdatePreparedStatement("UPDATE users SET password=? WHERE studentCode=?", password, studentCode);
+    }
 
     public static void main(String... args) {
         User user = new UserDAO(Global.generateConnection()).getListUserByIdString("2");

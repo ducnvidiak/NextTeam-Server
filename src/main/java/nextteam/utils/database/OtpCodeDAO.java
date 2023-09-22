@@ -25,11 +25,11 @@ public class OtpCodeDAO extends SQLDatabase {
         super(connection);
     }
 
-    public String generateOtp(int expiredInSecond, int userId) {
+    public String generateOtp(int expiredInSecond, int userId, String[] resCode) {
         executeUpdatePreparedStatement("UPDATE otpCode SET isDisable=1 WHERE expiredAt < GETDATE() AND isDisable=0");
         expiredInSecond *= 1000;
         String type = "NextTeam-" + RandomGenerator.simpleRandString(41);
-        String code = RandomGenerator.randString(RandomGenerator.NUMERIC_CHARACTER, 6);
+        String code = resCode[0] = RandomGenerator.randString(RandomGenerator.NUMERIC_CHARACTER, 6);
         int res = executeUpdatePreparedStatement(
                 "INSERT INTO otpCode (userId, code, type, expiredAt)"
                 + "VALUES (?, ?, ?, ?)",
@@ -58,7 +58,7 @@ public class OtpCodeDAO extends SQLDatabase {
                 String dbCode = rs.getString(2);
                 System.out.println(dbCode + " " + code);
                 if (code.equals(dbCode)) {
-                    executeUpdatePreparedStatement("UPDATE otpCode SET isDisable=? WHERE type=?", 1, type);
+                    executeUpdatePreparedStatement("UPDATE otpCode SET isDisable=? WHERE type=? AND expiredAt < GETDATE()", 1, type);
                     return true;
                 } else {
                     String storedProcedureCall = "{call P_otpLostChance(?, ?)}";

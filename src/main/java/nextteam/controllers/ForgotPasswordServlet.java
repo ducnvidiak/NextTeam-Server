@@ -6,6 +6,12 @@ package nextteam.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
 import nextteam.models.User;
+import nextteam.utils.Gmail;
 
 /**
  *
@@ -21,19 +28,41 @@ import nextteam.models.User;
 @WebServlet(name = "ForgotPassword", urlPatterns = {"/forgot-password"})
 public class ForgotPasswordServlet extends HttpServlet {
 
+    private void sendVerificationMail(String email, String subject, String username, String id, String code) {
+        try {
+            new Gmail(email)
+                    .setContentType("text/html; charset=UTF-8")
+                    .setSubject(subject)
+                    .initMacro()
+                    .appendMacro("USERNAME", username)
+                    .appendMacro("ID", id)
+                    .appendMacro("WHEN", new SimpleDateFormat("HH:mm:ss 'ngày' dd 'tháng' MM 'năm' yyyy").format(new Date()))
+                    .appendMacro("CODE", code)
+                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_code.jsp"));
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ForgotPasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String command = req.getParameter("command");
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
-
         if (command.equals("1")) {
             String email = req.getParameter("email");
             System.out.println(email);
             User user = Global.user.selectByEmail(email);
             if (user != null) {
-                String type = Global.otpCode.generateOtp(120, user.getId());
+                String[] code = new String[1];
+                String type = Global.otpCode.generateOtp(600, user.getId(), code);
+                sendVerificationMail(
+                        user.getEmail(),
+                        "Confirmation code",
+                        user.getUsername(),
+                        user.getStudentCode(),
+                        code[0]);
                 out.println("{\"code\": \"0\", \"msg\": \"Success!\", \"result\": {\"type\": \"" + type + "\"}}");
             } else {
                 out.println("{\"code\": \"1\", \"msg\": \"Email không khớp với bất kỳ người dùng nào!\"}");
@@ -46,6 +75,16 @@ public class ForgotPasswordServlet extends HttpServlet {
                 out.println("{\"code\": \"0\", \"msg\": \"Success!\"}");
             } else {
                 out.println("{\"code\": \"1\", \"msg\": \"Bạn đã nhập sai mã xác minh. Vui lòng nhập lại. Bạn còn __res lần.\", \"res\": \"" + chance[0] + "\"}");
+            }
+        } else if (command.equals("3")) {
+            String email = req.getParameter("email");
+            String password = req.getParameter("password");
+            User user = Global.user.selectByEmail(email);
+            if (user != null) {
+                Global.user.changePassword(user.getStudentCode(), password);
+                out.println("{\"code\": \"0\", \"msg\": \"Success!\"}");
+            } else {
+                out.println("{\"code\": \"2\", \"msg\": \"Có lỗi xảy ra trong quá trình thay đổi mật khẩu!\"}");
             }
         } else {
             out.println("{\"code\": \"-1\", \"msg\": \"Error!\"}");

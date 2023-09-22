@@ -26,6 +26,8 @@ public class Global {
 
     private static Connection conn;
 
+    public static String workingPath;
+
     public static MajorDAO major;
     public static UserDAO user;
     public static OtpCodeDAO otpCode;

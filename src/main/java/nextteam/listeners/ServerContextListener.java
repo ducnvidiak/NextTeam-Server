@@ -17,7 +17,7 @@ public class ServerContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("Server started!");
-
+        Global.workingPath = sce.getServletContext().getRealPath("/");
         Global.setDAOConnection();
     }
 
