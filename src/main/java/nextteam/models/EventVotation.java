@@ -12,18 +12,28 @@ import java.util.Date;
  */
 public class EventVotation {
 
+    private int id;
     private int eventId;
     private int userId;
     private boolean isAgreed;
     private Date createdAt;
     private Date updatedAt;
 
-    public EventVotation(int eventId, int userId, boolean isAgreed, Date createdAt, Date updatedAt) {
+    public EventVotation(int id, int eventId, int userId, boolean isAgreed, Date createdAt, Date updatedAt) {
+        this.id = id;
         this.eventId = eventId;
         this.userId = userId;
         this.isAgreed = isAgreed;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getEventId() {
@@ -65,4 +75,5 @@ public class EventVotation {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
 }
