@@ -19,6 +19,10 @@
         <servlet-name>PublicNotificationListSearchServlet</servlet-name>
         <servlet-class>nextteam.controllers.PublicNotificationListSearchServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ClubServlet</servlet-name>
+        <servlet-class>nextteam.controllers.ClubServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
@@ -30,6 +34,10 @@
     <servlet-mapping>
         <servlet-name>PublicNotificationListSearchServlet</servlet-name>
         <url-pattern>/public-notification-list-search</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClubServlet</servlet-name>
+        <url-pattern>/club_cmd</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
