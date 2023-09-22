@@ -23,7 +23,9 @@ import nextteam.models.PublicNotification;
  */
 @WebServlet(name = "PublicNotificationDetailServlet", urlPatterns = {"/public-notification-detail"})
 public class PublicNotificationDetailServlet extends HttpServlet {
-private final Gson gson = new Gson();
+
+    private final Gson gson = new Gson();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -41,7 +43,7 @@ private final Gson gson = new Gson();
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PublicNotificationDetailServlet</title>");            
+            out.println("<title>Servlet PublicNotificationDetailServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet PublicNotificationDetailServlet at " + request.getContextPath() + "</h1>");
@@ -67,14 +69,13 @@ private final Gson gson = new Gson();
         String id = request.getParameter("id");
         BufferedReader reader = request.getReader();
         PrintWriter out = response.getWriter();
-        
-        
+
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        PublicNotification publicNotifications = Global.publicNotificationDAO.getNotificationByIdString(id);
-        
+        PublicNotification publicNotifications = Global.publicNotification.getNotificationByIdString(id);
+
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(publicNotifications);
-        
+
         // Gửi JSON response về client
         out.print(json);
         out.flush();

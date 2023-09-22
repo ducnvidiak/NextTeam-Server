@@ -89,6 +89,10 @@ public abstract class SQLDatabase {
                     } else {
                         statement.setString(i + 1, (String) values[i]);
                     }
+                } else if (values[i] instanceof Date) {
+                    statement.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
+                } else if (values[i] instanceof java.sql.Date) {
+                    statement.setDate(i + 1, (java.sql.Date) values[i]);
                 } else {
                     statement.setString(i + 1, values[i].toString());
                 }

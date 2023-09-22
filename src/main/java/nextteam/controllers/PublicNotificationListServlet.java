@@ -22,6 +22,7 @@ import nextteam.models.PublicNotification;
  */
 @WebServlet(name = "PublicNotificationListServlet", urlPatterns = {"/public-notification-list"})
 public class PublicNotificationListServlet extends HttpServlet {
+
     private final Gson gson = new Gson();
 
     /**
@@ -41,7 +42,7 @@ public class PublicNotificationListServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PublicNotificationListServlet</title>");            
+            out.println("<title>Servlet PublicNotificationListServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet PublicNotificationListServlet at " + request.getContextPath() + "</h1>");
@@ -64,15 +65,15 @@ public class PublicNotificationListServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        
+
         PrintWriter out = response.getWriter();
-        
+
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<PublicNotification> publicNotifications = Global.publicNotificationDAO.getAllPublicNotifications();
-        
+        List<PublicNotification> publicNotifications = Global.publicNotification.getAllPublicNotifications();
+
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(publicNotifications);
-        
+
         // Gửi JSON response về client
         out.print(json);
         out.flush();
@@ -89,7 +90,7 @@ public class PublicNotificationListServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     /**
