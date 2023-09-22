@@ -24,7 +24,11 @@ public class Club {
     private Date createdAt;
     private Date updatedAt;
 
-    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
+    public Club() {
+    }
+
+    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl,
+            String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
         this.subname = subname;
@@ -36,6 +40,26 @@ public class Club {
         this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Club(int id, String name, String subname) {
+        this.id = id;
+        this.name = name;
+        this.subname = subname;
+    }
+    
+
+    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl,
+            String bannerUrl, int movementPoint, double balance) {
+        this.id = id;
+        this.name = name;
+        this.subname = subname;
+        this.categoryId = categoryId;
+        this.description = description;
+        this.avatarUrl = avatarUrl;
+        this.bannerUrl = bannerUrl;
+        this.movementPoint = movementPoint;
+        this.balance = balance;
     }
 
     public int getId() {
@@ -124,6 +148,24 @@ public class Club {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "{"
+                + "    \"id\": \"" + id + "\","
+                + "    \"name\":\"" + name + "\","
+                + "    \"subname\":\"" + subname + "\","
+                + "    \"categoryId\":\"" + categoryId + "\","
+                + "    \"description\":\"" + description + "\","
+                + "    \"avatarUrl\":\"" + avatarUrl + "\","
+                + "    \"bannerUrl\":\"" + bannerUrl + "\","
+                + "    \"movementPoint\":\"" + movementPoint + "\","
+                + "    \"balance\":\"" + balance + "\","
+                + "    \"createdAt\":\"" + createdAt + "\","
+                + "    \"updatedAt\":\"" + updatedAt + "\""
+                + "}";
+
     }
 
 }

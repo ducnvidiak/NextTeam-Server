@@ -26,9 +26,9 @@ public class PublicNotificationDAO extends SQLDatabase {
         super(connection);
     }
 
-    public List<PublicNotification> getAllPublicNotifications() {
+    public List<PublicNotification> getAllPublicNotifications(String t) {
         List<PublicNotification> publicNotifications = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications");
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications WHERE clubId = ? ORDER BY updatedAt DESC",t);
         try {
             while (rs.next()) {
                 PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getDate(5), rs.getDate(6));
@@ -40,10 +40,10 @@ public class PublicNotificationDAO extends SQLDatabase {
         return publicNotifications;
     }
 
-    public List<PublicNotification> get10PublicNotifications() {
+    public List<PublicNotification> get10PublicNotifications(String t) {
         List<PublicNotification> publicNotifications = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT TOP 10 * FROM publicNotifications\n"
-                + "ORDER BY updatedAt DESC;");
+        ResultSet rs = executeQueryPreparedStatement("SELECT TOP 10 * FROM publicNotifications WHERE clubId = ?\n"
+                + "ORDER BY updatedAt DESC;",t);
         try {
             while (rs.next()) {
                 PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getDate(5), rs.getDate(6));
@@ -65,6 +65,20 @@ public class PublicNotificationDAO extends SQLDatabase {
         } catch (Exception e) {
         }
         return ketQua;
+    }
+
+    public List<PublicNotification> getNotificationByNameString(String t, String clubId) {
+        List<PublicNotification> publicNotifications = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications WHERE title LIKE ? AND clubId=?", "%" + t + "%",clubId);
+        try {
+            while (rs.next()) {
+                PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getDate(5), rs.getDate(6));
+                publicNotifications.add(pn);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PublicNotificationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return publicNotifications;
     }
 
 }
