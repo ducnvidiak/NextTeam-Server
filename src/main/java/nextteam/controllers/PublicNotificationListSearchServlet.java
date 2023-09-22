@@ -64,11 +64,12 @@ public class PublicNotificationListSearchServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String search = request.getParameter("search");
+        String clubId = request.getParameter("clubId");
 
         PrintWriter out = response.getWriter();
 
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<PublicNotification> publicNotifications = Global.publicNotificationDAO.getNotificationByNameString(search);
+        List<PublicNotification> publicNotifications = Global.publicNotificationDAO.getNotificationByNameString(search,clubId);
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(publicNotifications);

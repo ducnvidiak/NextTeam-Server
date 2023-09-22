@@ -53,11 +53,12 @@ private final Gson gson = new Gson();
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        String clubId = request.getParameter("clubId");
         
         PrintWriter out = response.getWriter();
         
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<PublicNotification> publicNotifications = Global.publicNotificationDAO.getAllPublicNotifications();
+        List<PublicNotification> publicNotifications = Global.publicNotificationDAO.getAllPublicNotifications(clubId);
         
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(publicNotifications);
