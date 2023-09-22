@@ -97,13 +97,15 @@ public class UserDAO extends SQLDatabase {
     public int register(final User t) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "INSERT INTO users (email, username, password, firstname, lastname, studentCode)  VALUES (?,?,?,?,?,?)",
+                "INSERT INTO users (email, username, password, firstname, lastname, studentCode, phoneNumber, gender)  VALUES (?,?,?,?,?,?,?,?)",
                 t.getEmail(),
                 t.getUsername(),
                 t.getPassword(),
                 t.getFirstname(),
                 t.getLastname(),
-                t.getStudentCode()
+                t.getStudentCode(),
+                t.getPhoneNumber(),
+                t.getGender()
         );
         return ketQua;
     }
@@ -163,6 +165,18 @@ public class UserDAO extends SQLDatabase {
         } catch (Exception e) {
         }
 
+        return ketQua;
+    }
+    
+    public boolean StudentCodeCheck( String studentCode) {
+        boolean ketQua = false;
+        try {
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE studentCode = ?",studentCode);
+            while (rs.next()) {
+                ketQua = true;
+            }
+        } catch (SQLException e) {
+        }
         return ketQua;
     }
     // test connection 
