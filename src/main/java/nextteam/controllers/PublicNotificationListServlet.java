@@ -5,25 +5,23 @@
 package nextteam.controllers;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
-import nextteam.models.User;
-import nextteam.utils.ConvertPassword;
-import nextteam.utils.database.UserDAO;
+import nextteam.models.PublicNotification;
 
 /**
  *
  * @author baopg
  */
-@WebServlet(name = "UserRegisterServlet", urlPatterns = {"/user-register"})
-public class UserRegisterServlet extends HttpServlet {
+@WebServlet(name = "PublicNotificationListServlet", urlPatterns = {"/public-notification-list"})
+public class PublicNotificationListServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
 
@@ -44,10 +42,10 @@ public class UserRegisterServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UserRegisterServlet</title>");
+            out.println("<title>Servlet PublicNotificationListServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UserRegisterServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet PublicNotificationListServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -65,7 +63,20 @@ public class UserRegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter out = response.getWriter();
+
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        List<PublicNotification> publicNotifications = Global.publicNotification.getAllPublicNotifications();
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(publicNotifications);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
     }
 
     /**
@@ -79,46 +90,6 @@ public class UserRegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BufferedReader reader = request.getReader();
-        User user = this.gson.fromJson(reader, User.class);
-        response.setContentType("application/json");
-        System.out.println("Yêu cầu đăng ký");
-        PrintWriter out = response.getWriter();
-        // Sử dụng phương thức indexOf để tìm vị trí của ký tự "@"
-        String email = user.getEmail();
-        int atIndex = email.indexOf('@');
-        String username = "";
-        // Kiểm tra xem có ký tự "@" trong chuỗi email hay không
-        if (atIndex != -1) {
-            // Sử dụng phương thức substring để lấy chuỗi trước ký tự "@"
-            username = email.substring(0, atIndex);
-        }
-        user.setUsername(username);
-        boolean StudentCodeCheck = new UserDAO(Global.generateConnection()).StudentCodeCheck(user.getStudentCode());
-        if (StudentCodeCheck) {
-            System.out.println("Đăng ký thất bại - Mã số sinh viên đã đăng ký trên nền tảng");
-            String error = "Mã số sinh viên " + user.getStudentCode() + " của bạn đã tồn tại trên hệ thống!";
-            String errorJsonString = this.gson.toJson(error);
-            out.print(errorJsonString);
-            out.flush();
-        } else {
-             String password = user.getPassword();
-            user.setPassword(ConvertPassword.toSHA1(password));
-            int status = new UserDAO(Global.generateConnection()).register(user);
-            User addedUser = new UserDAO(Global.generateConnection()).selectByEmailAndPassword(user);
-            if (addedUser != null) {
-                System.out.println("Đăng ký thành công");
-                String userJsonString = this.gson.toJson(addedUser);
-                out.print(userJsonString);
-                out.flush();
-            } else {
-                System.out.println("Đăng ký thất bại");
-                String error = "Bạn chưa đăng ký thành công!";
-                String errorJsonString = this.gson.toJson(error);
-                out.print(errorJsonString);
-                out.flush();
-            }
-        }
 
     }
 
