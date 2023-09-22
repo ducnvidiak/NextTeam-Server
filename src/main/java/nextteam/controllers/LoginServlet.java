@@ -76,7 +76,9 @@ public class LoginServlet extends HttpServlet {
         System.out.println("Yêu cầu đăng nhập");
         PrintWriter out = response.getWriter();
         String password = user.getPassword();
+        
         user.setPassword(ConvertPassword.toSHA1(password));
+        
         final User userLogin = Global.userDao.selectByEmailAndPassword(user);
         if (userLogin != null) {
             System.out.println("Đăng nhập thành công");

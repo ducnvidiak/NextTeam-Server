@@ -17,11 +17,35 @@
     </filter>-->
     <servlet>
         <servlet-name>UserServlet</servlet-name>
-        <servlet-class>nextteam.controllers.UserServlet</servlet-class>
+        <servlet-class>nextteam.controllers.UserInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserAvatarImg</servlet-name>
+        <servlet-class>nextteam.controllers.UserAvatarImg</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserPasswordServlet</servlet-name>
+        <servlet-class>nextteam.controllers.UserPasswordServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MajorInfoServlet</servlet-name>
+        <servlet-class>nextteam.controllers.MajorInfoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserAvatarImg</servlet-name>
+        <url-pattern>/api/userAvatar</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserPasswordServlet</servlet-name>
+        <url-pattern>/api/userAuth</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MajorInfoServlet</servlet-name>
+        <url-pattern>/api/allMajors</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

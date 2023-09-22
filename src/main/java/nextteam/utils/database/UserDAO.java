@@ -141,6 +141,25 @@ public class UserDAO extends SQLDatabase {
         return ketQua;
 
     }
+    public int updateAvatar(User t) {
+         int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  avatarUrl=? WHERE id=?",
+                t.getAvatarURL(),
+                t.getId()
+        );
+        return ketQua;
+    }
+    
+    public int updatePassword(User t) {
+     int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  password=? WHERE id=?",
+                t.getPassword(),
+                t.getId()
+        );
+        return ketQua;
+    }
 
     public User selectByEmailAndPassword(User t) {
         User ketQua = null;

@@ -35,6 +35,11 @@ public class User {
     public User() {
     }
 
+    public User(int id, String avatarURL) {
+        this.id = id;
+        this.avatarURL = avatarURL;
+    }
+
     public User(String email, String username, String password, String studentCode, String phoneNumber, String gender) {
         this.email = email;
         this.username = username;
