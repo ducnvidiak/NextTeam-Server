@@ -28,7 +28,7 @@ public class PublicNotificationDAO extends SQLDatabase {
 
     public List<PublicNotification> getAllPublicNotifications() {
         List<PublicNotification> publicNotifications = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications");
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications ORDER BY updatedAt DESC");
         try {
             while (rs.next()) {
                 PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getDate(5), rs.getDate(6));
@@ -65,6 +65,20 @@ public class PublicNotificationDAO extends SQLDatabase {
         } catch (Exception e) {
         }
         return ketQua;
+    }
+
+    public List<PublicNotification> getNotificationByNameString(String t) {
+        List<PublicNotification> publicNotifications = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications WHERE title LIKE ?", "%" + t + "%");
+        try {
+            while (rs.next()) {
+                PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getDate(5), rs.getDate(6));
+                publicNotifications.add(pn);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PublicNotificationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return publicNotifications;
     }
 
 }

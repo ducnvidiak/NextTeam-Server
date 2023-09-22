@@ -19,10 +19,20 @@ import nextteam.models.PublicNotification;
  *
  * @author baopg
  */
-public class PublicNotificationListServlet extends HttpServlet {
-private final Gson gson = new Gson();
+public class PublicNotificationListSearchServlet extends HttpServlet {
 
-   void processRequest(HttpServletRequest request, HttpServletResponse response)
+    private final Gson gson = new Gson();
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -30,10 +40,10 @@ private final Gson gson = new Gson();
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PublicNotificationListServlet</title>");            
+            out.println("<title>Servlet PublicNotificationListSearchServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet PublicNotificationListServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet PublicNotificationListSearchServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -53,15 +63,16 @@ private final Gson gson = new Gson();
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        
+        String search = request.getParameter("search");
+
         PrintWriter out = response.getWriter();
-        
+
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<PublicNotification> publicNotifications = Global.publicNotificationDAO.getAllPublicNotifications();
-        
+        List<PublicNotification> publicNotifications = Global.publicNotificationDAO.getNotificationByNameString(search);
+
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(publicNotifications);
-        
+
         // Gửi JSON response về client
         out.print(json);
         out.flush();
@@ -78,7 +89,7 @@ private final Gson gson = new Gson();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        processRequest(request, response);
     }
 
     /**
@@ -90,4 +101,5 @@ private final Gson gson = new Gson();
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 }

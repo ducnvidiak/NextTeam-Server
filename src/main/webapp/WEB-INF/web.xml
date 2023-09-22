@@ -11,9 +11,25 @@
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AllPublicNotificationListServlet</servlet-name>
+        <servlet-class>nextteam.controllers.PublicNotificationListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PublicNotificationListSearchServlet</servlet-name>
+        <servlet-class>nextteam.controllers.PublicNotificationListSearchServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AllPublicNotificationListServlet</servlet-name>
+        <url-pattern>/all-public-notification-list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PublicNotificationListSearchServlet</servlet-name>
+        <url-pattern>/public-notification-list-search</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
