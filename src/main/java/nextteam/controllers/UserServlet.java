@@ -36,7 +36,7 @@ public class UserServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -92,7 +92,7 @@ public class UserServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "*");
         response.setHeader("Access-Control-Allow-Headers", "*");
-        
+
         System.out.println("Logged -------------1");
         BufferedReader reader = request.getReader();
         System.out.println("Logged -------------2");
@@ -101,7 +101,7 @@ public class UserServlet extends HttpServlet {
 
         int status = new UserDAO(Global.generateConnection()).insert(user);
 
-        User addedUser = new UserDAO(Global.generateConnection()).selectByEmail(user);
+        User addedUser = new UserDAO(Global.generateConnection()).selectByEmail(user.getEmail());
 
         String userJsonString = this.gson.toJson(addedUser);
 
