@@ -57,13 +57,22 @@ public class ForgotPasswordServlet extends HttpServlet {
             if (user != null) {
                 String[] code = new String[1];
                 String type = Global.otpCode.generateOtp(600, user.getId(), code);
-                sendVerificationMail(
-                        user.getEmail(),
-                        "Confirmation code",
-                        user.getUsername(),
-                        user.getStudentCode(),
-                        code[0]);
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        sendVerificationMail(
+                                user.getEmail(),
+                                "NextTeam - Confirmation code",
+                                user.getUsername(),
+                                user.getStudentCode(),
+                                code[0]
+                        );
+                    }
+                });
+                t.start();
                 out.println("{\"code\": \"0\", \"msg\": \"Success!\", \"result\": {\"type\": \"" + type + "\"}}");
+
             } else {
                 out.println("{\"code\": \"1\", \"msg\": \"Email không khớp với bất kỳ người dùng nào!\"}");
             }

@@ -173,7 +173,7 @@ public class Gmail {
 //        } catch (MalformedURLException ex) {
 //            Logger.getLogger(Gmail.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-        System.out.println("\u0110\u00E2y l\u00E0 Ti\u1EBFng Vi\u1EC7t");
+        System.out.println("Đây là Tiếng Việt");
 
     }
 }
