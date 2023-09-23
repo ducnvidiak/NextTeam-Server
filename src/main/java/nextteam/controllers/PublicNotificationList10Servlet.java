@@ -65,12 +65,13 @@ public class PublicNotificationList10Servlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
+        String clubId = request.getParameter("clubId");
+        
         PrintWriter out = response.getWriter();
 
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<PublicNotification> publicNotifications = Global.publicNotification.get10PublicNotifications();
-
+        List<PublicNotification> publicNotifications = Global.publicNotification.get10PublicNotifications(clubId);
+        
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(publicNotifications);
 

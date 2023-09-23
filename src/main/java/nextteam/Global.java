@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import nextteam.utils.database.ClubDAO;
+import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.MajorDAO;
 import nextteam.utils.database.OtpCodeDAO;
 import nextteam.utils.database.PublicNotificationDAO;
@@ -22,13 +24,15 @@ public class Global {
     public static String server = "localhost";
     public static String database = "NextTeam";
     public static String username = "sa";
-    public static String password = "1";
+    public static String password = "Phanbao@123";
 
     private static Connection conn;
 
     public static String workingPath;
 
+    public static ClubDAO clubDAO;
     public static MajorDAO major;
+    public static EventDAO eventDao;
     public static UserDAO user;
     public static OtpCodeDAO otpCode;
     public static PublicNotificationDAO publicNotification;
@@ -50,7 +54,9 @@ public class Global {
         if (conn == null) {
             throw new RuntimeException("Error while trying connect to SQL Server!");
         }
+        clubDAO = new ClubDAO(conn);
         major = new MajorDAO(conn);
+        eventDao = new EventDAO(conn);
         user = new UserDAO(conn);
         otpCode = new OtpCodeDAO(conn);
         publicNotification = new PublicNotificationDAO(conn);
