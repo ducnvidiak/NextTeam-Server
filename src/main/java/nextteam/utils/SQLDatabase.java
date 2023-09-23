@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,9 +91,7 @@ public abstract class SQLDatabase {
                         statement.setString(i + 1, (String) values[i]);
                     }
                 } else if (values[i] instanceof Date) {
-                    statement.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
-                } else if (values[i] instanceof java.sql.Date) {
-                    statement.setDate(i + 1, (java.sql.Date) values[i]);
+                    statement.setString(i + 1, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format((Date) values[i]));
                 } else {
                     statement.setString(i + 1, values[i].toString());
                 }
