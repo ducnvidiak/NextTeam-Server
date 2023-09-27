@@ -27,6 +27,9 @@ public class Global {
     public static String password = "Phanbao@123";
 
     private static Connection conn;
+
+    public static String workingPath;
+
     public static ClubDAO clubDAO;
     public static MajorDAO major;
     public static EventDAO eventDao;
