@@ -28,7 +28,7 @@ public class PublicNotificationDAO extends SQLDatabase {
 
     public List<PublicNotification> getAllPublicNotifications(String t) {
         List<PublicNotification> publicNotifications = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications WHERE clubId = ? ORDER BY updatedAt DESC",t);
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications WHERE clubId = ? ORDER BY updatedAt DESC", t);
         try {
             while (rs.next()) {
                 PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getDate(5), rs.getDate(6));
@@ -43,7 +43,7 @@ public class PublicNotificationDAO extends SQLDatabase {
     public List<PublicNotification> get10PublicNotifications(String t) {
         List<PublicNotification> publicNotifications = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT TOP 10 * FROM publicNotifications WHERE clubId = ?\n"
-                + "ORDER BY updatedAt DESC;",t);
+                + "ORDER BY updatedAt DESC;", t);
         try {
             while (rs.next()) {
                 PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getDate(5), rs.getDate(6));
@@ -69,7 +69,7 @@ public class PublicNotificationDAO extends SQLDatabase {
 
     public List<PublicNotification> getNotificationByNameString(String t, String clubId) {
         List<PublicNotification> publicNotifications = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications WHERE title LIKE ? AND clubId=?", "%" + t + "%",clubId);
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications WHERE title LIKE ? AND clubId=?", "%" + t + "%", clubId);
         try {
             while (rs.next()) {
                 PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getDate(5), rs.getDate(6));
@@ -79,6 +79,17 @@ public class PublicNotificationDAO extends SQLDatabase {
             Logger.getLogger(PublicNotificationDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return publicNotifications;
+    }
+
+    public int addNotification(final PublicNotification t) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "INSERT INTO publicNotifications (clubId, title, content)  VALUES (?,?,?)",
+                t.getClubId(),
+                t.getTitle(),
+                t.getContent()
+        );
+        return ketQua;
     }
 
 }

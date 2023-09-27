@@ -73,7 +73,7 @@ public class ClubDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
     }

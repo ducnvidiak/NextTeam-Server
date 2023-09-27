@@ -42,14 +42,7 @@ public class Club {
         this.updatedAt = updatedAt;
     }
 
-    public Club(int id, String name, String subname) {
-        this.id = id;
-        this.name = name;
-        this.subname = subname;
-    }
-    
-
-    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl,
+    public Club(String name, String subname, int categoryId, String description, String avatarUrl,
             String bannerUrl, int movementPoint, double balance) {
         this.id = id;
         this.name = name;
@@ -61,6 +54,15 @@ public class Club {
         this.movementPoint = movementPoint;
         this.balance = balance;
     }
+
+    public Club(int id, String name, String subname) {
+        this.id = id;
+        this.name = name;
+        this.subname = subname;
+    }
+
+    
+    
 
     public int getId() {
         return id;
