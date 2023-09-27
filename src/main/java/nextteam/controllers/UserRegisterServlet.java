@@ -8,6 +8,10 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
 import nextteam.models.User;
 import nextteam.utils.ConvertPassword;
+import nextteam.utils.Gmail;
 import nextteam.utils.database.UserDAO;
 
 /**
@@ -76,6 +81,23 @@ public class UserRegisterServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private void sendContentMail(String email, String subject, String firstName, String lastName, String studentId, String phone) {
+        try {
+            new Gmail(email)
+                    .setContentType("text/html; charset=UTF-8")
+                    .setSubject(subject)
+                    .initMacro()
+                    .appendMacro("FIRSTNAME", firstName)
+                    .appendMacro("LASTNAME", lastName)
+                    .appendMacro("EMAIL", email)
+                    .appendMacro("STUDENTID", studentId)
+                    .appendMacro("PHONE", phone)
+                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_register.jsp"));
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(UserRegisterServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -102,12 +124,21 @@ public class UserRegisterServlet extends HttpServlet {
             out.print(errorJsonString);
             out.flush();
         } else {
-             String password = user.getPassword();
+            String password = user.getPassword();
             user.setPassword(ConvertPassword.toSHA1(password));
             int status = new UserDAO(Global.generateConnection()).register(user);
             User addedUser = new UserDAO(Global.generateConnection()).selectByEmailAndPassword(user);
             if (addedUser != null) {
                 System.out.println("Đăng ký thành công");
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        sendContentMail(user.getEmail(), "NextTeam - Account registration successful!", user.getFirstname(), user.getLastname(), user.getStudentCode(), user.getPhoneNumber());
+                               
+                    }
+                });
+                t.start();
                 String userJsonString = this.gson.toJson(addedUser);
                 out.print(userJsonString);
                 out.flush();
