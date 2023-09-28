@@ -7,13 +7,15 @@ package nextteam.utils.database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.Global;
 import nextteam.models.User;
 import nextteam.utils.SQLDatabase;
+import org.apache.http.ParseException;
 
 /**
  *
@@ -97,8 +99,9 @@ public class UserDAO extends SQLDatabase {
     public int register(final User t) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "INSERT INTO users (email, username, password, firstname, lastname, studentCode, phoneNumber, gender)  VALUES (?,?,?,?,?,?,?,?)",
+                "INSERT INTO users (email, avatarUrl, username, password, firstname, lastname, studentCode, phoneNumber, gender)  VALUES (?,?,?,?,?,?,?,?,?)",
                 t.getEmail(),
+                t.getAvatarURL(),
                 t.getUsername(),
                 t.getPassword(),
                 t.getFirstname(),
@@ -120,6 +123,7 @@ public class UserDAO extends SQLDatabase {
 
     public int update(User t) {
         int ketQua = 0;
+        System.out.println("dob: " + t.getDob());
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE users  SET  email=?, username=?, avatarUrl=?, firstname=?, lastname=?, studentCode=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
                 t.getEmail(),
@@ -141,8 +145,9 @@ public class UserDAO extends SQLDatabase {
         return ketQua;
 
     }
+
     public int updateAvatar(User t) {
-         int ketQua = 0;
+        int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE users  SET  avatarUrl=? WHERE id=?",
                 t.getAvatarURL(),
@@ -150,9 +155,9 @@ public class UserDAO extends SQLDatabase {
         );
         return ketQua;
     }
-    
+
     public int updatePassword(User t) {
-     int ketQua = 0;
+        int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE users  SET  password=? WHERE id=?",
                 t.getPassword(),
@@ -186,11 +191,11 @@ public class UserDAO extends SQLDatabase {
 
         return ketQua;
     }
-    
-    public boolean StudentCodeCheck( String studentCode) {
+
+    public boolean StudentCodeCheck(String studentCode) {
         boolean ketQua = false;
         try {
-            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE studentCode = ?",studentCode);
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE studentCode = ?", studentCode);
             while (rs.next()) {
                 ketQua = true;
             }

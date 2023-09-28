@@ -4,6 +4,7 @@
  */
 package nextteam.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -176,7 +177,13 @@ public class User {
     }
 
     public String getDob() {
-        return dob;
+        if(dob == null) {
+            Date firstDate = new Date(0);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = dateFormat.format(firstDate);
+            return formattedDate;
+        } 
+       return dob;
     }
 
     public void setDob(String dob) {
