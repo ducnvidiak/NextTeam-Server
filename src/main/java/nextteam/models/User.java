@@ -32,6 +32,7 @@ public class User {
     private String linkedInUrl;
     private String createdAt;
     private String updatedAt;
+    private boolean isActive;
 
     public User() {
     }
@@ -50,7 +51,10 @@ public class User {
         this.gender = gender;
     }
 
-    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt) {
+    
+
+    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive) {
+        this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
@@ -69,7 +73,7 @@ public class User {
         this.linkedInUrl = linkedInUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.id = id;
+        this.isActive = isActive;
     }
 
     public int getId() {
@@ -229,4 +233,13 @@ public class User {
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+    
 }
