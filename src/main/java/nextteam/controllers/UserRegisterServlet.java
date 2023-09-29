@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
 import nextteam.models.User;
-import nextteam.utils.ConvertPassword;
 import nextteam.utils.database.UserDAO;
+import nextteam.utils.encryption.BCrypt;
 
 /**
  *
@@ -62,12 +62,11 @@ public class UserRegisterServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
+//    @Override
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        processRequest(request, response);
+//    }
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -76,50 +75,59 @@ public class UserRegisterServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private String[] MESSAGE = {
+        "Success!",
+        "Email không đúng định dạng!",
+        "Mật khẩu phải có độ dài trong khoảng 8 - 30 ký tự và phải chứa ít nhất một ký tự số, một ký tự hoa, một ký tự thường, một ký tự đặc biệt!",
+        "Mã sinh viên không đúng định dạng!",
+        "Số điện thoại không đúng định dạng!",
+        "Mã sinh viên đã tồn tại! Vui lòng thử mã sinh viên khác!",
+        "Email đã tồn tại! Vui lòng thử email khác"
+    };
+
+    private int checkUser(User user) {
+        UserDAO userDb = Global.user;
+        if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            return 1;
+        } else if (!user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$")) {
+            return 2;
+        } else if (!user.getStudentCode().matches("^[HhDdSsQqCc][AaEeSs][0-9]{6}$")) {
+            return 3;
+        } else if (!user.getPhoneNumber().matches("^(\\+84|0)\\d{9,10}$")) {
+            return 4;
+        } else if (userDb.StudentCodeCheck(user.getStudentCode())) {
+            return 5;
+        } else if (userDb.selectByEmail(user.getEmail()) != null) {
+            return 6;
+        }
+        return 0;
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BufferedReader reader = request.getReader();
-        User user = this.gson.fromJson(reader, User.class);
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String firstname = request.getParameter("firstname");
+        String lastname = request.getParameter("lastname");
+        String studentCode = request.getParameter("studentCode").toUpperCase();
+        String phoneNumber = request.getParameter("phoneNumber");
+        String gender = request.getParameter("gender");
+        //public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt)
+        User user = new User(0, email, null, password, null, null, firstname, lastname, studentCode, phoneNumber, null, null, gender, null, null, null, null, null, null);
+
         response.setContentType("application/json");
         System.out.println("Yêu cầu đăng ký");
         PrintWriter out = response.getWriter();
-        // Sử dụng phương thức indexOf để tìm vị trí của ký tự "@"
-        String email = user.getEmail();
-        int atIndex = email.indexOf('@');
-        String username = "";
-        // Kiểm tra xem có ký tự "@" trong chuỗi email hay không
-        if (atIndex != -1) {
-            // Sử dụng phương thức substring để lấy chuỗi trước ký tự "@"
-            username = email.substring(0, atIndex);
-        }
-        user.setUsername(username);
-        boolean StudentCodeCheck = new UserDAO(Global.generateConnection()).StudentCodeCheck(user.getStudentCode());
-        if (StudentCodeCheck) {
-            System.out.println("Đăng ký thất bại - Mã số sinh viên đã đăng ký trên nền tảng");
-            String error = "Mã số sinh viên " + user.getStudentCode() + " của bạn đã tồn tại trên hệ thống!";
-            String errorJsonString = this.gson.toJson(error);
-            out.print(errorJsonString);
-            out.flush();
-        } else {
-             String password = user.getPassword();
-            user.setPassword(ConvertPassword.toSHA1(password));
-            int status = new UserDAO(Global.generateConnection()).register(user);
-            User addedUser = new UserDAO(Global.generateConnection()).selectByEmailAndPassword(user);
-            if (addedUser != null) {
-                System.out.println("Đăng ký thành công");
-                String userJsonString = this.gson.toJson(addedUser);
-                out.print(userJsonString);
-                out.flush();
-            } else {
-                System.out.println("Đăng ký thất bại");
-                String error = "Bạn chưa đăng ký thành công!";
-                String errorJsonString = this.gson.toJson(error);
-                out.print(errorJsonString);
-                out.flush();
-            }
-        }
+        ////////////////////////
+        int res = checkUser(user);
+        user.setPassword(Global.getHashedPassword(password));
 
+        if (res == 0) {
+            Global.user.register(user);
+        }
+        out.print("{\"code\": \"" + res + "\", \"msg\": \"" + MESSAGE[res] + "\"}");
+        out.flush();
     }
 
     /**
