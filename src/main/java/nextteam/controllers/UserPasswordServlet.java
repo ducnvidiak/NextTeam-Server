@@ -16,8 +16,8 @@ import nextteam.Global;
 import nextteam.models.Authentication;
 import nextteam.models.Success;
 import nextteam.models.User;
-import nextteam.utils.ConvertPassword;
 import nextteam.utils.database.UserDAO;
+import nextteam.utils.encryption.BCrypt;
 
 /**
  *
@@ -44,12 +44,12 @@ public class UserPasswordServlet extends HttpServlet {
         int status = 0;
         if (!oldPassword.equals(newPassword)) {
 
-            String hash = ConvertPassword.toSHA1(oldPassword);
-            User user = new UserDAO(Global.generateConnection()).getListUserByIdString(userId);
+            String hash = Global.getHashedPassword(newPassword);
+            User user = Global.user.getListUserByIdString(userId);
 
-            if (user.getPassword().equals(hash)) {
-                user.setPassword(ConvertPassword.toSHA1(newPassword));
-                status = new UserDAO(Global.generateConnection()).updatePassword(user);
+            if (BCrypt.checkpw(oldPassword, user.getPassword())) {
+                user.setPassword(Global.getHashedPassword(newPassword));
+                status = Global.user.updatePassword(user);
                 System.out.println("Success change password!" + userId);
             } else {
                 System.out.println("Fail to change password!");
