@@ -17,6 +17,7 @@ import nextteam.models.Club;
 import nextteam.models.Club;
 import nextteam.models.ClubCategories;
 import nextteam.models.User;
+import nextteam.models.response.ClubResponse;
 import nextteam.utils.SQLDatabase;
 
 /**
@@ -50,13 +51,20 @@ public class ClubDAO extends SQLDatabase {
     }
 //     public Club(int id, String name, String subname, String categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
 
-    public ArrayList<Club> getListClubs() {
-        ArrayList<Club> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT *, (SELECT COUNT(*) FROM engagements e WHERE e.clubId = c.id) AS numberOfMembers FROM clubs c");
+    public ArrayList<ClubResponse> getListClubs(String userId) {
+        ArrayList<ClubResponse> list = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT\n"
+                + "    c.*,\n"
+                + "    (SELECT COUNT(*) FROM engagements e WHERE e.clubId = c.id) AS numberOfMembers,\n"
+                + "    CASE\n"
+                + "        WHEN e.id IS NOT NULL THEN 'true'\n"
+                + "        ELSE 'false'\n"
+                + "    END AS isJoined\n"
+                + "FROM clubs c\n"
+                + "LEFT JOIN engagements e ON e.clubId = c.id AND e.userId = ?;", userId);
         try {
-
             while (rs.next()) {
-                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getTimestamp(10), rs.getDate(11), rs.getBoolean(12), rs.getInt("numberOfMembers")));
+                list.add(new ClubResponse(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getTimestamp(10), rs.getDate(11), rs.getBoolean(12), rs.getInt("numberOfMembers"), rs.getBoolean("isJoined")));
             }
 
         } catch (Exception e) {
@@ -83,9 +91,9 @@ public class ClubDAO extends SQLDatabase {
     public Club getClubDetailBySubname(String userId, String subname) {
         Club ketQua = null;
         try {
-            ResultSet rs = executeQueryPreparedStatement("SELECT c.id, c.name, c.subname, c.avatarUrl, c.bannerUrl, c.categoryId, (SELECT COUNT(*) FROM engagements e WHERE e.clubId = c.id) AS numberOfMembers, c.description, c.createdAt, CASE WHEN e.id IS NULL THEN 'false' ELSE 'true' END AS isJoined FROM clubs c LEFT JOIN engagements e ON e.clubId = c.id AND e.userId = ? WHERE c.subname = ?",userId, subname);
+            ResultSet rs = executeQueryPreparedStatement("SELECT c.id, c.name, c.subname, c.avatarUrl, c.bannerUrl, c.categoryId, (SELECT COUNT(*) FROM engagements e WHERE e.clubId = c.id) AS numberOfMembers, c.description, c.createdAt, CASE WHEN e.id IS NULL THEN 'false' ELSE 'true' END AS isJoined FROM clubs c LEFT JOIN engagements e ON e.clubId = c.id AND e.userId = ? WHERE c.subname = ?", userId, subname);
             if (rs.next()) {
-                ketQua = new Club(rs.getInt(1), rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getInt(6),rs.getInt(7), rs.getString(8), rs.getTimestamp(9), rs.getBoolean(10));
+                ketQua = new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getString(8), rs.getTimestamp(9), rs.getBoolean(10));
             }
         } catch (Exception e) {
         }
@@ -150,11 +158,12 @@ public class ClubDAO extends SQLDatabase {
     }
 
     // test connection 
-    public static void main(String... args) {
-        List<Club> club = new ClubDAO(Global.generateConnection()).getListClubs();
-
-        System.out.println(club);
-
-    }
-
+//    public static void main(String... args) {
+//        List<Club> club = new ClubDAO(Global.generateConnection()).getListClubs();
+//
+//        System.out.println(club);
+//
+//    }
 }
+
+

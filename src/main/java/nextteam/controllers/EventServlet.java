@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import java.util.List;
 import nextteam.Global;
 import nextteam.models.Event;
+import nextteam.models.response.EventResponse;
 import nextteam.utils.database.EventDAO;
 
 @WebServlet(name = "EventServlet", urlPatterns = {"/events"})
@@ -31,7 +32,7 @@ public class EventServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
-        List<Event> events = eventDAO.getAllEventsDetail(userId);
+        List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
         System.out.println("events" + events);
         System.out.println("nextteam.controllers.EventServlet.doGet()" + events);
         // Chuyển danh sách sự kiện thành JSON

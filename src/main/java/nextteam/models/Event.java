@@ -29,10 +29,6 @@ public class Event {
     private int clubId;
     private Date createdAt;
     private Date updatedAt;
-    private String locationName;
-    private String clubSubname;
-    private String clubAvatarUrl;
-    private boolean isRegistered;
 
     public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Date startTime, Date endTime, String type, String planUrl, String bannerUrl, boolean isApproved, String response, int clubId, Date createdAt, Date updatedAt) {
         this.id = id;
@@ -53,17 +49,14 @@ public class Event {
         this.updatedAt = updatedAt;
     }
 
-    public Event(int id, String name, String description, String bannerUrl, String locationName, Timestamp startTime, Timestamp endTime, String clubSubname, String clubAvatarUrl, boolean isRegistered) {
+    public Event(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.bannerUrl = bannerUrl;
-        this.locationName = locationName;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.clubSubname = clubSubname;
-        this.clubAvatarUrl = clubAvatarUrl;
-        this.isRegistered = isRegistered;
+        
     }
 
     public int getId() {

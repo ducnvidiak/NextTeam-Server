@@ -14,21 +14,21 @@ import java.util.Date;
  */
 public class ClubResponse extends Club{
     private int numberOfMembers;
-    private int movementPoint;
     private boolean isJoined;
 
     public ClubResponse() {
     }
     // all club information
-    public ClubResponse(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt, boolean isActive, int numberOfMembers) {
+    public ClubResponse(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt, boolean isActive, int numberOfMembers, boolean isJoined) {
         super(id, name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance, createdAt, updatedAt, isActive);
         this.numberOfMembers = numberOfMembers;
+        this.isJoined = isJoined;
     }
     
-    public ClubResponse(int id, String name, String subname, String avatarUrl, int movementPoint) {
-//        super(id, name, subname, avatarUrl);
-        this.movementPoint = movementPoint;
-    }
+//    public ClubResponse(int id, String name, String subname, String avatarUrl, int movementPoint) {
+////        super(id, name, subname, avatarUrl);
+//        this.movementPoint = movementPoint;
+//    }
 
 //    public ClubResponse(String name, String subname, int categoryId, String description, String avatarUrl,
 //            String bannerUrl, int movementPoint, double balance) {
@@ -69,22 +69,22 @@ public class ClubResponse extends Club{
 //        this.createdAt = timestamp;
 //        this.isJoined = aBoolean;
 //    }
-
-    public int getNumberOfMembers() {
-        return numberOfMembers;
-    }
-
-    public boolean isIsJoined() {
-        return isJoined;
-    }
-
-    public void setNumberOfMembers(int numberOfMembers) {
-        this.numberOfMembers = numberOfMembers;
-    }
-
-    public void setIsJoined(boolean isJoined) {
-        this.isJoined = isJoined;
-    }
+//
+//    public int getNumberOfMembers() {
+//        return numberOfMembers;
+//    }
+//
+//    public boolean isIsJoined() {
+//        return isJoined;
+//    }
+//
+//    public void setNumberOfMembers(int numberOfMembers) {
+//        this.numberOfMembers = numberOfMembers;
+//    }
+//
+//    public void setIsJoined(boolean isJoined) {
+//        this.isJoined = isJoined;
+//    }
 
     
 

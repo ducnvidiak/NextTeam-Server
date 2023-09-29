@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.models.Event;
+import nextteam.models.response.EventResponse;
 import nextteam.utils.SQLDatabase;
 
 public class EventDAO extends SQLDatabase {
@@ -47,9 +48,8 @@ public class EventDAO extends SQLDatabase {
         return events;
     }
 
-    public List<Event> getAllEventsDetail(String userId) {
-        List<Event> events = new ArrayList<>();
-        System.out.println("id" + userId);
+    public List<EventResponse> getAllEventsDetail(String userId) {
+        List<EventResponse> events = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT\n"
                 + "    e.id AS id,\n"
                 + "    e.name AS name,\n"
@@ -77,14 +77,14 @@ public class EventDAO extends SQLDatabase {
 
         try {
             while (rs.next()) {
-                Event event = new Event(
+                EventResponse event = new EventResponse(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("description"),
                         rs.getString("bannerUrl"),
-                        rs.getString("locationName"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
+                        rs.getString("locationName"),
                         rs.getString("clubSubname"),
                         rs.getString("clubAvatarUrl"),
                         rs.getBoolean("isRegistered")

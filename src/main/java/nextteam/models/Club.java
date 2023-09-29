@@ -25,8 +25,6 @@ public class Club {
     private Date createdAt;
     private Date updatedAt;
     private boolean isActive;
-    private int numberOfMembers;
-    private boolean isJoined;
 
     public Club() {
     }
@@ -45,7 +43,7 @@ public class Club {
         this.updatedAt = updatedAt;
        
     }
-    
+    //getListClubs
     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt, boolean isActive, int numberOfMembers) {
         this.id = id;
         this.name = name;
@@ -59,7 +57,6 @@ public class Club {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isActive = isActive;
-        this.numberOfMembers = numberOfMembers;
     }
 
     public Club(String name, String subname, int categoryId, String description, String avatarUrl,
@@ -84,13 +81,13 @@ public class Club {
     }
     
     
-
+// get club of me
     public Club(int id, String name, String subname) {
         this.id = id;
         this.name = name;
         this.subname = subname;
     }
-
+// getClubDetailBySubname
     public Club(int aInt, String string, String string0, String string1, String string2, int aInt0, int aInt1, String string3, Timestamp timestamp, boolean aBoolean) {
         this.id = aInt;
         this.name = string;
@@ -98,10 +95,9 @@ public class Club {
         this.avatarUrl = string1;
         this.bannerUrl = string2;
         this.categoryId = aInt0;
-        this.numberOfMembers = aInt1;
+        this.categoryId = aInt1;
         this.description = string3;
         this.createdAt = timestamp;
-        this.isJoined = aBoolean;
     }
 
     
@@ -221,7 +217,7 @@ public class Club {
                 + "    \"createdAt\":\"" + createdAt + "\","
                 + "    \"updatedAt\":\"" + updatedAt + "\","
                 + "    \"isActive\":\"" + isActive + "\","
-                + "    \"numberOfMembers\":\"" + numberOfMembers + "\""
+                + "    \"numberOfMembers\":\"" + isActive + "\""
                 + "}";
     }
 }
