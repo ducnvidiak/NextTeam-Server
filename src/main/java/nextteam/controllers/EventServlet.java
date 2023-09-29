@@ -27,9 +27,11 @@ public class EventServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("!!!");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String userId = request.getParameter("userId");
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
-        List<Event> events = eventDAO.getAllEvents();
+        List<Event> events = eventDAO.getAllEventsDetail(userId);
         System.out.println("events" + events);
         System.out.println("nextteam.controllers.EventServlet.doGet()" + events);
         // Chuyển danh sách sự kiện thành JSON

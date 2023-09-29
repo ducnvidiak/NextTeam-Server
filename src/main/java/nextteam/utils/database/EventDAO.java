@@ -47,4 +47,54 @@ public class EventDAO extends SQLDatabase {
         return events;
     }
 
+    public List<Event> getAllEventsDetail(String userId) {
+        List<Event> events = new ArrayList<>();
+        System.out.println("id" + userId);
+        ResultSet rs = executeQueryPreparedStatement("SELECT\n"
+                + "    e.id AS id,\n"
+                + "    e.name AS name,\n"
+                + "    e.description AS description,\n"
+                + "    e.bannerUrl AS bannerUrl,\n"
+                + "    l.name AS locationName,\n"
+                + "    e.startTime AS startTime,\n"
+                + "    e.endTime AS endTime,\n"
+                + "    c.subname AS clubSubname,\n"
+                + "    c.avatarUrl AS clubAvatarUrl,\n"
+                + "    CASE\n"
+                + "        WHEN er.event IS NOT NULL THEN 1\n"
+                + "        ELSE 0\n"
+                + "    END AS isRegistered\n"
+                + "FROM\n"
+                + "    events e\n"
+                + "    JOIN locations l ON e.locationId = l.id\n"
+                + "    JOIN clubs c ON e.clubId = c.id\n"
+                + "    LEFT JOIN (\n"
+                + "        SELECT DISTINCT event\n"
+                + "        FROM eventRegistrations\n"
+                + "        WHERE registeredBy = ?\n"
+                + "    ) er ON e.id = er.event\n"
+                + "ORDER BY e.startTime;", userId);
+
+        try {
+            while (rs.next()) {
+                Event event = new Event(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("bannerUrl"),
+                        rs.getString("locationName"),
+                        rs.getTimestamp("startTime"),
+                        rs.getTimestamp("endTime"),
+                        rs.getString("clubSubname"),
+                        rs.getString("clubAvatarUrl"),
+                        rs.getBoolean("isRegistered")
+                );
+                events.add(event);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return events;
+    }
+
 }

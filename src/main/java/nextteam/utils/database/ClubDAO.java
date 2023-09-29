@@ -25,6 +25,26 @@ import nextteam.utils.SQLDatabase;
  */
 public class ClubDAO extends SQLDatabase {
 
+    public class ClubRanking {
+
+        private Club clb;
+
+        public ClubRanking(Club clb) {
+            this.clb = clb;
+        }
+
+        @Override
+        public String toString() {
+            return "{"
+                    + "    \"id\": \"" + clb.getId() + "\","
+                    + "    \"name\":\"" + clb.getName() + "\","
+                    + "    \"subname\":\"" + clb.getSubname() + "\","
+                    + "    \"avatarUrl\":\"" + clb.getAvatarUrl() + "\","
+                    + "    \"movementPoint\":\"" + clb.getMovementPoint() + "\""
+                    + "}";
+        }
+    }
+
     public ClubDAO(Connection connection) {
         super(connection);
     }
@@ -32,14 +52,11 @@ public class ClubDAO extends SQLDatabase {
 
     public ArrayList<Club> getListClubs() {
         ArrayList<Club> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM clubs");
+        ResultSet rs = executeQueryPreparedStatement("SELECT *, (SELECT COUNT(*) FROM engagements e WHERE e.clubId = c.id) AS numberOfMembers FROM clubs c");
         try {
 
             while (rs.next()) {
-                //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
-
-                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11)));
-
+                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getTimestamp(10), rs.getDate(11), rs.getBoolean(12), rs.getInt("numberOfMembers")));
             }
 
         } catch (Exception e) {
@@ -48,12 +65,27 @@ public class ClubDAO extends SQLDatabase {
         return list;
     }
 
-    public ClubCategories getClubCategory(String t) {
-        ClubCategories ketQua = null;
+    public ArrayList<ClubRanking> getRankingClubs() {
+        ArrayList<ClubRanking> list = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT c.id, c.name, c.subname, c.avatarUrl, SUM(ph.amount) AS totalPoints FROM clubs c LEFT JOIN pointsHistories ph ON ph.clubId = c.id GROUP BY c.id, c.name, c.subname, c.avatarUrl ORDER BY totalPoints DESC");
         try {
-            ResultSet rs = executeQueryPreparedStatement("SELECT  clubCategories.id, clubCategories.name FROM clubCategories INNER JOIN clubs ON clubCategories.id = clubs.categoryId WHERE clubs.categoryId=?", t);
+
+            while (rs.next()) {
+                list.add(new ClubRanking(new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5))));
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return list;
+    }
+
+    public Club getClubDetailBySubname(String userId, String subname) {
+        Club ketQua = null;
+        try {
+            ResultSet rs = executeQueryPreparedStatement("SELECT c.id, c.name, c.subname, c.avatarUrl, c.bannerUrl, c.categoryId, (SELECT COUNT(*) FROM engagements e WHERE e.clubId = c.id) AS numberOfMembers, c.description, c.createdAt, CASE WHEN e.id IS NULL THEN 'false' ELSE 'true' END AS isJoined FROM clubs c LEFT JOIN engagements e ON e.clubId = c.id AND e.userId = ? WHERE c.subname = ?",userId, subname);
             if (rs.next()) {
-                ketQua = new ClubCategories(rs.getInt(1), rs.getString(2));
+                ketQua = new Club(rs.getInt(1), rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getInt(6),rs.getInt(7), rs.getString(8), rs.getTimestamp(9), rs.getBoolean(10));
             }
         } catch (Exception e) {
         }
@@ -68,7 +100,7 @@ public class ClubDAO extends SQLDatabase {
             while (rs.next()) {
                 //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
 
-                list.add(new Club(rs.getInt(1), rs.getNString(2), rs.getNString(3)));
+                list.add(new Club(rs.getInt(1), rs.getNString(2), rs.getString(3)));
 
             }
 

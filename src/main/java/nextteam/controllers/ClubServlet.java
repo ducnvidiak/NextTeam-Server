@@ -34,7 +34,12 @@ public class ClubServlet extends HttpServlet {
       String res = Global.clubDAO.getListClubs().toString();
       out.print(res);
       out.flush();
-    } else if (command.equals("add")) {
+    } else if (command.equals("rank")) {
+         String res = Global.clubDAO.getRankingClubs().toString();
+      out.print(res);
+      out.flush();
+    }
+    else if (command.equals("add")) {
       String name = request.getParameter("name");
       String subname = request.getParameter("subname");
       int categoryId;

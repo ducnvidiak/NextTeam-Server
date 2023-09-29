@@ -126,6 +126,8 @@ public class UserRegisterServlet extends HttpServlet {
         } else {
             String password = user.getPassword();
             user.setPassword(ConvertPassword.toSHA1(password));
+            user.setAvatarURL("http://localhost:3000/images/avatars/1.png");
+            
             int status = new UserDAO(Global.generateConnection()).register(user);
             User addedUser = new UserDAO(Global.generateConnection()).selectByEmailAndPassword(user);
             if (addedUser != null) {
