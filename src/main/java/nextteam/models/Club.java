@@ -23,12 +23,12 @@ public class Club {
     private double balance;
     private Date createdAt;
     private Date updatedAt;
+    private boolean isActive;
 
     public Club() {
     }
 
-    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl,
-            String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
+    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt, boolean isActive) {
         this.id = id;
         this.name = name;
         this.subname = subname;
@@ -40,7 +40,10 @@ public class Club {
         this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isActive = isActive;
     }
+
+   
 
     public Club(String name, String subname, int categoryId, String description, String avatarUrl,
             String bannerUrl, int movementPoint, double balance) {
@@ -152,6 +155,15 @@ public class Club {
         this.updatedAt = updatedAt;
     }
 
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+    
+
     @Override
     public String toString() {
         return "{"
@@ -165,7 +177,8 @@ public class Club {
                 + "    \"movementPoint\":\"" + movementPoint + "\","
                 + "    \"balance\":\"" + balance + "\","
                 + "    \"createdAt\":\"" + createdAt + "\","
-                + "    \"updatedAt\":\"" + updatedAt + "\""
+                + "    \"updatedAt\":\"" + updatedAt + "\","
+                + "    \"isActive\":\"" + isActive + "\""
                 + "}";
 
     }
