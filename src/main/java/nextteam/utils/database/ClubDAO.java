@@ -35,7 +35,7 @@ public class ClubDAO extends SQLDatabase {
             while (rs.next()) {
                 //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
 
-                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11)));
+                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11),rs.getBoolean(12)));
             
             }   
 
@@ -52,12 +52,12 @@ public class ClubDAO extends SQLDatabase {
             while (rs.next()) {
                 //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
 
-                list.add(new Club(rs.getInt(1), rs.getNString(2), rs.getNString(3)));
+                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3)));
             
             }   
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
     }

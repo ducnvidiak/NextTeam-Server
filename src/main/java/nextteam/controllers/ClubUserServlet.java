@@ -5,7 +5,6 @@
 package nextteam.controllers;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -15,17 +14,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
+import nextteam.models.Club;
 import nextteam.models.PublicNotification;
 
 /**
  *
  * @author baopg
  */
-@WebServlet(name = "PublicNotificationDetailServlet", urlPatterns = {"/public-notification-detail"})
-public class PublicNotificationDetailServlet extends HttpServlet {
-
-    private final Gson gson = new Gson();
-
+@WebServlet(name = "ClubUserServlet", urlPatterns = {"/club-user"})
+public class ClubUserServlet extends HttpServlet {
+private final Gson gson = new Gson();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,18 +35,9 @@ public class PublicNotificationDetailServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet PublicNotificationDetailServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet PublicNotificationDetailServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String action = request.getParameter("action");
+        if (action.equals("view-my-list")){
+            viewMyList(request, response);
         }
     }
 
@@ -64,21 +53,7 @@ public class PublicNotificationDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        String id = request.getParameter("id");
-        BufferedReader reader = request.getReader();
-        PrintWriter out = response.getWriter();
-
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        PublicNotification publicNotifications = Global.publicNotification.getNotificationByIdString(id);
-
-        // Chuyển danh sách thành dạng JSON
-        String json = gson.toJson(publicNotifications);
-
-        // Gửi JSON response về client
-        out.print(json);
-        out.flush();
+        processRequest(request, response);
     }
 
     /**
@@ -93,6 +68,24 @@ public class PublicNotificationDetailServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+    protected void viewMyList(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String userId = request.getParameter("userId");
+
+        PrintWriter out = response.getWriter();
+
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        List<Club> clubs = Global.clubDAO.getListClubsOfMe(userId);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(clubs);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
     }
 
     /**

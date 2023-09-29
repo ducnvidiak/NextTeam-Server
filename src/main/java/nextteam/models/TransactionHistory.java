@@ -16,17 +16,22 @@ public class TransactionHistory {
     private int paidby;
 //    private int clubId;
     private int categoryId;
+    private String status;
+    private String paymentForm;
     private Date createdAt;
     private Date updatedAt;
 
-    public TransactionHistory(int id, int paidby, /* int clubId, */ int categoryId, Date createdAt, Date updatedAt) {
+    public TransactionHistory(int id, int paidby, int categoryId, String status, String paymentForm, Date createdAt, Date updatedAt) {
+        this.id = id;
         this.paidby = paidby;
-//        this.clubId = clubId;
         this.categoryId = categoryId;
+        this.status = status;
+        this.paymentForm = paymentForm;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.id = id;
     }
+
+    
 
     public int getId() {
         return id;
@@ -74,4 +79,21 @@ public class TransactionHistory {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPaymentForm() {
+        return paymentForm;
+    }
+
+    public void setPaymentForm(String paymentForm) {
+        this.paymentForm = paymentForm;
+    }
+    
 }

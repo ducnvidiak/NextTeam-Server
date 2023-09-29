@@ -8,6 +8,10 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
 import nextteam.models.User;
+import nextteam.utils.Gmail;
 import nextteam.utils.database.UserDAO;
 import nextteam.utils.encryption.BCrypt;
 
@@ -75,6 +80,23 @@ public class UserRegisterServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private void sendContentMail(String email, String subject, String firstName, String lastName, String studentId, String phone) {
+        try {
+            new Gmail(email)
+                    .setContentType("text/html; charset=UTF-8")
+                    .setSubject(subject)
+                    .initMacro()
+                    .appendMacro("FIRSTNAME", firstName)
+                    .appendMacro("LASTNAME", lastName)
+                    .appendMacro("EMAIL", email)
+                    .appendMacro("STUDENTID", studentId)
+                    .appendMacro("PHONE", phone)
+                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_register.jsp"));
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(UserRegisterServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     private String[] MESSAGE = {
         "Success!",
         "Email không đúng định dạng!",
@@ -91,11 +113,11 @@ public class UserRegisterServlet extends HttpServlet {
             return 1;
         } else if (!user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$")) {
             return 2;
-        } else if (!user.getStudentCode().matches("^[HhDdSsQqCc][AaEeSs][0-9]{6}$")) {
+        } else if (!user.getUsername().matches("^[HhDdSsQqCc][AaEeSs][0-9]{6}$")) {
             return 3;
         } else if (!user.getPhoneNumber().matches("^(\\+84|0)\\d{9,10}$")) {
             return 4;
-        } else if (userDb.StudentCodeCheck(user.getStudentCode())) {
+        } else if (userDb.StudentCodeCheck(user.getUsername())) {
             return 5;
         } else if (userDb.selectByEmail(user.getEmail()) != null) {
             return 6;
@@ -110,11 +132,13 @@ public class UserRegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         String firstname = request.getParameter("firstname");
         String lastname = request.getParameter("lastname");
-        String studentCode = request.getParameter("studentCode").toUpperCase();
+        String username = request.getParameter("studentCode").toUpperCase();
         String phoneNumber = request.getParameter("phoneNumber");
         String gender = request.getParameter("gender");
-        //public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt)
-        User user = new User(0, email, null, password, null, null, firstname, lastname, studentCode, phoneNumber, null, null, gender, null, null, null, null, null, null);
+        //public User(String email, String username, String password, String studentCode, String phoneNumber, String gender)
+        User user = new User(email, username, password, phoneNumber, gender);
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
 
         response.setContentType("application/json");
         System.out.println("Yêu cầu đăng ký");

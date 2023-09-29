@@ -23,12 +23,12 @@ public class Club {
     private double balance;
     private Date createdAt;
     private Date updatedAt;
+    private boolean isActive;
 
     public Club() {
     }
 
-    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl,
-            String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
+    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt, boolean isActive) {
         this.id = id;
         this.name = name;
         this.subname = subname;
@@ -40,16 +40,12 @@ public class Club {
         this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isActive = isActive;
     }
 
-    public Club(int id, String name, String subname) {
-        this.id = id;
-        this.name = name;
-        this.subname = subname;
-    }
-    
+   
 
-    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl,
+    public Club(String name, String subname, int categoryId, String description, String avatarUrl,
             String bannerUrl, int movementPoint, double balance) {
         this.id = id;
         this.name = name;
@@ -61,6 +57,15 @@ public class Club {
         this.movementPoint = movementPoint;
         this.balance = balance;
     }
+
+    public Club(int id, String name, String subname) {
+        this.id = id;
+        this.name = name;
+        this.subname = subname;
+    }
+
+    
+    
 
     public int getId() {
         return id;
@@ -150,6 +155,15 @@ public class Club {
         this.updatedAt = updatedAt;
     }
 
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+    
+
     @Override
     public String toString() {
         return "{"
@@ -163,7 +177,8 @@ public class Club {
                 + "    \"movementPoint\":\"" + movementPoint + "\","
                 + "    \"balance\":\"" + balance + "\","
                 + "    \"createdAt\":\"" + createdAt + "\","
-                + "    \"updatedAt\":\"" + updatedAt + "\""
+                + "    \"updatedAt\":\"" + updatedAt + "\","
+                + "    \"isActive\":\"" + isActive + "\""
                 + "}";
 
     }
