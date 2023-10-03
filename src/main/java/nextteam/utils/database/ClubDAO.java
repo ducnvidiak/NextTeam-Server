@@ -40,24 +40,7 @@ public class ClubDAO extends SQLDatabase {
             }   
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
-        }
-        return list;
-    }
-    public ArrayList<Club> getListClubsOfMe(String userId) {
-        ArrayList<Club> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT departments.clubId, clubs.name, clubs.subname FROM users  INNER JOIN engagements ON users.id = engagements.userId INNER JOIN departments ON engagements.departmentId = departments.id INNER JOIN clubs ON clubs.id = departments.clubId  WHERE users.id = ?", userId);
-        try {
-            
-            while (rs.next()) {
-                //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
-
-                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3)));
-            
-            }   
-
-        } catch (Exception e) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, e);
+         
         }
         return list;
     }
@@ -90,7 +73,7 @@ public class ClubDAO extends SQLDatabase {
                 c.getAvatarUrl(),
                 c.getBannerUrl(),
                 c.getMovementPoint(),
-                c.getBannerUrl(),
+                c.getBalance(),
                 id);
         return rs;
     }
@@ -102,10 +85,23 @@ public class ClubDAO extends SQLDatabase {
     // test connection 
     public static void main(String... args) {
         List<Club> club = new ClubDAO(Global.generateConnection()).getListClubs();
-       
-
-
         System.out.println(club);
+//String name = "Club Name Tuan";
+//String subname = "Subname";
+//int categoryId = 2;
+//String description = "";
+//String avatarUrl = "";
+//String bannerUrl = "";
+//int movementPoint = 100;
+//double balance = 1000.0;
+//int id = 17;
+//Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance);
+//
+//        int a = new ClubDAO(Global.generateConnection()).updateClub(c, id);
+//        System.out.println(a);
+//        int b = new ClubDAO(Global.generateConnection()).deleteClub(id);
+//        System.out.println(b);
+
 
         
         

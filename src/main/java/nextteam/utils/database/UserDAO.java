@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.Global;
 import nextteam.models.User;
+import nextteam.models.UserCard;
 import nextteam.utils.ConvertPassword;
 import nextteam.utils.SQLDatabase;
 import org.apache.http.ParseException;
@@ -37,7 +38,20 @@ public class UserDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+           
+        }
+        return list;
+    }
+    
+    public ArrayList<UserCard> getUsersCardList() {
+        ArrayList<UserCard> list = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT id, avatarUrl, firstname, lastname, studentCode FROM users");
+        try {
+            while(rs.next()) {
+                list.add(new UserCard(rs.getInt(1), rs.getString(2), rs.getNString(3) + " " + rs.getNString(4), rs.getString(5)));
+            }
+        } catch(Exception e) {
+            
         }
         return list;
     }
@@ -124,12 +138,11 @@ public class UserDAO extends SQLDatabase {
 
     public int update(User t) {
         int ketQua = 0;
-        System.out.println("dob: " + t.getDob());
+        System.out.println("dob: " + t.getHomeTown());
         ketQua = executeUpdatePreparedStatement(
-                "UPDATE users  SET  email=?, username=?, avatarUrl=?, firstname=?, lastname=?, studentCode=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
+                "UPDATE users  SET  email=?, username=?, firstname=?, lastname=?, studentCode=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
                 t.getEmail(),
                 t.getUsername(),
-                t.getAvatarURL(),
                 t.getFirstname(),
                 t.getLastname(),
                 t.getStudentCode(),
@@ -149,6 +162,7 @@ public class UserDAO extends SQLDatabase {
 
     public int updateAvatar(User t) {
         int ketQua = 0;
+        System.out.println("update avatar in dao: " + t.getAvatarURL());
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE users  SET  avatarUrl=? WHERE id=?",
                 t.getAvatarURL(),

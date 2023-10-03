@@ -34,7 +34,7 @@ public class UserPasswordServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("id");
-
+        System.out.println("id: " + userId);
         BufferedReader reader = request.getReader();
         Authentication reAuth = gson.fromJson(reader, Authentication.class);
 
@@ -42,8 +42,8 @@ public class UserPasswordServlet extends HttpServlet {
         String newPassword = reAuth.getNewPassword();
         String email = reAuth.getEmail();
         int status = 0;
+      
         if (!oldPassword.equals(newPassword)) {
-
             String hash = ConvertPassword.toSHA1(oldPassword);
             User user = new UserDAO(Global.generateConnection()).getListUserByIdString(userId);
 

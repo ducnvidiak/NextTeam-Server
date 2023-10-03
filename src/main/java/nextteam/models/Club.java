@@ -54,13 +54,6 @@ public class Club {
         this.movementPoint = movementPoint;
         this.balance = balance;
     }
-
-    public Club(int id, String name, String subname) {
-        this.id = id;
-        this.name = name;
-        this.subname = subname;
-    }
-
     
     
 

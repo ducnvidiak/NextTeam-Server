@@ -35,7 +35,7 @@ import nextteam.utils.database.UserDAO;
         maxRequestSize = 1024 * 1024 * 50 // Kích thước tối đa cho một yêu cầu (50MB)
 )
 public class UserAvatarImg extends HttpServlet {
-
+    String projectLocation= "E:/Fall23/project/";
     private final Gson gson = new Gson();
 
     @Override
@@ -46,7 +46,7 @@ public class UserAvatarImg extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         int userId = Integer.parseInt(request.getParameter("id"));
-
+        System.out.println("user id: " + userId);
         Part imagePart = request.getPart("image");
 
         String fileName = "userAvatar_" + userId + ".jpg";
@@ -54,7 +54,7 @@ public class UserAvatarImg extends HttpServlet {
         byte[] imageBytes = inputStream.readAllBytes();
 
         byte[] decodeBytes = Base64.getDecoder().decode(imageBytes);
-        String savePath = "E:/Fall23/project/NextTeam-Server/src/main/webapp/images";
+        String savePath = projectLocation + "NextTeam-Server/src/main/webapp/images/avatars";
         String filePath = savePath + File.separator + fileName;
         try ( OutputStream outputStream = new FileOutputStream(filePath)) {
             outputStream.write(decodeBytes);
@@ -62,9 +62,14 @@ public class UserAvatarImg extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        User user = new User(userId, "http://localhost:8080/images/" + fileName);
-
+        User user = new User(userId, "http://localhost:8080/images/avatars/" + fileName);
+        System.out.println("new avatar: " + user.getId() + user.getAvatarURL());
+        
         int status = new UserDAO(Global.generateConnection()).updateAvatar(user);
+      
+        user = new UserDAO(Global.generateConnection()).getListUserByIdString(user.getId()+"");
+        System.out.println("data: " + user.getAvatarURL());
+        System.out.println("context path: " + getServletContext().getContextPath());
         
         String resJsonString = this.gson.toJson(status == 1? new Success("success"): new Success("failure"));
         PrintWriter out = response.getWriter();

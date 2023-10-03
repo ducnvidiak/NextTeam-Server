@@ -19,62 +19,58 @@
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserInfoServlet</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>UserAvatarImg</servlet-name>
         <servlet-class>nextteam.controllers.UserAvatarImg</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>UserPasswordServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserPasswordServlet</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>MajorInfoServlet</servlet-name>
         <servlet-class>nextteam.controllers.MajorInfoServlet</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>ClubServlet</servlet-name>
         <servlet-class>nextteam.controllers.ClubServlet</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>NotificationServlet</servlet-name>
         <servlet-class>nextteam.controllers.NotificationServlet</servlet-class>
     </servlet>
-    
+    <servlet>
+        <servlet-name>UserListServlet</servlet-name>
+        <servlet-class>nextteam.controllers.UserListServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>ClubServlet</servlet-name>
         <url-pattern>/club_cmd</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>NotificationServlet</servlet-name>
         <url-pattern>/notification</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>UserAvatarImg</servlet-name>
         <url-pattern>/api/userAvatar</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>UserPasswordServlet</servlet-name>
         <url-pattern>/api/userAuth</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>MajorInfoServlet</servlet-name>
         <url-pattern>/api/allMajors</url-pattern>
     </servlet-mapping>
-    
+    <servlet-mapping>
+        <servlet-name>UserListServlet</servlet-name>
+        <url-pattern>/api/userlist</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
