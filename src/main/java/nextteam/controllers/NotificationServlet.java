@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
 import nextteam.models.PublicNotification;
 import nextteam.models.User;
-import nextteam.utils.ConvertPassword;
 import nextteam.utils.Gmail;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.UserDAO;
@@ -58,7 +57,7 @@ public class NotificationServlet extends HttpServlet {
             list10Noti(request, response);
         } else if (action.equals("view-detail")) {
             viewDetail(request, response);
-        }else if (action.equals("send-public-email")) {
+        } else if (action.equals("send-public-email")) {
             sendEmail(request, response);
         }
     }
@@ -120,9 +119,8 @@ public class NotificationServlet extends HttpServlet {
         out.flush();
 
     }
-    
-    //Test
 
+    //Test
     protected void sendEmail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BufferedReader reader = request.getReader();
@@ -139,13 +137,11 @@ public class NotificationServlet extends HttpServlet {
                         "NextTeam - " + pn.getTitle(),
                         pn.getTitle(),
                         pn.getContent()
-                        
                 );
             }
         });
         t.start();
         System.out.println("Tạo thông báo email thành công");
-        
 
     }
 

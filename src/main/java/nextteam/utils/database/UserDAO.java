@@ -15,8 +15,9 @@ import java.util.logging.Logger;
 import nextteam.Global;
 import nextteam.models.User;
 import nextteam.models.UserCard;
-import nextteam.utils.ConvertPassword;
+//import nextteam.utils.ConvertPassword;
 import nextteam.utils.SQLDatabase;
+import nextteam.utils.encryption.BCrypt;
 import org.apache.http.ParseException;
 
 /**
@@ -34,7 +35,7 @@ public class UserDAO extends SQLDatabase {
         ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users");
         try {
             while (rs.next()) {
-                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19)));
+                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19)));
             }
 
         } catch (Exception e) {
@@ -61,7 +62,7 @@ public class UserDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE id=?", t.getId());
             if (rs.next()) {
-                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19));
+                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
             }
 
         } catch (Exception e) {
@@ -74,7 +75,7 @@ public class UserDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE id=?", t);
             if (rs.next()) {
-                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19));
+                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
             }
         } catch (Exception e) {
         }
@@ -90,7 +91,7 @@ public class UserDAO extends SQLDatabase {
     public int insert(final User t) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "INSERT INTO users (email, username, password, avatarUrl, bannerUrl, firstname, lastname, studentCode, phoneNumber,major,academicYear,gender,dob,homeTown,facebookUrl,linkedInUrl)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO users (email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber,major,academicYear,gender,dob,homeTown,facebookUrl,linkedInUrl)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 t.getEmail(),
                 t.getUsername(),
                 t.getPassword(),
@@ -98,7 +99,6 @@ public class UserDAO extends SQLDatabase {
                 t.getBannerURL(),
                 t.getFirstname(),
                 t.getLastname(),
-                t.getStudentCode(),
                 t.getPhoneNumber(),
                 t.getMajor(),
                 t.getAcademicYear(),
@@ -114,14 +114,13 @@ public class UserDAO extends SQLDatabase {
     public int register(final User t) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "INSERT INTO users (email, avatarUrl, username, password, firstname, lastname, studentCode, phoneNumber, gender)  VALUES (?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO users (email, avatarUrl, username, password, firstname, lastname, phoneNumber, gender)  VALUES (?,?,?,?,?,?,?,?)",
                 t.getEmail(),
                 t.getAvatarURL(),
                 t.getUsername(),
                 t.getPassword(),
                 t.getFirstname(),
                 t.getLastname(),
-                t.getStudentCode(),
                 t.getPhoneNumber(),
                 t.getGender()
         );
@@ -140,12 +139,13 @@ public class UserDAO extends SQLDatabase {
         int ketQua = 0;
         System.out.println("dob: " + t.getHomeTown());
         ketQua = executeUpdatePreparedStatement(
+
                 "UPDATE users  SET  email=?, username=?, firstname=?, lastname=?, studentCode=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
+
                 t.getEmail(),
                 t.getUsername(),
                 t.getFirstname(),
                 t.getLastname(),
-                t.getStudentCode(),
                 t.getPhoneNumber(),
                 t.getMajor(),
                 t.getAcademicYear(),
@@ -181,48 +181,54 @@ public class UserDAO extends SQLDatabase {
         return ketQua;
     }
 
-    public User selectByEmailAndPassword(User t) {
+    public User login(String email, String password) {
         User ketQua = null;
         try {
-            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE email=? and password=?", t.getEmail(), t.getPassword());
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE email=?", email);
             if (rs.next()) {
-                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19));
+                String hashedPw = rs.getString("password");
+                if (BCrypt.checkpw(password, hashedPw)) {
+                    // public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive) {
+                    return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
+                }
             }
         } catch (Exception e) {
+
         }
 
         return ketQua;
     }
 
     public User selectByEmail(String email) {
-        User ketQua = null;
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE email=?", email);
             if (rs.next()) {
-                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19));
+                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
             }
         } catch (Exception e) {
         }
 
-        return ketQua;
+        return null;
     }
 
     public boolean StudentCodeCheck(String studentCode) {
-        boolean ketQua = false;
         try {
-            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE studentCode = ?", studentCode);
-            while (rs.next()) {
-                ketQua = true;
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE username = ?", studentCode);
+//            System.out.println("aaa");
+            if (rs.next()) {
+//                System.out.println(rs.getInt(1));
+                return true;
             }
         } catch (SQLException e) {
+            System.out.println(e);
         }
-        return ketQua;
+        return false;
     }
 
     // test connection 
-    public void changePassword(String studentCode, String password) {
-        password = ConvertPassword.toSHA1(password);
-        executeUpdatePreparedStatement("UPDATE users SET password=? WHERE studentCode=?", password, studentCode);
+    public void changePassword(int id, String password) {
+        password = Global.getHashedPassword(password);
+        executeUpdatePreparedStatement("UPDATE users SET password=? WHERE id=?", password, id);
     }
 
     public static void main(String... args) {

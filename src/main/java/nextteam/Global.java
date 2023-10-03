@@ -14,6 +14,7 @@ import nextteam.utils.database.MajorDAO;
 import nextteam.utils.database.OtpCodeDAO;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.UserDAO;
+import nextteam.utils.encryption.BCrypt;
 
 /**
  *
@@ -36,6 +37,16 @@ public class Global {
     public static UserDAO user;
     public static OtpCodeDAO otpCode;
     public static PublicNotificationDAO publicNotification;
+
+    public static final byte[] KEY = {
+        46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
+        -20, -40, 91, -119, 20, -31, -69, -115, -114, -58, 37, -72, -20, -85, 116
+    };
+
+    public static String getHashedPassword(String password) {
+        String salt = BCrypt.gensalt();
+        return BCrypt.hashpw(password, salt);
+    }
 
     public static Connection generateConnection() {
         try {
