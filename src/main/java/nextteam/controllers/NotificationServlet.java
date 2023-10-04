@@ -25,7 +25,6 @@ import nextteam.Global;
 import nextteam.models.PrivateNotification;
 import nextteam.models.PublicNotification;
 import nextteam.models.User;
-import nextteam.utils.ConvertPassword;
 import nextteam.utils.Gmail;
 import nextteam.utils.database.NotificationDAO.Notification;
 import nextteam.utils.database.PrivateNotificationDAO;
@@ -150,6 +149,7 @@ public class NotificationServlet extends HttpServlet {
         return strs.toArray(new String[0]);
     }
 
+    //Test
     protected void sendEmail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BufferedReader reader = request.getReader();

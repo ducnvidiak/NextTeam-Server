@@ -28,14 +28,14 @@ import nextteam.utils.Gmail;
 @WebServlet(name = "ForgotPassword", urlPatterns = {"/forgot-password"})
 public class ForgotPasswordServlet extends HttpServlet {
 
-    private void sendVerificationMail(String email, String subject, String username, String id, String code) {
+    private void sendVerificationMail(String email, String subject, String username, String code, int id) {
         try {
             new Gmail(email)
                     .setContentType("text/html; charset=UTF-8")
                     .setSubject(subject)
                     .initMacro()
                     .appendMacro("USERNAME", username)
-                    .appendMacro("ID", id)
+                    .appendMacro("ID", id + "")
                     .appendMacro("WHEN", new SimpleDateFormat("HH:mm:ss 'ngày' dd 'tháng' MM 'năm' yyyy").format(new Date()))
                     .appendMacro("CODE", code)
                     .sendTemplate(new URL("http://127.0.0.1:8080/gmail_code.jsp"));
@@ -65,8 +65,8 @@ public class ForgotPasswordServlet extends HttpServlet {
                                 user.getEmail(),
                                 "NextTeam - Confirmation code",
                                 user.getUsername(),
-                                user.getStudentCode(),
-                                code[0]
+                                code[0],
+                                user.getId()
                         );
                     }
                 });
@@ -88,9 +88,13 @@ public class ForgotPasswordServlet extends HttpServlet {
         } else if (command.equals("3")) {
             String email = req.getParameter("email");
             String password = req.getParameter("password");
+            if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$")) {
+                out.println("{\"code\": \"3\", \"msg\": \"Mật khẩu phải có độ dài trong khoảng 8 - 30 ký tự và phải chứa ít nhất một ký tự số, một ký tự hoa, một ký tự thường, một ký tự đặc biệt!\"}");
+                return;
+            }
             User user = Global.user.selectByEmail(email);
             if (user != null) {
-                Global.user.changePassword(user.getStudentCode(), password);
+                Global.user.changePassword(user.getId(), password);
                 out.println("{\"code\": \"0\", \"msg\": \"Success!\"}");
             } else {
                 out.println("{\"code\": \"2\", \"msg\": \"Có lỗi xảy ra trong quá trình thay đổi mật khẩu!\"}");

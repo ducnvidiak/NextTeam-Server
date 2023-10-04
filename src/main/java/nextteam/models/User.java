@@ -21,7 +21,6 @@ public class User {
     private String bannerURL;
     private String firstname;
     private String lastname;
-    private String studentCode;
     private String phoneNumber;
     private String major;
     private String academicYear;
@@ -42,18 +41,15 @@ public class User {
         this.avatarURL = avatarURL;
     }
 
-    public User(String email, String username, String password, String studentCode, String phoneNumber, String gender) {
+    public User(String email, String username, String password, String phoneNumber, String gender) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.studentCode = studentCode;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
     }
 
-    
-
-    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive) {
+    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -62,7 +58,6 @@ public class User {
         this.bannerURL = bannerURL;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.studentCode = studentCode;
         this.phoneNumber = phoneNumber;
         this.major = major;
         this.academicYear = academicYear;
@@ -140,14 +135,6 @@ public class User {
         this.lastname = lastname;
     }
 
-    public String getStudentCode() {
-        return studentCode;
-    }
-
-    public void setStudentCode(String studentCode) {
-        this.studentCode = studentCode;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -181,13 +168,13 @@ public class User {
     }
 
     public String getDob() {
-        if(dob == null) {
+        if (dob == null) {
             Date firstDate = new Date(0);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = dateFormat.format(firstDate);
             return formattedDate;
-        } 
-       return dob;
+        }
+        return dob;
     }
 
     public void setDob(String dob) {
@@ -241,5 +228,5 @@ public class User {
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
-    
+
 }
