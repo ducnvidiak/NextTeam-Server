@@ -15,11 +15,12 @@ public class Department {
     private String name;
 
     public Department(int id, int clubId, String name) {
+        this.id = id;
         this.clubId = clubId;
         this.name = name;
-        this.id = id;
     }
 
+    
     public Department() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
