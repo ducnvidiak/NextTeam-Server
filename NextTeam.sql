@@ -1,4 +1,4 @@
-﻿USE NextTeam
+USE NextTeam
 GO
 /*
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -58,7 +58,7 @@ GO
 		bannerUrl    VARCHAR(MAX),
 		firstname    NVARCHAR(50),
 		lastname     NVARCHAR(50),
-		studentCode  VARCHAR(20) NOT NULL,
+		/*studentCode  VARCHAR(20) NOT NULL,*/ /*remove 3*/
 		phoneNumber  VARCHAR(15) NOT NULL,
 		major        INT,
 		academicYear INT,
@@ -70,6 +70,7 @@ GO
 		createdAt    DATETIME DEFAULT(GETDATE()),
 		updatedAt    DATETIME DEFAULT(GETDATE()),
 		isActive     BIT DEFAULT(1), /*ADD3*/
+		isAdmin      BIT DEFAULT(0),
 
 		PRIMARY KEY (id),
 		FOREIGN KEY (major)    REFERENCES majors(id),
@@ -296,6 +297,7 @@ GO
 		title      NVARCHAR(128) NOT NULL,
 		content    NTEXT NOT NULL,
 		sendBy     INT NOT NULL,
+		attach     VARCHAR(100),
 		isApproved BIT DEFAULT(NULL),
 		createdAt  DATETIME DEFAULT(GETDATE()),
 		updatedAt  DATETIME DEFAULT(GETDATE()),
@@ -746,18 +748,51 @@ GO
 	       (N'Truyền thông đa phương tiện')
 
 	INSERT INTO roles(name)
-	VALUES ('admin'),
-		   ('member'),
-		   ('manager'),
-		   ('user')
+	VALUES ('member'),
+		   ('manager')
 
-	INSERT INTO users(email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber, major, academicYear, gender, dob, homeTown)
-	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn', N'Bảo Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', 1),
-           ('tranvietdangquang@gmail.com', 'DE170014', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Việt', N'Đăng Quang', '0866191103', 1, 2021, 'Male', '2023-11-19', 1)
+	INSERT INTO users(email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber, major, academicYear, gender, dob, homeTown, isAdmin)
+	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn', N'Bảo Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', 1, 0),
+           ('tranvietdangquang@gmail.com', 'DE170014', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Việt', N'Đăng Quang', '0866191103', 1, 2021, 'Male', '2023-11-19', 1, 1)
 
 	INSERT INTO publicNotifications(clubId, title, content)
 	VALUES (1, N'FUDN [FPTU.DN-DVSV] - V/v triển khai đăng ký học bằng lái xe kỳ Fall 2023 (Đợt 1)', N'PHAN GIA BẢO'),
 		   (1, N'FUDN [Khảo thí] Danh sách phòng thi Retake môn SSL101c ngày 23/09/2023 (đợt 2 kỳ Summer 2023)', N'<p style=\"color: rgb(51, 51, 51);\">Phòng Khảo thí thông báo đến các em sinh viên&nbsp;Danh sách phòng thi ngày 23/09/2023. Chi tiết ở tệp đính kèm.&nbsp;</p><p style=\"color: rgb(51, 51, 51);\">Hình thức&nbsp;thi&nbsp;tập trung tại trường.</p><p style=\"color: rgb(51, 51, 51);\">Khi đi&nbsp;thi&nbsp;các em sinh viên chuẩn bị thẻ sinh viên, bút, tai nghe có dây và dây sạc laptop; kiểm tra phần mềm và máy tính cá nhân trước ngày&nbsp;thi; đọc kỹ&nbsp;nội&nbsp;quy phòng&nbsp;thi&nbsp;tại&nbsp;<a href=\"https://fap.fpt.edu.vn/CmsFAP/NewsDetail.aspx?id=24797\" target=\"_blank\" title=\"https://drive.google.com/file/d/1XhFfCkB5cWVAhHfQnx76vYj5gGi6OSWA/view\">đây</a>.</p><p style=\"color: rgb(51, 51, 51);\"><span style=\"color: rgb(255, 0, 0);\"><span style=\"font-weight: 700;\">Sinh viên lưu ý:</span>&nbsp;Thời hạn nhận thắc mắc điểm Bonus môn SSL101c:&nbsp;<span style=\"font-weight: 700;\">từ ngày công bố điểm Final đến hết ngày thi Retake</span>. Sau thời gian trên, phòng Khảo thí sẽ không tiếp nhận và xử lý các thắc mắc liên quan đến điểm bonus.</span></p><table border=\"1\" cellspacing=\"0\" style=\"font-size: 13px; background-color: rgb(255, 255, 255); width: 1140px;\"><tbody><tr style=\"border-bottom: 1px solid rgb(240, 240, 240);\"><td colspan=\"6\" style=\"border-left-width: 0px; border-right-width: 0px; vertical-align: top;\"><span style=\"font-weight: 700;\">Thời hạn đăng ký thi cải thiện:</span>&nbsp;từ ngày có kết quả đến&nbsp;<span style=\"font-weight: 700;\">trước ngày thi Retake 1/2 NGÀY LÀM VIỆC</span><br><span style=\"font-weight: 700;\">Kênh đăng ký:</span>&nbsp;http://fap.fpt.edu.vn/<br><span style=\"font-weight: 700;\">Điều kiện:&nbsp;</span>điểm thi Final đủ đạt môn<br><span style=\"font-weight: 700;\">Thời gian thi cải thiện điểm:</span>&nbsp;theo lịch thi Retake của môn đăng ký<br>Khi đơn đăng ký được chấp thuận, điểm thi Final bị hủy, điểm thi Retake là kết quả cuối cùng.<br><span style=\"font-weight: 700;\">Lưu ý:</span>&nbsp;Danh sách thi lại có thể không cập nhật trường hợp thi cải thiện điểm; Sinh viên đến tại Phòng 210 để biết phòng thi sau khi đơn Cải thiện điểm được duyệt.</td></tr></tbody></table><p style=\"color: rgb(51, 51, 51);\">Chúc các em thi tốt.</p><p style=\"color: rgb(51, 51, 51);\">&nbsp;</p><p style=\"color: rgb(51, 51, 51);\">Academic Examination&nbsp;Department would like to inform students about the exam room list for 23/09/2023. Details in the attached file.</p><p style=\"color: rgb(51, 51, 51);\">Students come to campus to take exam.</p><p style=\"color: rgb(51, 51, 51);\">Remember to bring&nbsp;ID card, pen, wired earphones and laptop charger with you; check the testing software and personal laptop before the exam date; read the Examination room regulations carefully&nbsp;<a href=\"https://fap.fpt.edu.vn/CmsFAP/NewsDetail.aspx?id=24797\" target=\"_blank\" title=\"https://drive.google.com/file/d/1XhFfCkB5cWVAhHfQnx76vYj5gGi6OSWA/view\">here</a>.</p><p style=\"color: rgb(51, 51, 51);\">Best regards</p><div><br></div>');
+
+	INSERT INTO events (id, name, description, registeredBy, locationId, checkinCode, startTime, endTime, type, planUrl, bannerUrl, isApproved, response, clubId)
+	VALUES (
+		1,
+		N'Zoom | FES-TECHSpeak #03 | CHANGE TO CHANCE - Công nghệ AI & Ứng dụng trong đồ họa sáng tạo',
+		N'🎤 Host: Anh Lê Ngọc Tuấn - Giám đốc Trải nghiệm Công Nghệ, Ban Công tác học đường, Tổ chức giáo dục FPT  ​🗣️ Diễn giả:   ​Anh Vũ Hồng Chiên - Giám đốc Trung tâm Nghiên cứu và Ứng dụng Trí tuệ nhân tạo Quy Nhơn (QAI - FPT Software)  ​Anh Đặng Việt Hùng - Design Manager tại Gianty chi nhánh Đà Nẵng  ​Topic:  ​• Giải mã công nghệ “Generative AI\\\" và xu hướng ứng dụng trong các nghề nghiệp tương lai  • Nghề thiết kế đồ họa và ứng dụng công cụ AI trong thiết kế  • Thảo luận chủ đề AI có thay thế được chuyên gia đồ họa và thiết kế trong sáng tạo, xây dựng ứng dụng?',
+		1,
+		1,
+		NULL,
+		'2023-09-20T16:00:00',
+		'2023-09-20T20:00:00',
+		'public',
+		NULL,
+		'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,quality=75,width=960,height=480/event-covers/w9/21154ed7-dc92-4c28-b582-9a5adb206fa7',
+		NULL,
+		NULL,
+		1
+	),
+	(
+		2,
+		N'Zoom | FES-TECHSpeak #02 | BORN 2 BOND - Xây dựng và phát triển Câu lạc bộ',
+		N'​FES-TECHSpeak #02 IN YOUR AREA  ​​“BORN 2 BOND - XÂY DỰNG VÀ PHÁT TRIỂN CÂU LẠC BỘ” 🚀  ​​💡 Bạn có phải là thành viên của câu lạc bộ Công nghệ và đang tìm kiếm lời khuyên về cách xây dựng một cộng đồng mạnh mẽ và sôi nổi? Bạn có muốn tìm hiểu cách tổ chức các hoạt động hấp dẫn để giữ chân các thành viên của mình và thu hút những người mới không? Đừng tìm kiếm đâu xa! 🚀  ​​Vì ngay tại FES-TECHSpeak #02 | BORN 2 BOND, bạn sẽ được lắng nghe những chia sẻ về cách xây dựng và phát triển câu lạc bộ hiệu quả và thảo luận cùng các diễn giả giàu kinh nghiệm trong lĩnh vực này.🎙️  ​​Cho dù bạn là thành viên, một người leader đầy tham vọng hay chỉ đơn giản là tò mò về sự phát triển của câu lạc bộ, thì buổi nói chuyện này là dành cho bạn! 🙌🏼  ​​Thông tin cụ thể:  ​​📅 Thời gian 09:00-10:30 Thứ Bảy, ngày 29/07/2023  ​​📍 Link Zoom tại đây  ​​🗣️ Diễn giả:  ​​Anh Lê Ngọc Tuấn: Giám đốc Trải nghiệm Công nghệ, Ban Công tác học đường, Tổ chức giáo dục FPT  ​​Chị Nguyễn Kim Chi: Cán bộ Phòng Hợp tác Quốc tế & Phát triển Cá nhân, Trường Đại học FPT Hà Nội  ​​Anh Võ Hoàng Sơn - Thực tập sinh lĩnh vực Mobile Development & Penetration Testing tại VNPT Cyber Immunity, Chủ nhiệm Câu lạc bộ Google Developer Student Clubs, Trường Đại học FPT Đà Nẵng',
+		1,
+		2,
+		NULL,
+		'2023-09-19T12:00:00',
+		'2023-09-23T16:00:00',
+		'public',
+		NULL,
+		'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,quality=75,width=960,height=480/event-covers/n3/845d20e9-4aec-494c-a3fc-6014cf787ae1',
+		NULL,
+		NULL,
+		2
+	);
+
 
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
