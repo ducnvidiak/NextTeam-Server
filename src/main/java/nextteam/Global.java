@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import nextteam.utils.database.ClubDAO;
 import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.MajorDAO;
@@ -82,6 +84,13 @@ public class Global {
             }
             conn = null;
         }
+    }
+
+    public static Cookie getCookie(HttpServletRequest req, String name) {
+        for (Cookie cookie : req.getCookies()) {
+            System.out.println(cookie);
+        }
+        return null;
     }
 
     public static void main(String[] args) {
