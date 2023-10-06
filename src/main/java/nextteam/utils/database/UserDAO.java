@@ -28,7 +28,7 @@ public class UserDAO extends SQLDatabase {
 
     public UserDAO(Connection connection) {
         super(connection);
-    }
+    } 
 
     public ArrayList<User> getListUsers() {
         ArrayList<User> list = new ArrayList<>();
@@ -46,7 +46,7 @@ public class UserDAO extends SQLDatabase {
     
     public ArrayList<UserCard> getUsersCardList() {
         ArrayList<UserCard> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT id, avatarUrl, firstname, lastname, studentCode FROM users");
+        ResultSet rs = executeQueryPreparedStatement("SELECT id, avatarUrl, firstname, lastname, username FROM users");
         try {
             while(rs.next()) {
                 list.add(new UserCard(rs.getInt(1), rs.getString(2), rs.getNString(3) + " " + rs.getNString(4), rs.getString(5)));
@@ -137,10 +137,10 @@ public class UserDAO extends SQLDatabase {
 
     public int update(User t) {
         int ketQua = 0;
-        System.out.println("dob: " + t.getHomeTown());
+        System.out.println("dob: " + t.getDob());
         ketQua = executeUpdatePreparedStatement(
 
-                "UPDATE users  SET  email=?, username=?, firstname=?, lastname=?, studentCode=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
+                "UPDATE users  SET  email=?, username=?, firstname=?, lastname=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
 
                 t.getEmail(),
                 t.getUsername(),
@@ -190,6 +190,8 @@ public class UserDAO extends SQLDatabase {
                 if (BCrypt.checkpw(password, hashedPw)) {
                     // public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive) {
                     return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
+                } else {
+                    System.out.println("authenticate fail!");
                 }
             }
         } catch (Exception e) {

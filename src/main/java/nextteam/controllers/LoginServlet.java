@@ -58,12 +58,16 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        
+        System.out.println("email: " + email);
+        System.out.println("password: " + password);
 
         response.setContentType("application/json");
         System.out.println("Yêu cầu đăng nhập");
         PrintWriter out = response.getWriter();
 
         final User userLogin = Global.user.login(email, password);
+        
         System.out.println(userLogin);
         if (userLogin != null) {
             System.out.println("Đăng nhập thành công");
