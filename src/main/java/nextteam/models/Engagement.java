@@ -18,16 +18,18 @@ public class Engagement {
     private int clubId;
     private int roleId;
     private String cvUrl;
+    private int status;
     private Date createdAt;
     private Date updatedAt;
 
-    public Engagement(int id, int userId, int departmentId, int clubId, int roleId, String cvUrl, Date createdAt, Date updatedAt) {
+    public Engagement(int id, int userId, int departmentId, int clubId, int roleId, String cvUrl, int status, Date createdAt, Date updatedAt) {
         this.id = id;
         this.userId = userId;
         this.departmentId = departmentId;
         this.clubId = clubId;
         this.roleId = roleId;
         this.cvUrl = cvUrl;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -38,6 +40,8 @@ public class Engagement {
         this.clubId = clubId;
         this.cvUrl = cvUrl;
     }
+
+    
     
     
 
@@ -107,5 +111,17 @@ public class Engagement {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    
+    
+    
 
 }

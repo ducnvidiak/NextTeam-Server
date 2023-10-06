@@ -15,6 +15,7 @@ import nextteam.Global;
 import nextteam.models.Club;
 import nextteam.models.Department;
 import nextteam.models.Engagement;
+import nextteam.models.EntranceInterview;
 import nextteam.models.HomeTown;
 import nextteam.models.Role;
 import nextteam.models.User;
@@ -32,6 +33,7 @@ public class EngagementDAO extends SQLDatabase {
         private Club club;
         private Role role;
         private Engagement engagement;
+        private EntranceInterview interview;
 
         public User getUser() {
             return user;
@@ -72,6 +74,16 @@ public class EngagementDAO extends SQLDatabase {
         public void setEngagement(Engagement engagement) {
             this.engagement = engagement;
         }
+
+        public EntranceInterview getInterview() {
+            return interview;
+        }
+
+        public void setInterview(EntranceInterview interview) {
+            this.interview = interview;
+        }
+        
+        
         
     }
     
@@ -84,7 +96,7 @@ public class EngagementDAO extends SQLDatabase {
         ResultSet rs = executeQueryPreparedStatement("SELECT * FROM engagements WHERE userId = ?",t);
         try {
             while (rs.next()) {
-                Engagement ht = new Engagement(rs.getInt(1), rs.getInt(2),rs.getInt(3),rs.getInt(4),rs.getInt(5), rs.getString(6), rs.getTimestamp(7),rs.getTimestamp(8));
+                Engagement ht = new Engagement(rs.getInt(1), rs.getInt(2),rs.getInt(3),rs.getInt(4),rs.getInt(5), rs.getString(6),rs.getInt(7), rs.getTimestamp(8),rs.getTimestamp(9));
                 engagements.add(ht);
             }
         } catch (SQLException ex) {
@@ -110,7 +122,7 @@ public class EngagementDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM engagements WHERE id=?", id);
             if (rs.next()) {
-                ketQua = new Engagement(rs.getInt(1), rs.getInt(2),rs.getInt(3),rs.getInt(4),rs.getInt(5), rs.getString(6), rs.getTimestamp(7),rs.getTimestamp(8));
+                ketQua = new Engagement(rs.getInt(1), rs.getInt(2),rs.getInt(3),rs.getInt(4),rs.getInt(5), rs.getString(6), rs.getInt(7), rs.getTimestamp(8),rs.getTimestamp(9));
             }
         } catch (Exception e) {
         }
@@ -125,6 +137,7 @@ public class EngagementDAO extends SQLDatabase {
         info.setClub(Global.clubDAO.getClubById(t.getClubId()+ ""));
         info.setRole(Global.role.getRoleById(t.getRoleId()+ ""));
         info.setEngagement(Global.engagement.getEngagementById(t.getId()+""));
+        info.setInterview(Global.entranceInterview.getInterviewById(t.getId()+""));
         return info;
     }
     

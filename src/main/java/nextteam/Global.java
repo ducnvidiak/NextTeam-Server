@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import nextteam.utils.database.ClubDAO;
 import nextteam.utils.database.DepartmentDAO;
 import nextteam.utils.database.EngagementDAO;
+import nextteam.utils.database.EntranceInterviewDAO;
 import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.MajorDAO;
 import nextteam.utils.database.NotificationDAO;
@@ -47,6 +48,7 @@ public class Global {
     public static EngagementDAO engagement;
     public static RoleDAO role;
     public static NotificationDAO notification;
+    public static EntranceInterviewDAO entranceInterview;
 
     public static final byte[] KEY = {
         46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
@@ -86,6 +88,7 @@ public class Global {
         engagement = new EngagementDAO(conn);
         role = new RoleDAO(conn);
         notification = new NotificationDAO(conn);
+        entranceInterview = new EntranceInterviewDAO(conn);
     }
 
     public static void closeDAOConnection() {
