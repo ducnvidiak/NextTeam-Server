@@ -86,33 +86,30 @@ public class EngagementServlet extends HttpServlet {
 
     protected void addEngagement(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("test");
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        // Nhận file từ yêu cầu
-        Part filePart = request.getPart("cvUrl");
-        String fileName = filePart.getSubmittedFileName();
 
-        // Đường dẫn tới thư mục lưu trữ file PDF trên máy chủ
-        String uploadDir = "/Users/baopg/NetBeansProjects/NextTeam-Server/src/main/webapp/cv";
-        File uploadDirFile = new File(uploadDir);
-        if (!uploadDirFile.exists()) {
-            uploadDirFile.mkdirs();
-        }
-
-        // Lưu trữ file PDF vào thư mục trên máy chủ
-        Path filePath = Paths.get(uploadDir, fileName);
-        try (InputStream fileInputStream = filePart.getInputStream()) {
-            Files.copy(fileInputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        //Add 
         int userId = Integer.parseInt(request.getParameter("userId"));
         int clubId = Integer.parseInt(request.getParameter("clubId"));
         int departmentId = Integer.parseInt(request.getParameter("departmentId"));
+        // Nhận file từ yêu cầu
+        //xử lý upload file
+        String folderName = "/cv";
+        String uploadPath = "/Users/baopg/NetBeansProjects/NextTeam-Server/src/main/webapp/cv";//for netbeans use this code
+        File dir = new File(uploadPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        Part filePart = request.getPart("cvUrl");
+        String fileName ="ApplicationRegister-"+ System.currentTimeMillis() +"-UserId"+ userId + "-" + filePart.getSubmittedFileName().replaceAll(" ", "");
+        String path = folderName + File.separator + fileName;
+        System.out.println("Path: " + uploadPath);
+        InputStream is = filePart.getInputStream();
+        Files.copy(is, Paths.get(uploadPath + File.separator + fileName), StandardCopyOption.REPLACE_EXISTING);        //Add 
+
         System.out.println("test4");
-        Engagement pn = new Engagement(userId, departmentId, clubId, filePath + "");
+        Engagement pn = new Engagement(userId, departmentId, clubId, path);
         response.setContentType("application/json");
         System.out.println("Yêu cầu tham gia CLB");
         PrintWriter out = response.getWriter();
@@ -126,7 +123,7 @@ public class EngagementServlet extends HttpServlet {
         response.getWriter().print("Upload successful: " + fileName);
 
     }
-    
+
     protected void applicationListOfUser(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -138,7 +135,6 @@ public class EngagementServlet extends HttpServlet {
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Engagement> engagements = Global.engagement.getListOfMe(userId);
         List<EngagementDAO.EngagementModelInfo> emis = Global.engagement.getEngagementModelList(engagements);
-        
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(emis);
@@ -149,8 +145,6 @@ public class EngagementServlet extends HttpServlet {
         out.flush();
 
     }
-    
-   
 
     /**
      * Returns a short description of the servlet.
