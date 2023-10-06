@@ -52,7 +52,7 @@
     
     <servlet-mapping>
         <servlet-name>ClubServlet</servlet-name>
-        <url-pattern>/club_cmd</url-pattern>
+        <url-pattern>/api/club</url-pattern>
     </servlet-mapping>
     
     <servlet-mapping>
