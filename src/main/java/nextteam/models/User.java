@@ -32,6 +32,7 @@ public class User {
     private String createdAt;
     private String updatedAt;
     private boolean isActive;
+    private boolean isAdmin;
 
     public User() {
     }
@@ -49,7 +50,7 @@ public class User {
         this.gender = gender;
     }
 
-    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive) {
+    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive, boolean isAdmin) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -69,6 +70,7 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isActive = isActive;
+        this.isAdmin = isAdmin;
     }
 
     public int getId() {

@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import nextteam.utils.database.ClubCategoriesDAO;
 import nextteam.utils.database.ClubDAO;
 import nextteam.utils.database.DepartmentDAO;
@@ -31,7 +33,7 @@ public class Global {
     public static String server = "localhost";
     public static String database = "NextTeam";
     public static String username = "sa";
-    public static String password = "123456aA@$";
+    public static String password = "1";
 
     private static Connection conn;
 
@@ -100,6 +102,13 @@ public class Global {
             }
             conn = null;
         }
+    }
+
+    public static Cookie getCookie(HttpServletRequest req, String name) {
+        for (Cookie cookie : req.getCookies()) {
+            System.out.println(cookie);
+        }
+        return null;
     }
 
     public static void main(String[] args) {
