@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.Global;
+import nextteam.models.Club;
 import nextteam.models.User;
 import nextteam.utils.SQLDatabase;
 import nextteam.utils.encryption.BCrypt;
@@ -60,7 +61,7 @@ public class UserDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE id=?", t);
             if (rs.next()) {
-                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
+                ketQua = new User (rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
             }
         } catch (Exception e) {
         }
@@ -169,6 +170,7 @@ public class UserDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE email=?", email);
             if (rs.next()) {
+                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
                 String hashedPw = rs.getString("password");
                 if (BCrypt.checkpw(password, hashedPw)) {
                     // public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive) {
@@ -183,10 +185,11 @@ public class UserDAO extends SQLDatabase {
     }
 
     public User selectByEmail(String email) {
+        User ketQua = null;
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE email=?", email);
             if (rs.next()) {
-                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
+                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19));
             }
         } catch (Exception e) {
         }
@@ -206,6 +209,26 @@ public class UserDAO extends SQLDatabase {
             System.out.println(e);
         }
         return false;
+    }
+
+    public ArrayList<User> getListMember(String clubId) {
+        ArrayList<User> list = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT * \n"
+                + "FROM users\n"
+                + "WHERE id IN (SELECT userId FROM engagements WHERE clubId = ?);", clubId);
+        try {
+
+            while (rs.next()) {
+                //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
+
+                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18),rs.getBoolean(19)));
+
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return list;
     }
 
     // test connection 

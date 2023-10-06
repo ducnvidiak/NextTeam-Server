@@ -42,15 +42,20 @@ public class Gmail {
     private final String password = "haoaqlqowjwhxjqf";
 
     private final String fromEmail = "nextteam.fpt@gmail.com";
-    private final String toEmail;
+    private String toEmail;
     private String contentType;
     private String subject;
     private String content;
 
     private Map<String, String> macrosMap;
 
-    public Gmail(String toEmail) {
-        this.toEmail = toEmail;
+    public Gmail(String... toEmail) {
+        this.toEmail = "";
+        for(int i = toEmail.length - 1; i >= 0; i--) {
+            this.toEmail += toEmail[i];
+            if(i != 0) 
+                this.toEmail += ", ";
+        }
 
     }
 
