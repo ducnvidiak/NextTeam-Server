@@ -43,13 +43,27 @@
         <servlet-name>UserListServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserListServlet</servlet-class>
     </servlet>
+
+    <servlet>
+        <servlet-name>DepartmentServlet</servlet-name>
+        <servlet-class>nextteam.controllers.DepartmentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EngagementServlet</servlet-name>
+        <servlet-class>nextteam.controllers.EngagementServlet</servlet-class>
+        <multipart-config>
+            <max-file-size>1048576</max-file-size> <!-- Đặt kích thước tối đa cho file -->
+            <max-request-size>2097152</max-request-size> <!-- Đặt kích thước tối đa cho yêu cầu -->
+            <file-size-threshold>0</file-size-threshold> <!-- Đặt ngưỡng kích thước để lưu trữ tạm thời trên đĩa -->
+        </multipart-config>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ClubServlet</servlet-name>
-        <url-pattern>/club_cmd</url-pattern>
+        <url-pattern>/api/club</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>NotificationServlet</servlet-name>
@@ -70,6 +84,14 @@
     <servlet-mapping>
         <servlet-name>UserListServlet</servlet-name>
         <url-pattern>/api/userlist</url-pattern>
+    </servlet-mapping> 
+    <servlet-mapping>
+        <servlet-name>DepartmentServlet</servlet-name>
+        <url-pattern>/department</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EngagementServlet</servlet-name>
+        <url-pattern>/engagement</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

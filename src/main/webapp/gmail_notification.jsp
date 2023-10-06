@@ -15,7 +15,7 @@
                 padding-top: 20px;
             }
             .container {
-                max-width: 600px;
+                max-width: 90%;
                 margin: 50px auto;
                 padding: 50px 0;
                 padding-bottom: 10px;
@@ -84,7 +84,7 @@
             <div class="container">
                 <h1>[TITLE]</h1>
                
-                <div class="inside-content">
+                <div class="inside-content" style="font-size: 17px">
                     [CONTENT]
                 </div>
                 
