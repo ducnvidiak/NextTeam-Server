@@ -52,83 +52,80 @@ public class ClubServlet extends HttpServlet {
             String subname = request.getParameter("subname");
             int categoryId;
             String description = request.getParameter("description");
-
             String avatarUrl = request.getParameter("avatarUrl");
-
             String bannerUrl = request.getParameter("bannerUrl");
-
+            String isActive_Raw = request.getParameter("isActive");
+            System.out.println(isActive_Raw);
+            boolean isActive = Boolean.parseBoolean(isActive_Raw);
+            System.out.println(isActive);
             int movementPoint;
             double balance;
-
-            try {
-                categoryId = Integer.parseInt(request.getParameter("categoryId"));
+            try{
                 movementPoint = Integer.parseInt(request.getParameter("movementPoint"));
-                balance = Double.parseDouble(request.getParameter("balance"));
-            } catch (NumberFormatException e) {
+            }catch(NumberFormatException e){
                 movementPoint = 0;
-                balance = 0;
-                categoryId = 1;
             }
-            Club c = new Club(
-                    name,
-                    subname,
-                    categoryId,
-                    description,
-                    avatarUrl,
-                    bannerUrl,
-                    movementPoint,
-                    balance
-            );
+            try{
+                balance = Double.parseDouble(request.getParameter("balance"));
+            }catch(NumberFormatException e){
+                balance = 0;
+            }
+            try{
+                categoryId = Integer.parseInt(request.getParameter("categoryId"));
+            }catch(NumberFormatException e){
+                categoryId = 0;
+            }
+           
+            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,isActive);
+            System.out.println(c.isIsActive());
             int added = Global.clubDAO.addClub(c);
             String json = "";
             if (added == 1) {
                 json = "[{ \"status\": \"success\"}]";
             } else {
+                
                 json = "[{ \"status\": \"failed\"}]";
             }
             out.print(json);
             out.flush();
         } else if (command.equals("update")) {
             int id = Integer.parseInt(request.getParameter("id"));
-
             String name = request.getParameter("name");
             String subname = request.getParameter("subname");
             int categoryId;
             String description = request.getParameter("description");
-
             String avatarUrl = request.getParameter("avatarUrl");
-
             String bannerUrl = request.getParameter("bannerUrl");
-
+            boolean isActive = Boolean.parseBoolean(request.getParameter("isActive"));
             int movementPoint;
             double balance;
-
-            try {
-                categoryId = Integer.parseInt(request.getParameter("categoryId"));
+            try{
                 movementPoint = Integer.parseInt(request.getParameter("movementPoint"));
-                balance = Double.parseDouble(request.getParameter("balance"));
-            } catch (NumberFormatException e) {
+            }catch(NumberFormatException e){
                 movementPoint = 0;
-                balance = 0;
-                categoryId = 1;
             }
-            Club c = new Club(
-                    name,
-                    subname,
-                    categoryId,
-                    description,
-                    avatarUrl,
-                    bannerUrl,
-                    movementPoint,
-                    balance
-            );
+            try{
+                balance = Double.parseDouble(request.getParameter("balance"));
+            }catch(NumberFormatException e){
+                balance = 0;
+            }
+            try{
+                categoryId = Integer.parseInt(request.getParameter("categoryId"));
+            }catch(NumberFormatException e){
+                categoryId = 0;
+            }
+           
+            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,isActive);
+            System.out.println(c);
             int updated = Global.clubDAO.updateClub(c, id);
             String json = "";
             if (updated == 1) {
                 json = "[{ \"status\": \"success\"}]";
+                
                 out.print(json);
             } else {
                 json = "[{ \"status\": \"failed\"}]";
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 out.print(json);
             }
             out.print(json);

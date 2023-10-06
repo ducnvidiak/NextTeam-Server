@@ -9,13 +9,19 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import nextteam.utils.database.ClubDAO;
+import nextteam.utils.database.DepartmentDAO;
+import nextteam.utils.database.EngagementDAO;
 import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.EventRegistrationDAO;
 import nextteam.utils.database.LocationDAO;
 import nextteam.utils.database.MajorDAO;
+import nextteam.utils.database.NotificationDAO;
 import nextteam.utils.database.OtpCodeDAO;
+import nextteam.utils.database.PrivateNotificationDAO;
 import nextteam.utils.database.PublicNotificationDAO;
+import nextteam.utils.database.RoleDAO;
 import nextteam.utils.database.UserDAO;
+import nextteam.utils.encryption.BCrypt;
 
 /**
  *
@@ -26,7 +32,7 @@ public class Global {
     public static String server = "localhost";
     public static String database = "NextTeam";
     public static String username = "sa";
-    public static String password = "Bao.thang.1912";
+    public static String password = "Phanbao@123";
 
     private static Connection conn;
 
@@ -38,8 +44,23 @@ public class Global {
     public static UserDAO user;
     public static OtpCodeDAO otpCode;
     public static PublicNotificationDAO publicNotification;
-    public static EventRegistrationDAO eventRegistration;
+    public static PrivateNotificationDAO privateNotification;
+    public static DepartmentDAO department;
+    public static EngagementDAO engagement;
+    public static RoleDAO role;
+    public static NotificationDAO notification;
     public static LocationDAO location;
+    public static EventRegistrationDAO eventRegistration;
+
+    public static final byte[] KEY = {
+        46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
+        -20, -40, 91, -119, 20, -31, -69, -115, -114, -58, 37, -72, -20, -85, 116
+    };
+
+    public static String getHashedPassword(String password) {
+        String salt = BCrypt.gensalt();
+        return BCrypt.hashpw(password, salt);
+    }
 
     public static Connection generateConnection() {
         try {
@@ -64,8 +85,13 @@ public class Global {
         user = new UserDAO(conn);
         otpCode = new OtpCodeDAO(conn);
         publicNotification = new PublicNotificationDAO(conn);
-        eventRegistration = new EventRegistrationDAO(conn);
+        privateNotification = new PrivateNotificationDAO(conn);
+        department = new DepartmentDAO(conn);
+        engagement = new EngagementDAO(conn);
+        role = new RoleDAO(conn);
+        notification = new NotificationDAO(conn);
         location = new LocationDAO(conn);
+        eventRegistration = new EventRegistrationDAO(conn);
     }
 
     public static void closeDAOConnection() {
