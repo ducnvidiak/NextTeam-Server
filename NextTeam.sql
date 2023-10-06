@@ -127,6 +127,7 @@ GO
 		clubId		 INT NOT NULL,
 		roleId       INT,
 		cvUrl        VARCHAR(MAX) NOT NULL, /*add*/
+		status 	     INT DEFAULT(0),
 		createdAt    DATETIME DEFAULT(GETDATE()),
 		updatedAt    DATETIME DEFAULT(GETDATE()),
 
@@ -231,6 +232,7 @@ GO
 		id        INT NOT NULL IDENTITY(1, 1),
 		clubId    INT NOT NULL,
 		sendTo    INT NOT NULL,
+		hasSeen   BIT DEFAULT(0),
 		seenTime  DATETIME,
 		title     NVARCHAR(MAX) NOT NULL,
 		content   NTEXT NOT NULL,
