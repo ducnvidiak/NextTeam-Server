@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import nextteam.utils.database.ClubCategoriesDAO;
 import nextteam.utils.database.ClubDAO;
 import nextteam.utils.database.DepartmentDAO;
 import nextteam.utils.database.EngagementDAO;
@@ -32,7 +33,7 @@ public class Global {
     public static String server = "localhost";
     public static String database = "NextTeam";
     public static String username = "sa";
-    public static String password = "Phanbao@123";
+    public static String password = "Bao.thang.1912";
 
     private static Connection conn;
 
@@ -51,6 +52,7 @@ public class Global {
     public static NotificationDAO notification;
     public static LocationDAO location;
     public static EventRegistrationDAO eventRegistration;
+    public static ClubCategoriesDAO clubCategories;
 
     public static final byte[] KEY = {
         46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
@@ -92,6 +94,7 @@ public class Global {
         notification = new NotificationDAO(conn);
         location = new LocationDAO(conn);
         eventRegistration = new EventRegistrationDAO(conn);
+        clubCategories = new ClubCategoriesDAO(conn);
     }
 
     public static void closeDAOConnection() {

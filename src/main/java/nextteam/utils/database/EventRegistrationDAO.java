@@ -41,7 +41,6 @@ public class EventRegistrationDAO extends SQLDatabase {
         ResultSet rs = executeQueryPreparedStatement("SELECT \n"
                 + "  u.firstname,\n"
                 + "  u.lastname,\n"
-                + "  u.studentCode ,\n"
                 + "  u.email,\n"
                 + "  u.phoneNumber,\n"
                 + "  er.createdAt\n"
@@ -54,7 +53,6 @@ public class EventRegistrationDAO extends SQLDatabase {
                 EventRegistrationResponse eventRegistrationResponse = new EventRegistrationResponse(
                         rs.getString("firstname"),
                         rs.getString("lastname"),
-                        rs.getString("studentCode"),
                         rs.getString("email"),
                         rs.getString("phoneNumber"),
                         rs.getDate("createdAt")

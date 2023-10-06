@@ -22,6 +22,7 @@ import nextteam.models.response.ClubResponse;
  *
  * @author bravee06
  */
+@WebServlet(name = "ClubUserServlet", urlPatterns = {"/clubs"})
 public class ClubServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
@@ -37,9 +38,12 @@ public class ClubServlet extends HttpServlet {
         String userId = request.getParameter("userId");
         String command = request.getParameter("cmd");
         if (command.equals("list")) {
+            String res = Global.clubDAO.getListClubs().toString();
+            out.print(res);
+            out.flush();
+        } else if (command.equals("list-res")) {
             ArrayList<ClubResponse> res = Global.clubDAO.getListClubs(userId);
             String clubsJsonString = gson.toJson(res);
-
             // Gửi danh sách sự kiện dưới dạng chuỗi JSON về client
             out.print(clubsJsonString);
             out.flush();
@@ -60,30 +64,30 @@ public class ClubServlet extends HttpServlet {
             System.out.println(isActive);
             int movementPoint;
             double balance;
-            try{
+            try {
                 movementPoint = Integer.parseInt(request.getParameter("movementPoint"));
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 movementPoint = 0;
             }
-            try{
+            try {
                 balance = Double.parseDouble(request.getParameter("balance"));
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 balance = 0;
             }
-            try{
+            try {
                 categoryId = Integer.parseInt(request.getParameter("categoryId"));
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 categoryId = 0;
             }
-           
-            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,isActive);
+
+            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance, isActive);
             System.out.println(c.isIsActive());
             int added = Global.clubDAO.addClub(c);
             String json = "";
             if (added == 1) {
                 json = "[{ \"status\": \"success\"}]";
             } else {
-                
+
                 json = "[{ \"status\": \"failed\"}]";
             }
             out.print(json);
@@ -99,29 +103,29 @@ public class ClubServlet extends HttpServlet {
             boolean isActive = Boolean.parseBoolean(request.getParameter("isActive"));
             int movementPoint;
             double balance;
-            try{
+            try {
                 movementPoint = Integer.parseInt(request.getParameter("movementPoint"));
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 movementPoint = 0;
             }
-            try{
+            try {
                 balance = Double.parseDouble(request.getParameter("balance"));
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 balance = 0;
             }
-            try{
+            try {
                 categoryId = Integer.parseInt(request.getParameter("categoryId"));
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 categoryId = 0;
             }
-           
-            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,isActive);
+
+            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance, isActive);
             System.out.println(c);
             int updated = Global.clubDAO.updateClub(c, id);
             String json = "";
             if (updated == 1) {
                 json = "[{ \"status\": \"success\"}]";
-                
+
                 out.print(json);
             } else {
                 json = "[{ \"status\": \"failed\"}]";

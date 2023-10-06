@@ -28,7 +28,7 @@ public class ClubCategoriesServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         String command = request.getParameter("cmd");
         if (command.equals("list")) {
-            String res = Global.clubCategoriesDAO.getListClubsCategories().toString();
+            String res = Global.clubCategories.getListClubsCategories().toString();
             out.print(res);
             out.flush();
         } 
