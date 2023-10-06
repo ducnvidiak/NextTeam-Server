@@ -32,6 +32,18 @@ public class Engagement {
         this.updatedAt = updatedAt;
     }
 
+    public Engagement(int userId, int departmentId, int clubId, String cvUrl) {
+        this.userId = userId;
+        this.departmentId = departmentId;
+        this.clubId = clubId;
+        this.cvUrl = cvUrl;
+    }
+    
+    
+
+    public Engagement() {
+    }
+
     public int getId() {
         return id;
     }

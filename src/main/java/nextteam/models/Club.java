@@ -5,6 +5,8 @@
 package nextteam.models;
 
 import java.util.Date;
+import nextteam.Global;
+import nextteam.utils.database.ClubCategoriesDAO;
 
 /**
  *
@@ -63,6 +65,20 @@ public class Club {
         this.name = name;
         this.subname = subname;
     }
+    public Club(String name, String subname, int categoryId, String description, String avatarUrl,
+            String bannerUrl, int movementPoint, double balance, boolean isActive) {
+        this.id = id;
+        this.name = name;
+        this.subname = subname;
+        this.categoryId = categoryId;
+        this.description = description;
+        this.avatarUrl = avatarUrl;
+        this.bannerUrl = bannerUrl;
+        this.movementPoint = movementPoint;
+        this.balance = balance;
+        this.isActive = isActive;
+    }
+
 
     
     
@@ -162,23 +178,27 @@ public class Club {
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
-    
+    public String getCategoryName(){
+         ClubCategories c = new ClubCategoriesDAO(Global.generateConnection()).getClubsCategoriesByID(this.categoryId);
+         return c.getName();
+    }
 
     @Override
     public String toString() {
         return "{"
-                + "    \"id\": \"" + id + "\","
-                + "    \"name\":\"" + name + "\","
-                + "    \"subname\":\"" + subname + "\","
-                + "    \"categoryId\":\"" + categoryId + "\","
-                + "    \"description\":\"" + description + "\","
-                + "    \"avatarUrl\":\"" + avatarUrl + "\","
-                + "    \"bannerUrl\":\"" + bannerUrl + "\","
-                + "    \"movementPoint\":\"" + movementPoint + "\","
-                + "    \"balance\":\"" + balance + "\","
-                + "    \"createdAt\":\"" + createdAt + "\","
-                + "    \"updatedAt\":\"" + updatedAt + "\","
-                + "    \"isActive\":\"" + isActive + "\""
+                + "\"id\": \"" + id + "\","
+                + "\"name\":\"" + name + "\","
+                + "\"subname\":\"" + subname + "\","
+                + "\"categoryId\":\"" + categoryId + "\","
+                + "\"categoryName\":\"" + this.getCategoryName() + "\","
+                + "\"description\":\"" + description + "\","
+                + "\"avatarUrl\":\"" + avatarUrl + "\","
+                + "\"bannerUrl\":\"" + bannerUrl + "\","
+                + "\"movementPoint\":\"" + movementPoint + "\","
+                + "\"balance\":\"" + balance + "\","
+                + "\"createdAt\":\"" + createdAt + "\","
+                + "\"updatedAt\":\"" + updatedAt + "\","
+                + "\"isActive\":\"" + isActive + "\""
                 + "}";
 
     }
