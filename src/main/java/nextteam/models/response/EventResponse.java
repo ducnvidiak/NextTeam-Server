@@ -19,8 +19,8 @@ public class EventResponse extends Event {
     private String clubAvatarUrl;
     private boolean isRegistered;
 
-    public EventResponse(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered) {
-        super(id, name, description, bannerUrl, startTime, endTime);
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, boolean isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered) {
+        super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
         this.locationName = locationName;
         this.clubSubname = clubSubname;
         this.clubAvatarUrl = clubAvatarUrl;
@@ -59,4 +59,21 @@ public class EventResponse extends Event {
         this.isRegistered = isRegistered;
     }
 
+    @Override
+    public String toString() {
+        return "{"
+                + "    \"id\": \"" + getId() + "\","
+                + "    \"name\":\"" + getName() + "\","
+                + "    \"type\":\"" + getType() + "\","
+                + "    \"description\":\"" + getDescription() + "\","
+                + "    \"bannerUrl\":\"" + getBannerUrl() + "\","
+                + "    \"startTime\":\"" + getStartTime() + "\","
+                + "    \"endTime\":\"" + getEndTime() + "\","
+                + "    \"isApproved\":\"" + isIsApproved() + "\","
+                + "    \"locationName\":\"" + locationName + "\","
+                + "    \"clubSubname\":\"" + clubSubname + "\","
+                + "    \"clubAvatarUrl\":\"" + clubAvatarUrl + "\","
+                + "    \"isRegistered\":\"" + isRegistered + "\""
+                + "}";
+    }
 }

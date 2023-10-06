@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import java.io.BufferedReader;
 import java.util.List;
 import nextteam.Global;
 import nextteam.models.Event;
@@ -28,54 +30,98 @@ public class EventServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String command = request.getParameter("cmd");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
+        System.out.println(command);
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
-        List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
-        System.out.println("events" + events);
-        System.out.println("nextteam.controllers.EventServlet.doGet()" + events);
-        // Chuyển danh sách sự kiện thành JSON
-        String eventsJsonString = gson.toJson(events);
+        if (command.equals("list")) {
+            List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+            String eventsJsonString = gson.toJson(events);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            response.getWriter().write(events.toString());
+//            out.print(events.toString());
+            out.flush();
+        }
 
-        // Thiết lập loại nội dung và ký tự mã hóa cho phản hồi
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        // Gửi danh sách sự kiện dưới dạng chuỗi JSON về client
-        PrintWriter out = response.getWriter();
-        out.print(eventsJsonString);
-        out.flush();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Xử lý yêu cầu POST, ví dụ: Thêm một sự kiện mới
-        // Đọc dữ liệu JSON từ request body và chuyển thành đối tượng Event
-        // Ví dụ:
-        // BufferedReader reader = request.getReader();
-        // Event newEvent = gson.fromJson(reader, Event.class);
+        String cmd = request.getParameter("cmd");
+        String eventId = request.getParameter("eventId");
+        String userId = request.getParameter("userId");
 
-        // Gọi eventDAO để thêm sự kiện mới vào cơ sở dữ liệu
-        // Ví dụ:
-        // boolean success = eventDAO.addEvent(newEvent);
-        // Sau khi thêm sự kiện, bạn có thể gửi phản hồi JSON về client để thông báo kết quả
-        // Ví dụ:
-        // response.setContentType("application/json");
-        // PrintWriter out = response.getWriter();
-        // String resultJsonString = gson.toJson(success ? "Thêm sự kiện thành công" : "Thêm sự kiện thất bại");
-        // out.print(resultJsonString);
-        // out.flush();
+        if (cmd.equals("create")) {
+            try {
+                // Đọc dữ liệu JSON từ request
+                BufferedReader reader = request.getReader();
+                StringBuilder jsonInput = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    jsonInput.append(line);
+                }
+                Event event = gson.fromJson(jsonInput.toString(), Event.class);
+                System.out.println(event.getName());
+                Global.eventDao.createEvent(event);
+                response.setContentType("application/json");
+                response.getWriter().write(gson.toJson(event));
+            } catch (JsonSyntaxException e) {
+                // Xử lý ngoại lệ khi có lỗi cú pháp JSON
+                System.out.println("????");
+                System.out.println(e);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("Invalid JSON data");
+            } catch (Exception e) {
+                // Xử lý ngoại lệ chung
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("Internal Server Error");
+                e.printStackTrace(); // Ghi log ngoại lệ
+            }
+        } else if (cmd.equals("update")) {
+            System.out.println("eventId" + eventId);
+
+            try {
+                // Đọc dữ liệu JSON từ request
+                BufferedReader reader = request.getReader();
+                StringBuilder jsonInput = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonInput.append(line);
+                }
+                Event event = gson.fromJson(jsonInput.toString(), Event.class);
+                int rs = Global.eventDao.updateEventByEventId(eventId, event);
+                List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+                String eventsJsonString = gson.toJson(events);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                PrintWriter out = response.getWriter();
+                response.getWriter().write(events.toString());
+            } catch (JsonSyntaxException e) {
+                // Xử lý ngoại lệ khi có lỗi cú pháp JSON
+                System.out.println("????");
+                System.out.println(e);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("Invalid JSON data");
+            } catch (Exception e) {
+                // Xử lý ngoại lệ chung
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("Internal Server Error");
+                e.printStackTrace(); // Ghi log ngoại lệ
+            }
+        }
+
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Xử lý yêu cầu PUT, ví dụ: Cập nhật thông tin một sự kiện
-        // Tương tự như doPost, bạn cần đọc dữ liệu JSON từ request body và chuyển thành đối tượng Event
-        // Sau đó, gọi eventDAO để cập nhật thông tin sự kiện trong cơ sở dữ liệu
-        // Cuối cùng, gửi phản hồi JSON về client để thông báo kết quả
+
     }
 
     @Override
