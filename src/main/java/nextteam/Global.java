@@ -10,10 +10,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import nextteam.utils.database.ClubCategoriesDAO;
 import nextteam.utils.database.ClubDAO;
+import nextteam.utils.database.DepartmentDAO;
+import nextteam.utils.database.EngagementDAO;
 import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.MajorDAO;
+import nextteam.utils.database.NotificationDAO;
 import nextteam.utils.database.OtpCodeDAO;
+import nextteam.utils.database.PrivateNotificationDAO;
 import nextteam.utils.database.PublicNotificationDAO;
+import nextteam.utils.database.RoleDAO;
 import nextteam.utils.database.UserDAO;
 import nextteam.utils.encryption.BCrypt;
 
@@ -39,6 +44,11 @@ public class Global {
     public static UserDAO user;
     public static OtpCodeDAO otpCode;
     public static PublicNotificationDAO publicNotification;
+    public static PrivateNotificationDAO privateNotification;
+    public static DepartmentDAO department;
+    public static EngagementDAO engagement;
+    public static RoleDAO role;
+    public static NotificationDAO notification;
 
     public static final byte[] KEY = {
         46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
@@ -74,6 +84,11 @@ public class Global {
         user = new UserDAO(conn);
         otpCode = new OtpCodeDAO(conn);
         publicNotification = new PublicNotificationDAO(conn);
+        privateNotification = new PrivateNotificationDAO(conn);
+        department = new DepartmentDAO(conn);
+        engagement = new EngagementDAO(conn);
+        role = new RoleDAO(conn);
+        notification = new NotificationDAO(conn);
     }
 
     public static void closeDAOConnection() {

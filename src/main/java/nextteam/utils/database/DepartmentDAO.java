@@ -6,9 +6,14 @@ package nextteam.utils.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nextteam.Global;
 import nextteam.models.Department;
+import nextteam.models.HomeTown;
 import nextteam.utils.SQLDatabase;
 
 /**
@@ -21,20 +26,18 @@ public class DepartmentDAO extends SQLDatabase {
         super(connection);
     }
 
-    public ArrayList<Department> getListDepartment() {
-        ArrayList<Department> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM departments");
+    public List<Department> getAllDepartments(String t) {
+        List<Department> departments = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM departments WHERE clubId = ?",t);
         try {
-
             while (rs.next()) {
-                Department d = new Department(rs.getInt(1), rs.getInt(2), rs.getString(3));
-                list.add(d);
+                Department ht = new Department(rs.getInt(1), rs.getInt(2), rs.getNString(3));
+                departments.add(ht);
             }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException ex) {
+            Logger.getLogger(DepartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return list;
+        return departments;
     }
 
     public int addDepartment(Department d) {
@@ -62,8 +65,20 @@ public class DepartmentDAO extends SQLDatabase {
         return rs;
     }
 
+    public Department getDepartmentById(String id) {
+        Department ketQua = null;
+        try {
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM departments WHERE id=?", id);
+            if (rs.next()) {
+                ketQua = new Department(rs.getInt(1), rs.getInt(2), rs.getNString(3));
+            }
+        } catch (Exception e) {
+        }
+        return ketQua;
+    }
+    
     public static void main(String[] args) {
         DepartmentDAO dp = new DepartmentDAO(Global.generateConnection());
-        System.out.println(dp.getListDepartment());
+        System.out.println(dp.getAllDepartments("1"));
     }
 }
