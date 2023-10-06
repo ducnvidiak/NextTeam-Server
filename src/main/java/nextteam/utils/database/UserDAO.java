@@ -191,6 +191,7 @@ public class UserDAO extends SQLDatabase {
                 return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         
         return null;

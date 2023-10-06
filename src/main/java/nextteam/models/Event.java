@@ -4,6 +4,7 @@
  */
 package nextteam.models;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -18,18 +19,18 @@ public class Event {
     private int registeredBy;
     private int locationId;
     private String checkInCode;
-    private Date startTime;
-    private Date endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private String type;
     private String planUrl;
     private String bannerUrl;
     private boolean isApproved;
     private String response;
     private int clubId;
-    private Date createdAt;
-    private Date updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
-    public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Date startTime, Date endTime, String type, String planUrl, String bannerUrl, boolean isApproved, String response, int clubId, Date createdAt, Date updatedAt) {
+    public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Timestamp startTime, Timestamp endTime, String type, String planUrl, String bannerUrl, boolean isApproved, String response, int clubId, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -46,6 +47,17 @@ public class Event {
         this.clubId = clubId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Event(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, boolean isApproved) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.bannerUrl = bannerUrl;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isApproved = isApproved;
+        this.type = type;
     }
 
     public int getId() {
@@ -100,7 +112,7 @@ public class Event {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
@@ -108,7 +120,7 @@ public class Event {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
 
@@ -164,7 +176,7 @@ public class Event {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -172,8 +184,10 @@ public class Event {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    
 
 }

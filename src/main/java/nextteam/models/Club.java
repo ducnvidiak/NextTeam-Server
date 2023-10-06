@@ -4,6 +4,7 @@
  */
 package nextteam.models;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import nextteam.Global;
 import nextteam.utils.database.ClubCategoriesDAO;
@@ -42,10 +43,23 @@ public class Club {
         this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+       
+    }
+    //getListClubs
+    public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt, boolean isActive, int numberOfMembers) {
+        this.id = id;
+        this.name = name;
+        this.subname = subname;
+        this.categoryId = categoryId;
+        this.description = description;
+        this.avatarUrl = avatarUrl;
+        this.bannerUrl = bannerUrl;
+        this.movementPoint = movementPoint;
+        this.balance = balance;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.isActive = isActive;
     }
-
-   
 
     public Club(String name, String subname, int categoryId, String description, String avatarUrl,
             String bannerUrl, int movementPoint, double balance) {
@@ -60,11 +74,35 @@ public class Club {
         this.balance = balance;
     }
 
+    public Club(int id, String name, String subname, String avatarUrl, int movementPoint) {
+        this.id = id;
+        this.name = name;
+        this.subname = subname;
+        this.avatarUrl = avatarUrl;
+        this.movementPoint = movementPoint;
+    }
+    
+    
+// get club of me
     public Club(int id, String name, String subname) {
         this.id = id;
         this.name = name;
         this.subname = subname;
     }
+// getClubDetailBySubname
+    public Club(int aInt, String string, String string0, String string1, String string2, int aInt0, int aInt1, String string3, Timestamp timestamp, boolean aBoolean) {
+        this.id = aInt;
+        this.name = string;
+        this.subname = string0;
+        this.avatarUrl = string1;
+        this.bannerUrl = string2;
+        this.categoryId = aInt0;
+        this.categoryId = aInt1;
+        this.description = string3;
+        this.createdAt = timestamp;
+    }
+
+    
     public Club(String name, String subname, int categoryId, String description, String avatarUrl,
             String bannerUrl, int movementPoint, double balance, boolean isActive) {
         this.id = id;
@@ -200,7 +238,5 @@ public class Club {
                 + "\"updatedAt\":\"" + updatedAt + "\","
                 + "\"isActive\":\"" + isActive + "\""
                 + "}";
-
     }
-
 }

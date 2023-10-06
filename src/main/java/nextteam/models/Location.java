@@ -14,9 +14,8 @@ public class Location {
     private String name;
     private String description;
 
-    public Location(int id, String name, String description) {
+    public Location(int id, String name) {
         this.name = name;
-        this.description = description;
         this.id = id;
     }
 
