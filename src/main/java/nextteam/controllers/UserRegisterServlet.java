@@ -111,7 +111,7 @@ public class UserRegisterServlet extends HttpServlet {
         UserDAO userDb = Global.user;
         if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return 1;
-        } else if (!user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$")) {
+        } else if (!user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,30}$")) {
             return 2;
         } else if (!user.getUsername().matches("^[HhDdSsQqCc][AaEeSs][0-9]{6}$")) {
             return 3;
