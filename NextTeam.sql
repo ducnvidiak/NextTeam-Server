@@ -1,4 +1,4 @@
-﻿USE NextTeam
+USE NextTeam
 GO
 /*
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -41,15 +41,6 @@ GO
 		PRIMARY KEY (id)
 	);
 
-	/*
-	CREATE TABLE homeTowns (
-		id      INT NOT NULL IDENTITY(1, 1),
-		country NVARCHAR(56),
-		city    NVARCHAR(128)
-
-		PRIMARY KEY (id)
-	); */
-
 	CREATE TABLE users (
 		id           INT NOT NULL IDENTITY(1, 1),
 		email        VARCHAR(255) NOT NULL,
@@ -74,8 +65,7 @@ GO
 		isAdmin      BIT DEFAULT(0),
 
 		PRIMARY KEY (id),
-		FOREIGN KEY (major)    REFERENCES majors(id),
-		/*FOREIGN KEY (homeTown) REFERENCES homeTowns(id)*/
+		FOREIGN KEY (major)    REFERENCES majors(id)
 	);
 
 	CREATE TABLE clubCategories(
@@ -103,8 +93,6 @@ GO
 		FOREIGN KEY (categoryId) REFERENCES clubCategories(id)
 	);
 
-
-
 	CREATE TABLE departments (
 		id     INT NOT NULL IDENTITY(1, 1),
 		clubId INT,
@@ -129,6 +117,7 @@ GO
 		roleId       INT,
 		cvUrl        VARCHAR(MAX) NOT NULL, /*add*/
 		status 	     INT DEFAULT(0),
+		points       INT DEFAULT(0),
 		createdAt    DATETIME DEFAULT(GETDATE()),
 		updatedAt    DATETIME DEFAULT(GETDATE()),
 
@@ -177,7 +166,7 @@ GO
 		bannerUrl	 VARCHAR(MAX),  /* add 2 */
 		isApproved   BIT DEFAULT(NULL),
 		response     NTEXT,
-		clubId       INT NOT NULL,
+		clubId       INT,
 		createdAt    DATETIME DEFAULT(GETDATE()),
 		updatedAt    DATETIME DEFAULT(GETDATE())
 
@@ -227,6 +216,20 @@ GO
 
 		PRIMARY KEY (id),
 		FOREIGN KEY (clubId) REFERENCES clubs(id)
+	);
+
+	CREATE TABLE feedbacks (
+		id INT IDENTITY(1,1),
+		userId INT NOT NULL,
+		eventId INT NOT NULL,
+		point INT,
+		content VARCHAR(255),
+		createdAt DATETIME DEFAULT(GETDATE()),
+		updatedAt DATETIME DEFAULT(GETDATE()),
+
+		PRIMARY KEY (id),
+		FOREIGN KEY (userId) REFERENCES users(id),
+		FOREIGN KEY (eventId) REFERENCES events(id)
 	);
 
 	CREATE TABLE privateNotifications (
@@ -358,7 +361,7 @@ GO
 		receivedBy INT NOT NULL,
 		clubId     INT NOT NULL,
 		amount     INT NOT NULL,
-		reason     VARCHAR (255),
+		reason     NVARCHAR (255),
 		createdAt  DATETIME DEFAULT(GETDATE()),
 		updatedAt  DATETIME DEFAULT(GETDATE()),
 
@@ -644,19 +647,100 @@ GO
 		INNER JOIN inserted ON paymentExpenses.id = inserted.id;
 	END;
 	GO
+	IF OBJECT_ID('TR_UpdateFeedback', 'TR') IS NOT NULL /* for feedbacks */
+		DROP TRIGGER TR_UpdateFeedback
+	GO
+	CREATE TRIGGER TR_UpdateFeedback
+	ON feedbacks
+	AFTER UPDATE
+	AS
+	BEGIN
+		UPDATE feedbacks
+		SET updatedAt = GETDATE()
+		FROM feedbacks
+		INNER JOIN inserted ON feedbacks.id = inserted.id;
+	END;
+	GO
 	IF OBJECT_ID('TR_UpdatePointsHistory', 'TR') IS NOT NULL /* for pointsHistories */
-		DROP TRIGGER TR_UpdatePointsHistoryy
+		DROP TRIGGER TR_UpdatePointsHistory;
 	GO
 	CREATE TRIGGER TR_UpdatePointsHistory
 	ON pointsHistories
 	AFTER UPDATE
 	AS
 	BEGIN
+		DECLARE @engagementPoint INT, @engagementId INT, @amount1 INT, @amount2 INT, @clubId INT;
+
+		SELECT @amount1=amount, @clubId=clubId
+		FROM deleted;
+
+		SELECT @amount2=amount
+		FROM inserted;
+
+		SELECT @engagementId=engagements.id, @engagementPoint=points
+		FROM engagements
+			INNER JOIN inserted
+			ON engagements.userId = inserted.receivedBy
+		WHERE engagements.clubId=@clubId;
+
+		UPDATE engagements
+		SET points=@engagementPoint-@amount1+@amount2
+		WHERE id=@engagementId;
+
 		UPDATE pointsHistories
 		SET updatedAt = GETDATE()
 		FROM pointsHistories
 		INNER JOIN inserted ON pointsHistories.id = inserted.id;
 	END;
+	GO
+	IF OBJECT_ID('TR_AddPointsHistory', 'TR') IS NOT NULL /* for pointsHistories */
+		DROP TRIGGER TR_AddPointsHistory;
+	GO
+	CREATE TRIGGER TR_AddPointsHistory
+	ON pointsHistories
+	AFTER INSERT
+	AS
+	BEGIN
+		DECLARE @engagementPoint INT, @engagementId INT, @amount INT, @clubId INT;
+
+		SELECT @amount=SUM(amount), @clubId=clubId
+		FROM inserted
+		GROUP BY clubId;
+
+		SELECT @engagementId=engagements.id, @engagementPoint=points
+		FROM engagements
+			INNER JOIN inserted
+			ON engagements.userId = inserted.receivedBy
+		WHERE engagements.clubId=@clubId;
+
+		UPDATE engagements
+		SET points=@engagementPoint+@amount
+		WHERE id=@engagementId;
+	END;
+	GO
+
+	IF OBJECT_ID('TR_DeletePointsHistory', 'TR') IS NOT NULL
+		DROP TRIGGER TR_DeletePointsHistory;
+	GO
+	CREATE TRIGGER TR_DeletePointsHistory
+	ON pointsHistories
+	AFTER DELETE
+	AS 
+	BEGIN
+		DECLARE @amount INT, @engagementId INT, @clubId INT
+  
+		SELECT @amount = amount FROM deleted
+		SELECT @engagementId = engagements.id, @clubId = engagements.clubId
+		FROM deleted
+		INNER JOIN engagements ON deleted.receivedBy = engagements.userId
+		WHERE engagements.clubId = @clubId
+
+		UPDATE engagements 
+		SET points = points - @amount
+		WHERE id = @engagementId
+	END
+	GO
+
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>> END: TẠO TRIGGER >>>>>>>>>>
@@ -697,14 +781,7 @@ GO
 <<<<<<<<<< BEGIN: DỮ LIỆU MẪU <<<<<<<<<<
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 */
-/*
-	INSERT INTO homeTowns (country, city)
-	VALUES (N'Việt Nam', N'Hà Nội'),
-	       (N'Việt Nam', N'Hồ Chí Minh'),
-	       (N'Việt Nam', N'Đà Nẵng'),
-	       (N'Việt Nam', N'Hải Phòng'),
-	       (N'Việt Nam', N'Cần Thơ');
-*/
+
 	INSERT INTO clubCategories(name)
 	VALUES (N'Học thuật'),
 		   (N'Cộng đồng'),
@@ -793,6 +870,17 @@ GO
 		NULL,
 		2
 	);
+
+	INSERT INTO departments
+	VALUES (1, N'Ban Nhân sự'),
+		   (2, N'Ban Học thuật');
+
+	INSERT INTO engagements(userId, departmentId, clubId, roleId, cvUrl)
+	VALUES (1, 1, 1, 2, ''),
+	       (2, 2, 1, 1, '');
+
+	INSERT INTO pointsHistories(createdBy, receivedBy, clubId, amount, reason)
+	VALUES (1, 2, 1, -5, 'Ahihi'),(1, 2, 1, '20', 'Ahihi');
 
 
 /*
