@@ -29,7 +29,7 @@ public class GetInfoServlet extends HttpServlet {
         String cmd = req.getParameter("cmd");
         String data = req.getParameter("data");
 
-        String res = "{}";
+        String res = "{\"code\": \"-1\"}";
 
         if (cmd.equals("user")) {
             if (!data.equals("undefined")) {
@@ -46,6 +46,24 @@ public class GetInfoServlet extends HttpServlet {
             res = "{\"roleId\": \"" + role[0] + "\", \"roleName\": \"" + role[1] + "\"}";
         } else if (cmd.equals("club.users")) {
             res = Global.clubDAO.getAllUserOfClub(Integer.parseInt(data)).toString();
+        } else if (cmd.equals("user.points")) {
+            int clubId = Integer.parseInt(req.getParameter("clubId"));
+            int userId = Integer.parseInt(req.getParameter("userId"));
+
+            res = """
+                  {
+                    "code": "0",
+                    "result": %s
+                  }""".formatted(Global.engagement.getEngagementsPointsRanking(userId, clubId));
+        } else if (cmd.equals("user.points.history")) {
+            int clubId = Integer.parseInt(req.getParameter("clubId"));
+            int userId = Integer.parseInt(req.getParameter("userId"));
+
+            res = """
+                  {
+                    "code": "0",
+                    "result": %s
+                  }""".formatted(Global.pointHistory.listOfSpecifiedUser(clubId, userId));
         }
 
         resp.getWriter().print(res);

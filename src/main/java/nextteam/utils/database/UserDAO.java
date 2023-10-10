@@ -212,9 +212,10 @@ public class UserDAO extends SQLDatabase {
 
     public ArrayList<User> getListMember(String clubId) {
         ArrayList<User> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * \n"
-                + "FROM users\n"
-                + "WHERE id IN (SELECT userId FROM engagements WHERE clubId = ?);", clubId);
+        ResultSet rs = executeQueryPreparedStatement("""
+                                                     SELECT * 
+                                                     FROM users
+                                                     WHERE id IN (SELECT userId FROM engagements WHERE clubId = ?);""", clubId);
         try {
 
             while (rs.next()) {
