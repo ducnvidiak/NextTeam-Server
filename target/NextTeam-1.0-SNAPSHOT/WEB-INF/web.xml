@@ -60,10 +60,6 @@
             <!-- Đặt ngưỡng kích thước để lưu trữ tạm thời trên đĩa -->
         </multipart-config>
     </servlet>
-    <servlet>
-        <servlet-name>ClubUserServlet</servlet-name>
-        <servlet-class>nextteam.controllers.ClubUserServlet</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
@@ -99,10 +95,6 @@
     <servlet-mapping>
         <servlet-name>EngagementServlet</servlet-name>
         <url-pattern>/engagement</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ClubUserServlet</servlet-name>
-        <url-pattern>/club-user</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
