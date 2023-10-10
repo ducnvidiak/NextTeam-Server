@@ -15,6 +15,8 @@ import java.util.logging.Logger;
 import nextteam.Global;
 import nextteam.models.Club;
 import nextteam.models.User;
+import nextteam.models.UserCard;
+//import nextteam.utils.ConvertPassword;
 import nextteam.utils.SQLDatabase;
 import nextteam.utils.encryption.BCrypt;
 import org.apache.http.ParseException;
@@ -27,7 +29,7 @@ public class UserDAO extends SQLDatabase {
     
     public UserDAO(Connection connection) {
         super(connection);
-    }
+    } 
     
     public ArrayList<User> getListUsers() {
         ArrayList<User> list = new ArrayList<>();
@@ -38,7 +40,20 @@ public class UserDAO extends SQLDatabase {
             }
             
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+           
+        }
+        return list;
+    }
+    
+    public ArrayList<UserCard> getUsersCardList() {
+        ArrayList<UserCard> list = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT id, avatarUrl, firstname, lastname, username FROM users");
+        try {
+            while(rs.next()) {
+                list.add(new UserCard(rs.getInt(1), rs.getString(2), rs.getNString(3) + " " + rs.getNString(4), rs.getString(5)));
+            }
+        } catch(Exception e) {
+            
         }
         return list;
     }
@@ -125,10 +140,11 @@ public class UserDAO extends SQLDatabase {
         int ketQua = 0;
         System.out.println("dob: " + t.getDob());
         ketQua = executeUpdatePreparedStatement(
-                "UPDATE users  SET  email=?, username=?, avatarUrl=?, firstname=?, lastname=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
+
+                "UPDATE users  SET  email=?, username=?, firstname=?, lastname=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
+
                 t.getEmail(),
                 t.getUsername(),
-                t.getAvatarURL(),
                 t.getFirstname(),
                 t.getLastname(),
                 t.getPhoneNumber(),
@@ -147,6 +163,7 @@ public class UserDAO extends SQLDatabase {
     
     public int updateAvatar(User t) {
         int ketQua = 0;
+        System.out.println("update avatar in dao: " + t.getAvatarURL());
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE users  SET  avatarUrl=? WHERE id=?",
                 t.getAvatarURL(),

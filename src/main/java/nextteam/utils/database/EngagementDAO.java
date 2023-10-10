@@ -15,7 +15,6 @@ import nextteam.Global;
 import nextteam.models.Club;
 import nextteam.models.Department;
 import nextteam.models.Engagement;
-import nextteam.models.HomeTown;
 import nextteam.models.Role;
 import nextteam.models.User;
 import nextteam.utils.SQLDatabase;

@@ -1,4 +1,4 @@
-﻿USE NextTeam
+USE NextTeam
 GO
 /*
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -41,14 +41,6 @@ GO
 		PRIMARY KEY (id)
 	);
 
-	CREATE TABLE homeTowns (
-		id      INT NOT NULL IDENTITY(1, 1),
-		country NVARCHAR(56),
-		city    NVARCHAR(128)
-
-		PRIMARY KEY (id)
-	);
-
 	CREATE TABLE users (
 		id           INT NOT NULL IDENTITY(1, 1),
 		email        VARCHAR(255) NOT NULL,
@@ -64,7 +56,7 @@ GO
 		academicYear INT,
 		gender       VARCHAR(10) NOT NULL,
 		dob          DATE,
-		homeTown     INT,
+		homeTown     VARCHAR(10),
 		facebookUrl  VARCHAR(MAX),
 		linkedInUrl  VARCHAR(MAX),
 		createdAt    DATETIME DEFAULT(GETDATE()),
@@ -73,8 +65,7 @@ GO
 		isAdmin      BIT DEFAULT(0),
 
 		PRIMARY KEY (id),
-		FOREIGN KEY (major)    REFERENCES majors(id),
-		FOREIGN KEY (homeTown) REFERENCES homeTowns(id)
+		FOREIGN KEY (major)    REFERENCES majors(id)
 	);
 
 	CREATE TABLE clubCategories(
@@ -102,8 +93,6 @@ GO
 		FOREIGN KEY (categoryId) REFERENCES clubCategories(id)
 	);
 
-
-
 	CREATE TABLE departments (
 		id     INT NOT NULL IDENTITY(1, 1),
 		clubId INT,
@@ -128,8 +117,9 @@ GO
 		roleId       INT,
 		cvUrl        VARCHAR(MAX) NOT NULL, /*add*/
 		status 	     INT DEFAULT(0),
+		points       INT DEFAULT(0),
 		createdAt    DATETIME DEFAULT(GETDATE()),
-		updatedAt    DATETIME DEFAULT(GETDATE()),
+		updatedAt    DATETIME DEFAULT(GETDATE())
 
 		PRIMARY KEY (id),
 		FOREIGN KEY (userId)       REFERENCES users(id),
@@ -176,7 +166,7 @@ GO
 		bannerUrl	 VARCHAR(MAX),  /* add 2 */
 		isApproved   BIT DEFAULT(NULL),
 		response     NTEXT,
-		clubId       INT NOT NULL,
+		clubId       INT,
 		createdAt    DATETIME DEFAULT(GETDATE()),
 		updatedAt    DATETIME DEFAULT(GETDATE())
 
@@ -228,9 +218,23 @@ GO
 		FOREIGN KEY (clubId) REFERENCES clubs(id)
 	);
 
+	CREATE TABLE feedbacks (
+		id INT IDENTITY(1,1),
+		userId INT NOT NULL,
+		eventId INT NOT NULL,
+		point INT,
+		content VARCHAR(255),
+		createdAt DATETIME DEFAULT(GETDATE()),
+		updatedAt DATETIME DEFAULT(GETDATE()),
+
+		PRIMARY KEY (id),
+		FOREIGN KEY (userId) REFERENCES users(id),
+		FOREIGN KEY (eventId) REFERENCES events(id)
+	);
+
 	CREATE TABLE privateNotifications (
 		id        INT NOT NULL IDENTITY(1, 1),
-		clubId    INT NOT NULL,
+		clubId    INT,
 		sendTo    INT NOT NULL,
 		hasSeen   BIT DEFAULT(0),
 		seenTime  DATETIME,
@@ -357,7 +361,7 @@ GO
 		receivedBy INT NOT NULL,
 		clubId     INT NOT NULL,
 		amount     INT NOT NULL,
-		reason     VARCHAR (255),
+		reason     NVARCHAR (255),
 		createdAt  DATETIME DEFAULT(GETDATE()),
 		updatedAt  DATETIME DEFAULT(GETDATE()),
 
@@ -643,19 +647,122 @@ GO
 		INNER JOIN inserted ON paymentExpenses.id = inserted.id;
 	END;
 	GO
+	IF OBJECT_ID('TR_UpdateFeedback', 'TR') IS NOT NULL /* for feedbacks */
+		DROP TRIGGER TR_UpdateFeedback
+	GO
+	CREATE TRIGGER TR_UpdateFeedback
+	ON feedbacks
+	AFTER UPDATE
+	AS
+	BEGIN
+		UPDATE feedbacks
+		SET updatedAt = GETDATE()
+		FROM feedbacks
+		INNER JOIN inserted ON feedbacks.id = inserted.id;
+	END;
+	GO
 	IF OBJECT_ID('TR_UpdatePointsHistory', 'TR') IS NOT NULL /* for pointsHistories */
-		DROP TRIGGER TR_UpdatePointsHistoryy
+		DROP TRIGGER TR_UpdatePointsHistory;
 	GO
 	CREATE TRIGGER TR_UpdatePointsHistory
 	ON pointsHistories
 	AFTER UPDATE
 	AS
 	BEGIN
+		DECLARE @engagementPoint INT, @engagementId INT, @amount1 INT, @amount2 INT, @clubId INT;
+
+		SELECT @amount1=amount, @clubId=clubId
+		FROM deleted;
+
+		SELECT @amount2=amount
+		FROM inserted;
+
+		SELECT @engagementId=engagements.id, @engagementPoint=points
+		FROM engagements
+			INNER JOIN inserted
+			ON engagements.userId = inserted.receivedBy
+		WHERE engagements.clubId=@clubId;
+
+		UPDATE engagements
+		SET points=@engagementPoint-@amount1+@amount2
+		WHERE id=@engagementId;
+
 		UPDATE pointsHistories
 		SET updatedAt = GETDATE()
 		FROM pointsHistories
 		INNER JOIN inserted ON pointsHistories.id = inserted.id;
 	END;
+	GO
+	IF OBJECT_ID('TR_AddPointsHistory', 'TR') IS NOT NULL /* for pointsHistories */
+		DROP TRIGGER TR_AddPointsHistory;
+	GO
+	CREATE TRIGGER TR_AddPointsHistory
+	ON pointsHistories
+	AFTER INSERT
+	AS
+	BEGIN
+		DECLARE @engagementPoint INT, @engagementId INT, @amount INT, @clubId INT;
+
+		SELECT @amount=SUM(amount), @clubId=clubId
+		FROM inserted
+		GROUP BY clubId;
+
+		SELECT @engagementId=engagements.id, @engagementPoint=points
+		FROM engagements
+			INNER JOIN inserted
+			ON engagements.userId = inserted.receivedBy
+		WHERE engagements.clubId=@clubId;
+
+		UPDATE engagements
+		SET points=@engagementPoint+@amount
+		WHERE id=@engagementId;
+	END;
+	GO
+
+	IF OBJECT_ID('TR_DeletePointsHistory', 'TR') IS NOT NULL
+		DROP TRIGGER TR_DeletePointsHistory;
+	GO
+	CREATE TRIGGER TR_DeletePointsHistory
+	ON pointsHistories
+	AFTER DELETE
+	AS 
+	BEGIN
+		DECLARE @engagementPoint INT, @engagementId INT, @amount INT, @clubId INT;
+
+		SELECT @amount=SUM(amount), @clubId=clubId
+		FROM deleted
+		GROUP BY clubId;
+
+		SELECT @engagementId=engagements.id, @engagementPoint=points
+		FROM engagements
+			INNER JOIN deleted
+			ON engagements.userId = deleted.receivedBy
+		WHERE engagements.clubId=@clubId;
+
+		UPDATE engagements
+		SET points=@engagementPoint-@amount
+		WHERE id=@engagementId;
+	END
+	GO
+	IF OBJECT_ID('TR_AfterInsertPaymentCategory', 'TR') IS NOT NULL /* for paymentCategories */
+		DROP TRIGGER TR_AfterInsertPaymentCategory;
+	GO
+	CREATE TRIGGER TR_AfterInsertPaymentCategory
+	ON [NextTeam].[dbo].[paymentCategories]
+	AFTER INSERT
+	AS
+	BEGIN
+		DECLARE @NewCategoryId INT;
+		DECLARE @ClubId INT;
+    
+		SELECT @NewCategoryId = [id], @ClubId = [clubId]
+		FROM inserted;
+		INSERT INTO [NextTeam].[dbo].[transactionHistories] ([paidBy], [categoryId], [status])
+		SELECT  [userId], @NewCategoryId, 0
+		FROM engagements
+		WHERE [clubId] = @ClubId AND [status] =1;
+	END;
+
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>> END: TẠO TRIGGER >>>>>>>>>>
@@ -696,13 +803,6 @@ GO
 <<<<<<<<<< BEGIN: DỮ LIỆU MẪU <<<<<<<<<<
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 */
-
-	INSERT INTO homeTowns (country, city)
-	VALUES (N'Việt Nam', N'Hà Nội'),
-	       (N'Việt Nam', N'Hồ Chí Minh'),
-	       (N'Việt Nam', N'Đà Nẵng'),
-	       (N'Việt Nam', N'Hải Phòng'),
-	       (N'Việt Nam', N'Cần Thơ');
 
 	INSERT INTO clubCategories(name)
 	VALUES (N'Học thuật'),
@@ -754,8 +854,9 @@ GO
 		   ('manager')
 
 	INSERT INTO users(email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber, major, academicYear, gender, dob, homeTown, isAdmin)
-	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn', N'Bảo Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', 1, 0),
-           ('tranvietdangquang@gmail.com', 'DE170014', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Việt', N'Đăng Quang', '0866191103', 1, 2021, 'Male', '2023-11-19', 1, 1)
+	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn Bảo', N'Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', '', 0),
+           ('tranvietdangquang@gmail.com', 'DE170014', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Việt Đăng', N'Quang', '0866191103', 1, 2021, 'Male', '2023-11-19', '', 1),
+           ('vnitd.owner@gmail.com', 'DE170015', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Thị Hải', N'Đăng', '0123456789', 1, 2021, 'Female', '2003-11-19', '', 0)
 
 	INSERT INTO publicNotifications(clubId, title, content)
 	VALUES (1, N'FUDN [FPTU.DN-DVSV] - V/v triển khai đăng ký học bằng lái xe kỳ Fall 2023 (Đợt 1)', N'PHAN GIA BẢO'),
@@ -792,6 +893,18 @@ GO
 		NULL,
 		2
 	);
+
+	INSERT INTO departments
+	VALUES (1, N'Ban Nhân sự'),
+		   (2, N'Ban Học thuật');
+
+	INSERT INTO engagements(userId, departmentId, clubId, roleId, cvUrl, status)
+	VALUES (1, 1, 1, 2, '', 1),
+	       (2, 2, 1, 1, '', 1),
+	       (3, 2, 1, 1, '', 1);
+
+	INSERT INTO pointsHistories(createdBy, receivedBy, clubId, amount, reason)
+	VALUES (1, 2, 1, -5, N'Vắng mặt'),(1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
 
 
 /*

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nextteam.Global;
 import nextteam.models.Major;
 import nextteam.utils.SQLDatabase;
 
@@ -36,6 +37,15 @@ public class MajorDAO extends SQLDatabase {
             Logger.getLogger(MajorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return majors;
+    }
+    
+    
+    
+    public static void main(String... args) {
+        List<Major> major = new MajorDAO(Global.generateConnection()).getAllMajors();
+      
+        System.out.println("list of clubs: " + major);
+     
     }
 
 }
