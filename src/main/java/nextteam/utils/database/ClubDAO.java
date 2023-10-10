@@ -89,7 +89,7 @@ public class ClubDAO extends SQLDatabase {
 
     public ArrayList<Club> getListClubsOfMe(String userId) {
         ArrayList<Club> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT clubs.id, clubs.name, clubs.subname FROM engagements INNER JOIN clubs ON engagements.clubId = clubs.id WHERE engagements.userId =?", userId);
+        ResultSet rs = executeQueryPreparedStatement("SELECT clubs.id, clubs.name, clubs.subname FROM engagements INNER JOIN clubs ON engagements.clubId = clubs.id WHERE engagements.userId =? AND engagements.status=1", userId);
         try {
 
             while (rs.next()) {

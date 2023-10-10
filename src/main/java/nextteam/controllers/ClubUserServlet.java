@@ -34,6 +34,8 @@ private final Gson gson = new Gson();
         }
         else if(action.equals("view-club-member")){
             viewClubMember(request,response);
+        }else if(action.equals("view-list-user")){
+            viewListUser(request,response);
         }
     }
 
@@ -79,6 +81,23 @@ private final Gson gson = new Gson();
 
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<User> users = Global.user.getListMember(clubId);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(users);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+    }
+    
+     protected void viewListUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter out = response.getWriter();
+
+         List<User> users = Global.user.getListUsers();
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(users);

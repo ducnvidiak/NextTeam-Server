@@ -221,7 +221,7 @@ public class PrivateNotificationDAO extends SQLDatabase {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "INSERT INTO privateNotifications (clubId, sendTo, title, content)  VALUES (?,?,?,?)",
-                t.getClubId(),
+                t.getClubId() == 0 ? null : t.getClubId(),
                 t.getSendTo(),
                 t.getTitle(),
                 t.getContent()
@@ -258,6 +258,20 @@ public class PrivateNotificationDAO extends SQLDatabase {
         );
         return ketQua;
 
+    }
+    
+    public List<PrivateNotificationDetail> getAllPrivateNotificationsFromAdmin() {
+        List<PrivateNotificationDetail> privateNotificationDetails = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT privateNotifications.* , users.firstname, users.lastname FROM privateNotifications INNER JOIN users ON privateNotifications.sendTo = users.id WHERE privateNotifications.clubId IS NULL ORDER BY privateNotifications.updatedAt DESC");
+        try {
+            while (rs.next()) {
+               PrivateNotificationDetail pn = new PrivateNotificationDetail(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getBoolean(4), rs.getTimestamp(5), rs.getString(6), rs.getString(7), rs.getTimestamp(8), rs.getTimestamp(9), rs.getString(10),rs.getString(11));
+                privateNotificationDetails.add(pn);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PublicNotificationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return privateNotificationDetails;
     }
 
 }

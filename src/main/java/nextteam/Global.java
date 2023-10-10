@@ -14,6 +14,7 @@ import nextteam.utils.database.ClubCategoriesDAO;
 import nextteam.utils.database.ClubDAO;
 import nextteam.utils.database.DepartmentDAO;
 import nextteam.utils.database.EngagementDAO;
+import nextteam.utils.database.EntranceInterviewDAO;
 import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.EventRegistrationDAO;
 import nextteam.utils.database.FeedbackDAO;
@@ -21,6 +22,7 @@ import nextteam.utils.database.LocationDAO;
 import nextteam.utils.database.MajorDAO;
 import nextteam.utils.database.NotificationDAO;
 import nextteam.utils.database.OtpCodeDAO;
+import nextteam.utils.database.PaymentDAO;
 import nextteam.utils.database.PrivateNotificationDAO;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.RoleDAO;
@@ -36,7 +38,7 @@ public class Global {
     public static String server = "localhost";
     public static String database = "NextTeam";
     public static String username = "sa";
-    public static String password = "Bao.thang.1912";
+    public static String password = "Phanbao@123";
 
     private static Connection conn;
 
@@ -53,9 +55,11 @@ public class Global {
     public static EngagementDAO engagement;
     public static RoleDAO role;
     public static NotificationDAO notification;
+    public static EntranceInterviewDAO entranceInterview;
     public static LocationDAO location;
     public static EventRegistrationDAO eventRegistration;
     public static ClubCategoriesDAO clubCategories;
+    public static PaymentDAO payment;
     public static FeedbackDAO feedback;
 
     public static final byte[] KEY = {
@@ -96,9 +100,11 @@ public class Global {
         engagement = new EngagementDAO(conn);
         role = new RoleDAO(conn);
         notification = new NotificationDAO(conn);
+        entranceInterview = new EntranceInterviewDAO(conn);
         location = new LocationDAO(conn);
         eventRegistration = new EventRegistrationDAO(conn);
         clubCategories = new ClubCategoriesDAO(conn);
+        payment = new PaymentDAO(conn);
         feedback = new FeedbackDAO(conn);
     }
 
