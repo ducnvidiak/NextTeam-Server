@@ -88,7 +88,7 @@ public class PublicNotificationDAO extends SQLDatabase {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "INSERT INTO publicNotifications (clubId, title, content)  VALUES (?,?,?)",
-                t.getClubId(),
+                t.getClubId() == 0 ? null : t.getClubId(), 
                 t.getTitle(),
                 t.getContent()
         );
@@ -121,6 +121,20 @@ public class PublicNotificationDAO extends SQLDatabase {
                 userId
         );
         return ketQua;
+    }
+     
+     public List<PublicNotification> getAllWideNotifications() {
+        List<PublicNotification> publicNotifications = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM publicNotifications WHERE clubId IS NULL ORDER BY createdAt DESC");
+        try {
+            while (rs.next()) {
+                PublicNotification pn = new PublicNotification(rs.getInt(1), rs.getInt(2), rs.getNString(3), rs.getNString(4), rs.getTimestamp(5), rs.getTimestamp(6));
+                publicNotifications.add(pn);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PublicNotificationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return publicNotifications;
     }
 
     

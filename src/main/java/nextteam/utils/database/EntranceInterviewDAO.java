@@ -54,6 +54,30 @@ public class EntranceInterviewDAO extends SQLDatabase {
         }
         return ketQua;
     }
+    public EntranceInterview getInterviewByEngagementId(String id) {
+        EntranceInterview ketQua = null;
+        try {
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM entranceInterviews WHERE engagementId=?", id);
+            if (rs.next()) {
+                ketQua = new EntranceInterview(rs.getInt(1), rs.getTimestamp(2),rs.getTimestamp(3),rs.getInt(4),rs.getString(5),  rs.getBoolean(6),rs.getInt(7), rs.getTimestamp(8),rs.getTimestamp(9));
+            }
+        } catch (Exception e) {
+        }
+        return ketQua;
+    }
+    
+    public int Update(EntranceInterview e) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE entranceInterviews SET  comment=?, isApproved=?,approvedBy=? WHERE id=?",
+                e.getComment(),
+                e.isIsApproved(),
+                e.getApprovedBy(),
+                e.getId()             
+        );
+        return ketQua;
+
+    }
     
    
 }

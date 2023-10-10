@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nextteam.Global;
 import nextteam.models.Department;
 import nextteam.models.HomeTown;
 import nextteam.utils.SQLDatabase;
 
 /**
  *
- * @author vnitd
+ * @author bravee06
  */
 public class DepartmentDAO extends SQLDatabase {
 
@@ -38,6 +39,32 @@ public class DepartmentDAO extends SQLDatabase {
         }
         return departments;
     }
+
+    public int addDepartment(Department d) {
+        int rs = 0;
+        rs = executeUpdatePreparedStatement(
+                "INSERT INTO departments (clubid,name) VALUES (?, ?)",
+                d.getClubId(),
+                d.getName()
+        );
+        return rs;
+    }
+
+    public int updateClub(Department d, int id) {
+        int rs = 0;
+        rs = executeUpdatePreparedStatement("UPDATE departments  SET clubid=? WHERE id=?",
+                d.getClubId(),
+                d.getName(),
+                id);
+        return rs;
+    }
+
+    public int deleteClub(int id) {
+        int rs = 0;
+        rs = executeUpdatePreparedStatement("DELETE from departments  WHERE id=?", id);
+        return rs;
+    }
+
     public Department getDepartmentById(String id) {
         Department ketQua = null;
         try {
@@ -48,5 +75,10 @@ public class DepartmentDAO extends SQLDatabase {
         } catch (Exception e) {
         }
         return ketQua;
+    }
+    
+    public static void main(String[] args) {
+        DepartmentDAO dp = new DepartmentDAO(Global.generateConnection());
+        System.out.println(dp.getAllDepartments("1"));
     }
 }

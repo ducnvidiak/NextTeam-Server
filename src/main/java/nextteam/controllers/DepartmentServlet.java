@@ -73,15 +73,11 @@ private final Gson gson = new Gson();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String clubId = request.getParameter("clubId");
-
         PrintWriter out = response.getWriter();
-
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Department> departments = Global.department.getAllDepartments(clubId);
-
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(departments);
-
         // Gửi JSON response về client
         out.print(json);
         out.flush();

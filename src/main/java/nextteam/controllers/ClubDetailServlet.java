@@ -14,17 +14,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
-import static nextteam.Global.user;
 import nextteam.models.Club;
 import nextteam.models.PublicNotification;
-import nextteam.models.User;
 
 /**
  *
  * @author baopg
  */
-public class ClubUserServlet extends HttpServlet {
-private final Gson gson = new Gson();
+@WebServlet(name = "ClubDetailServlet", urlPatterns = {"/club-detail"})
+public class ClubDetailServlet extends HttpServlet {
+
+    private final Gson gson = new Gson();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,15 +37,11 @@ private final Gson gson = new Gson();
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("!!!");
         String action = request.getParameter("action");
-        if (action.equals("view-my-list")){
-            viewMyList(request, response);
-        }
-        else if(action.equals("view-club-member")){
-            viewClubMember(request,response);
-        }else if(action.equals("view-list-user")){
-            viewListUser(request,response);
-        }
+//        if (action.equals("view-my-list")) {
+//            viewMyList(request, response);
+//        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -59,7 +56,22 @@ private final Gson gson = new Gson();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String userId = request.getParameter("userId");
+        String subname = request.getParameter("subname");
+
+        PrintWriter out = response.getWriter();
+
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        Club clubs = Global.clubDAO.getClubDetailBySubname(userId, subname);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(clubs);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
     }
 
     /**
@@ -75,11 +87,13 @@ private final Gson gson = new Gson();
             throws ServletException, IOException {
         processRequest(request, response);
     }
+
     protected void viewMyList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
+        String subname = request.getParameter("subname");
 
         PrintWriter out = response.getWriter();
 
@@ -88,41 +102,6 @@ private final Gson gson = new Gson();
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(clubs);
-
-        // Gửi JSON response về client
-        out.print(json);
-        out.flush();
-    }
-    protected void viewClubMember(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        String clubId = request.getParameter("clubId");
-
-        PrintWriter out = response.getWriter();
-
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<User> users = Global.user.getListMember(clubId);
-
-        // Chuyển danh sách thành dạng JSON
-        String json = gson.toJson(users);
-
-        // Gửi JSON response về client
-        out.print(json);
-        out.flush();
-    }
-    
-     protected void viewListUser(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        PrintWriter out = response.getWriter();
-
-         List<User> users = Global.user.getListUsers();
-
-        // Chuyển danh sách thành dạng JSON
-        String json = gson.toJson(users);
 
         // Gửi JSON response về client
         out.print(json);

@@ -137,7 +137,7 @@ public class EngagementDAO extends SQLDatabase {
         info.setClub(Global.clubDAO.getClubById(t.getClubId()+ ""));
         info.setRole(Global.role.getRoleById(t.getRoleId()+ ""));
         info.setEngagement(Global.engagement.getEngagementById(t.getId()+""));
-        info.setInterview(Global.entranceInterview.getInterviewById(t.getId()+""));
+        info.setInterview(Global.entranceInterview.getInterviewByEngagementId(t.getId()+""));
         return info;
     }
     
@@ -152,4 +152,36 @@ public class EngagementDAO extends SQLDatabase {
         
         return res;
     }
+    
+    public int ApproveApplication(String id) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE engagements SET  roleId=1, status=1 WHERE id=?",
+                id
+             
+        );
+        return ketQua;
+
+    }
+     public int RejectApplication(String id) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE engagements SET roleId=NULL, status=3 WHERE id=?",
+                id
+             
+        );
+        return ketQua;
+
+    }
+     public int InterviewApplication(String id) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE engagements SET  status=2 WHERE id=?",
+                id
+             
+        );
+        return ketQua;
+
+    }
+
 }
