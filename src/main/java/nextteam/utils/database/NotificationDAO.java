@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nextteam.models.HomeTown;
 import nextteam.models.PrivateNotification;
 import nextteam.models.PublicNotification;
 import nextteam.models.User;

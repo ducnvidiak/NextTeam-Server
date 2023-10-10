@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.Global;
 import nextteam.models.Department;
-import nextteam.models.HomeTown;
 import nextteam.utils.SQLDatabase;
 
 /**

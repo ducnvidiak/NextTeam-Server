@@ -111,7 +111,9 @@ public class UserRegisterServlet extends HttpServlet {
         UserDAO userDb = Global.user;
         if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return 1;
+
         } else if (!user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,30}$")) {
+
             return 2;
         } else if (!user.getUsername().matches("^[HhDdSsQqCc][AaEeSs][0-9]{6}$")) {
             return 3;
@@ -128,24 +130,34 @@ public class UserRegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String firstname = request.getParameter("firstname");
-        String lastname = request.getParameter("lastname");
-        String username = request.getParameter("studentCode").toUpperCase();
-        String phoneNumber = request.getParameter("phoneNumber");
-        String gender = request.getParameter("gender");
+        BufferedReader reader = request.getReader();
+        User user = gson.fromJson(reader, User.class);
+        
+//        String email = request.getParameter("email");
+//        String password = request.getParameter("password");
+//        String firstname = request.getParameter("firstname");
+//        String lastname = request.getParameter("lastname");
+//        String username = request.getParameter("studentCode").toUpperCase();
+//        String phoneNumber = request.getParameter("phoneNumber");
+//        String gender = request.getParameter("gender");
+        System.out.println("email: " + user.getEmail());
+        System.out.println("password: " + user.getPassword());
+        System.out.println("firstname: " + user.getFirstname());
+        System.out.println("lastname: " + user.getLastname());
+        System.out.println("student code: " + user.getUsername());
+        System.out.println("phoneNumber: " + user.getPhoneNumber());
         //public User(String email, String username, String password, String studentCode, String phoneNumber, String gender)
-        User user = new User(email, username, password, phoneNumber, gender);
-        user.setFirstname(firstname);
-        user.setLastname(lastname);
+//        User user = new User(email, username, password, phoneNumber, gender);
+//        user.setFirstname(firstname);
+//        user.setLastname(lastname);
 
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         System.out.println("Yêu cầu đăng ký");
         PrintWriter out = response.getWriter();
         ////////////////////////
         int res = checkUser(user);
-        user.setPassword(Global.getHashedPassword(password));
+        user.setPassword(Global.getHashedPassword(user.getPassword()));
 
         if (res == 0) {
             Global.user.register(user);

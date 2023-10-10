@@ -40,7 +40,7 @@ public class LocationDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+//            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
     }

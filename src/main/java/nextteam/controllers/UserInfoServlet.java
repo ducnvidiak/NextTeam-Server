@@ -60,6 +60,7 @@ public class UserInfoServlet extends HttpServlet {
         User user = gson.fromJson(reader, User.class);
 
         System.out.println("data update: " + user.getUsername());
+        System.out.println("data update hometown: " + user.getHomeTown());
         int status = new UserDAO(Global.generateConnection()).update(user);
         String resJsonString = this.gson.toJson(status == 1 ? new Success("success") : new Success("failure"));
         PrintWriter out = response.getWriter();

@@ -43,8 +43,9 @@ public class Club {
         this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-       
+
     }
+
     //getListClubs
     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt, boolean isActive, int numberOfMembers) {
         this.id = id;
@@ -81,8 +82,7 @@ public class Club {
         this.avatarUrl = avatarUrl;
         this.movementPoint = movementPoint;
     }
-    
-    
+
 // get club of me
     public Club(int id, String name, String subname) {
         this.id = id;
@@ -90,6 +90,7 @@ public class Club {
         this.subname = subname;
     }
 // getClubDetailBySubname
+
     public Club(int aInt, String string, String string0, String string1, String string2, int aInt0, int aInt1, String string3, Timestamp timestamp, boolean aBoolean) {
         this.id = aInt;
         this.name = string;
@@ -102,7 +103,6 @@ public class Club {
         this.createdAt = timestamp;
     }
 
-    
     public Club(String name, String subname, int categoryId, String description, String avatarUrl,
             String bannerUrl, int movementPoint, double balance, boolean isActive) {
         this.id = id;
@@ -116,10 +116,6 @@ public class Club {
         this.balance = balance;
         this.isActive = isActive;
     }
-
-
-    
-    
 
     public int getId() {
         return id;
@@ -216,9 +212,10 @@ public class Club {
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
-    public String getCategoryName(){
-         ClubCategories c = new ClubCategoriesDAO(Global.generateConnection()).getClubsCategoriesByID(this.categoryId);
-         return c.getName();
+
+    public String getCategoryName() {
+        ClubCategories c = new ClubCategoriesDAO(Global.generateConnection()).getClubsCategoriesByID(this.categoryId);
+        return c.getName();
     }
 
     @Override

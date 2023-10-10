@@ -61,7 +61,7 @@ public class ClubDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+//            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
     }
@@ -82,7 +82,7 @@ public class ClubDAO extends SQLDatabase {
                 list.add(new ClubResponse(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getTimestamp(10), rs.getDate(11), rs.getBoolean(12), rs.getInt("numberOfMembers"), rs.getBoolean("isJoined")));
             }
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+//            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
     }
@@ -113,7 +113,7 @@ public class ClubDAO extends SQLDatabase {
                 list.add(new ClubRanking(new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5))));
             }
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+//            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
     }
@@ -186,8 +186,23 @@ public class ClubDAO extends SQLDatabase {
     // test connection 
     public static void main(String... args) {
         List<Club> club = new ClubDAO(Global.generateConnection()).getListClubs();
-
         System.out.println(club);
+//String name = "Club Name Tuan";
+//String subname = "Subname";
+//int categoryId = 2;
+//String description = "";
+//String avatarUrl = "";
+//String bannerUrl = "";
+//int movementPoint = 100;
+//double balance = 1000.0;
+//int id = 17;
+//Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance);
+//
+//        int a = new ClubDAO(Global.generateConnection()).updateClub(c, id);
+//        System.out.println(a);
+//        int b = new ClubDAO(Global.generateConnection()).deleteClub(id);
+//        System.out.println(b);
+
 
     }
 
