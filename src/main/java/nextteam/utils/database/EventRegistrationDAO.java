@@ -42,6 +42,7 @@ public class EventRegistrationDAO extends SQLDatabase {
                 + "  u.firstname,\n"
                 + "  u.lastname,\n"
                 + "  u.email,\n"
+                + "  u.username,\n"
                 + "  u.phoneNumber,\n"
                 + "  er.createdAt\n"
                 + "FROM eventRegistrations er\n"
@@ -53,6 +54,7 @@ public class EventRegistrationDAO extends SQLDatabase {
                 EventRegistrationResponse eventRegistrationResponse = new EventRegistrationResponse(
                         rs.getString("firstname"),
                         rs.getString("lastname"),
+                        rs.getString("username"),
                         rs.getString("email"),
                         rs.getString("phoneNumber"),
                         rs.getDate("createdAt")

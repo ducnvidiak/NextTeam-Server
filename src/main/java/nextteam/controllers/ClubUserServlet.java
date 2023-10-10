@@ -23,7 +23,6 @@ import nextteam.models.User;
  *
  * @author baopg
  */
-@WebServlet(name = "ClubUserServlet", urlPatterns = {"/club-user"})
 public class ClubUserServlet extends HttpServlet {
 private final Gson gson = new Gson();
   

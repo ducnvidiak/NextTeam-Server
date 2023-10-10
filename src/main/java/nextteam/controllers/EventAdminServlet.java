@@ -16,13 +16,13 @@ import nextteam.models.Event;
 import nextteam.models.response.EventResponse;
 import nextteam.utils.database.EventDAO;
 
-@WebServlet(name = "EventServlet", urlPatterns = {"/events"})
-public class EventServlet extends HttpServlet {
+@WebServlet(name = "EventAdminServlet", urlPatterns = {"/admin-events"})
+public class EventAdminServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
     private final EventDAO eventDAO;
 
-    public EventServlet() {
+    public EventAdminServlet() {
         // Khởi tạo EventDAO với kết nối cơ sở dữ liệu
         this.eventDAO = Global.eventDao;
     }
@@ -31,18 +31,19 @@ public class EventServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String command = request.getParameter("cmd");
+        String clubId = request.getParameter("clubId");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
         System.out.println(command);
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
-            List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+            List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
-            response.getWriter().write(eventsJsonString);
+            response.getWriter().write(events.toString());
 //            out.print(events.toString());
             out.flush();
         }
@@ -55,6 +56,7 @@ public class EventServlet extends HttpServlet {
         String cmd = request.getParameter("cmd");
         String eventId = request.getParameter("eventId");
         String userId = request.getParameter("userId");
+        String clubId = request.getParameter("clubId");
 
         switch (cmd) {
             case "create" -> {
@@ -69,9 +71,13 @@ public class EventServlet extends HttpServlet {
                     }
                     Event event = gson.fromJson(jsonInput.toString(), Event.class);
                     System.out.println(event.getName());
-                    Global.eventDao.createEvent(event);
+                    Global.eventDao.createEventForAdmin(event);
+                    List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
+                    String eventsJsonString = gson.toJson(events);
                     response.setContentType("application/json");
-                    response.getWriter().write(gson.toJson(event));
+                    response.setCharacterEncoding("UTF-8");
+                    PrintWriter out = response.getWriter();
+                    response.getWriter().write(eventsJsonString);
                 } catch (JsonSyntaxException e) {
                     // Xử lý ngoại lệ khi có lỗi cú pháp JSON
                     System.out.println("????");
@@ -116,9 +122,8 @@ public class EventServlet extends HttpServlet {
                 }
             }
             case "delete" -> {
-                System.out.println("delete!!!!!");
                 int rs = Global.eventDao.deleteEventByEventId(eventId);
-                List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+                List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
                 String eventsJsonString = gson.toJson(events);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
