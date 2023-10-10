@@ -30,7 +30,6 @@ import nextteam.utils.database.EventDAO;
  *
  * @author baopg
  */
-@WebServlet(name = "ClubDetailServlet", urlPatterns = {"/event-registration"})
 public class EventRegistrationServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
@@ -108,6 +107,7 @@ public class EventRegistrationServlet extends HttpServlet {
             } else {
                 response.setStatus(HttpServletResponse.SC_OK);
                 List<EventResponse> events = eventDAO.getAllEventsDetail(String.valueOf(eventRegistration.getRegisteredBy()));
+//                List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
                 System.out.println("events" + events);
                 System.out.println("nextteam.controllers.EventServlet.doGet()" + events);
                 // Chuyển danh sách sự kiện thành JSON

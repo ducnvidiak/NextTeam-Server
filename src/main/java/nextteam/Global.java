@@ -16,6 +16,7 @@ import nextteam.utils.database.DepartmentDAO;
 import nextteam.utils.database.EngagementDAO;
 import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.EventRegistrationDAO;
+import nextteam.utils.database.FeedbackDAO;
 import nextteam.utils.database.LocationDAO;
 import nextteam.utils.database.MajorDAO;
 import nextteam.utils.database.NotificationDAO;
@@ -55,6 +56,7 @@ public class Global {
     public static LocationDAO location;
     public static EventRegistrationDAO eventRegistration;
     public static ClubCategoriesDAO clubCategories;
+    public static FeedbackDAO feedback;
 
     public static final byte[] KEY = {
         46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
@@ -97,6 +99,7 @@ public class Global {
         location = new LocationDAO(conn);
         eventRegistration = new EventRegistrationDAO(conn);
         clubCategories = new ClubCategoriesDAO(conn);
+        feedback = new FeedbackDAO(conn);
     }
 
     public static void closeDAOConnection() {

@@ -18,6 +18,8 @@ public class EventResponse extends Event {
     private String clubSubname;
     private String clubAvatarUrl;
     private boolean isRegistered;
+    private float avgRating;
+    private boolean isFeedback;
 
     public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, boolean isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered) {
         super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
@@ -26,6 +28,25 @@ public class EventResponse extends Event {
         this.clubAvatarUrl = clubAvatarUrl;
         this.isRegistered = isRegistered;
     }
+    
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, boolean isApproved, String locationName, String clubSubname, String clubAvatarUrl) {
+        super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
+        this.locationName = locationName;
+        this.clubSubname = clubSubname;
+        this.clubAvatarUrl = clubAvatarUrl;
+    }
+
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, boolean isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered,float avgRating, boolean isFeedback) {
+        super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
+        this.locationName = locationName;
+        this.clubSubname = clubSubname;
+        this.clubAvatarUrl = clubAvatarUrl;
+        this.isRegistered = isRegistered;
+        this.avgRating = avgRating;
+        this.isFeedback = isFeedback;
+    }
+    
+    
 
     public String getLocationName() {
         return locationName;
