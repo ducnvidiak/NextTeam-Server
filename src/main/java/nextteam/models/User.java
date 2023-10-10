@@ -243,4 +243,7 @@ public class User {
         this.isActive = isActive;
     }
 
+    public String getFullname() {
+        return firstname + " " + lastname;
+    }
 }

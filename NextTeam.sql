@@ -1,4 +1,4 @@
-USE NextTeam
+﻿USE NextTeam
 GO
 /*
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -904,7 +904,7 @@ GO
 	       (3, 2, 1, 1, '', 1);
 
 	INSERT INTO pointsHistories(createdBy, receivedBy, clubId, amount, reason)
-	VALUES (1, 2, 1, -5, N'Vắng mặt'),(1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
+	VALUES (1, 2, 1, -5, N'Vắng mặt trong sự kiện #0'),(1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
 
 
 /*

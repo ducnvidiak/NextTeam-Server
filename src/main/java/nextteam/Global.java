@@ -22,6 +22,7 @@ import nextteam.utils.database.LocationDAO;
 import nextteam.utils.database.MajorDAO;
 import nextteam.utils.database.NotificationDAO;
 import nextteam.utils.database.OtpCodeDAO;
+import nextteam.utils.database.PointHistoryDAO;
 import nextteam.utils.database.PaymentDAO;
 import nextteam.utils.database.PrivateNotificationDAO;
 import nextteam.utils.database.PublicNotificationDAO;
@@ -38,7 +39,7 @@ public class Global {
     public static String server = "localhost";
     public static String database = "NextTeam";
     public static String username = "sa";
-    public static String password = "Phanbao@123";
+    public static String password = "1";
 
     private static Connection conn;
 
@@ -55,6 +56,7 @@ public class Global {
     public static EngagementDAO engagement;
     public static RoleDAO role;
     public static NotificationDAO notification;
+    public static PointHistoryDAO pointHistory;
     public static EntranceInterviewDAO entranceInterview;
     public static LocationDAO location;
     public static EventRegistrationDAO eventRegistration;
@@ -100,6 +102,7 @@ public class Global {
         engagement = new EngagementDAO(conn);
         role = new RoleDAO(conn);
         notification = new NotificationDAO(conn);
+        pointHistory = new PointHistoryDAO(conn);
         entranceInterview = new EntranceInterviewDAO(conn);
         location = new LocationDAO(conn);
         eventRegistration = new EventRegistrationDAO(conn);
