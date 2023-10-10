@@ -39,7 +39,7 @@ public class PointHistoryDAO extends SQLDatabase {
                         rs.getInt("receivedBy"),
                         rs.getInt("clubId"),
                         rs.getInt("amount"),
-                        rs.getNString("reason"),
+                        rs.getNString("reason") == null ? rs.getInt("amount") > 0 ? "Cộng điểm" : "Trừ điểm" : rs.getNString("reason"),
                         rs.getTimestamp("createdAt"),
                         rs.getTimestamp("updatedAt")
                 ));
@@ -99,7 +99,7 @@ public class PointHistoryDAO extends SQLDatabase {
                         getReceivedBy(),
                         getClubId(),
                         getAmount(),
-                        getReason(),
+                        getReason() == null ? getAmount() > 0 ? "Cộng điểm" : "Trừ điểm" : getReason(),
                         createdDate,
                         getUpdatedAt(),
                         progress

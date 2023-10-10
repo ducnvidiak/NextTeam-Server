@@ -14,11 +14,16 @@ import nextteam.utils.database.ClubCategoriesDAO;
 import nextteam.utils.database.ClubDAO;
 import nextteam.utils.database.DepartmentDAO;
 import nextteam.utils.database.EngagementDAO;
+import nextteam.utils.database.EntranceInterviewDAO;
 import nextteam.utils.database.EventDAO;
+import nextteam.utils.database.EventRegistrationDAO;
+import nextteam.utils.database.FeedbackDAO;
+import nextteam.utils.database.LocationDAO;
 import nextteam.utils.database.MajorDAO;
 import nextteam.utils.database.NotificationDAO;
 import nextteam.utils.database.OtpCodeDAO;
 import nextteam.utils.database.PointHistoryDAO;
+import nextteam.utils.database.PaymentDAO;
 import nextteam.utils.database.PrivateNotificationDAO;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.RoleDAO;
@@ -41,7 +46,6 @@ public class Global {
     public static String workingPath;
 
     public static ClubDAO clubDAO;
-    public static ClubCategoriesDAO clubCategoriesDAO;
     public static MajorDAO major;
     public static EventDAO eventDao;
     public static UserDAO user;
@@ -53,6 +57,12 @@ public class Global {
     public static RoleDAO role;
     public static NotificationDAO notification;
     public static PointHistoryDAO pointHistory;
+    public static EntranceInterviewDAO entranceInterview;
+    public static LocationDAO location;
+    public static EventRegistrationDAO eventRegistration;
+    public static ClubCategoriesDAO clubCategories;
+    public static PaymentDAO payment;
+    public static FeedbackDAO feedback;
 
     public static final byte[] KEY = {
         46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
@@ -82,7 +92,6 @@ public class Global {
             throw new RuntimeException("Error while trying connect to SQL Server!");
         }
         clubDAO = new ClubDAO(conn);
-        clubCategoriesDAO = new ClubCategoriesDAO(conn);
         major = new MajorDAO(conn);
         eventDao = new EventDAO(conn);
         user = new UserDAO(conn);
@@ -94,6 +103,12 @@ public class Global {
         role = new RoleDAO(conn);
         notification = new NotificationDAO(conn);
         pointHistory = new PointHistoryDAO(conn);
+        entranceInterview = new EntranceInterviewDAO(conn);
+        location = new LocationDAO(conn);
+        eventRegistration = new EventRegistrationDAO(conn);
+        clubCategories = new ClubCategoriesDAO(conn);
+        payment = new PaymentDAO(conn);
+        feedback = new FeedbackDAO(conn);
     }
 
     public static void closeDAOConnection() {

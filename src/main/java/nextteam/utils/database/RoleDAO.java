@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.models.Department;
-import nextteam.models.HomeTown;
+
 import nextteam.models.Role;
 import nextteam.utils.SQLDatabase;
 

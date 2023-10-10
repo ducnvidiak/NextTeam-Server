@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nextteam.models.HomeTown;
 import nextteam.models.PrivateNotification;
 import nextteam.models.PublicNotification;
 import nextteam.models.User;
@@ -121,7 +120,7 @@ public class NotificationDAO extends SQLDatabase {
         List<Notification> notifications = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT publicNotifications.id, title, content, clubId, createdAt, updatedAt, \n"
                 + "CASE WHEN publicNotificationViews.hasSeenBy IS NOT NULL THEN 1 ELSE 0\n"
-                + "END AS hasSeen, 'public' AS type\n"
+                + "END AS hasSeen, CASE WHEN publicNotifications.clubId IS NOT NULL THEN 'public' ELSE 'wide' END AS type\n"
                 + "FROM publicNotifications \n"
                 + "LEFT JOIN publicNotificationViews\n"
                 + "ON publicNotifications.id = publicNotificationViews.publicNotificationId AND publicNotificationViews.hasSeenBy = ?\n"
@@ -148,7 +147,7 @@ public class NotificationDAO extends SQLDatabase {
         List<Notification> notifications = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT TOP 10 publicNotifications.id, title, content, clubId, createdAt, updatedAt, \n"
                 + "CASE WHEN publicNotificationViews.hasSeenBy IS NOT NULL THEN 1 ELSE 0\n"
-                + "END AS hasSeen, 'public' AS type\n"
+                + "END AS hasSeen, CASE WHEN publicNotifications.clubId IS NOT NULL THEN 'public' ELSE 'wide' END AS type\n"
                 + "FROM publicNotifications \n"
                 + "LEFT JOIN publicNotificationViews\n"
                 + "ON publicNotifications.id = publicNotificationViews.publicNotificationId AND publicNotificationViews.hasSeenBy = ?\n"

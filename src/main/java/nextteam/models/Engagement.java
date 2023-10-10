@@ -18,9 +18,9 @@ public class Engagement {
     private int clubId;
     private int roleId;
     private String cvUrl;
+    private int status;
     private Date createdAt;
     private Date updatedAt;
-    private int status;
     private int points;
 
     public int getStatus() {
@@ -39,13 +39,14 @@ public class Engagement {
         this.points = points;
     }
 
-    public Engagement(int id, int userId, int departmentId, int clubId, int roleId, String cvUrl, Date createdAt, Date updatedAt) {
+    public Engagement(int id, int userId, int departmentId, int clubId, int roleId, String cvUrl, int status, Date createdAt, Date updatedAt) {
         this.id = id;
         this.userId = userId;
         this.departmentId = departmentId;
         this.clubId = clubId;
         this.roleId = roleId;
         this.cvUrl = cvUrl;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
