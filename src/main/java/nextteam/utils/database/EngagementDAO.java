@@ -27,6 +27,7 @@ import nextteam.utils.SQLDatabase;
 public class EngagementDAO extends SQLDatabase {
 
     public class EngagementModelInfo {
+
         private User user;
         private Department dept;
         private Club club;
@@ -72,19 +73,19 @@ public class EngagementDAO extends SQLDatabase {
         public void setEngagement(Engagement engagement) {
             this.engagement = engagement;
         }
-        
+
     }
-    
+
     public EngagementDAO(Connection connection) {
         super(connection);
     }
-    
+
     public List<Engagement> getListOfMe(String t) {
         List<Engagement> engagements = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM engagements WHERE userId = ?",t);
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM engagements WHERE userId = ?", t);
         try {
             while (rs.next()) {
-                Engagement ht = new Engagement(rs.getInt(1), rs.getInt(2),rs.getInt(3),rs.getInt(4),rs.getInt(5), rs.getString(6), rs.getTimestamp(7),rs.getTimestamp(8));
+                Engagement ht = new Engagement(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getString(6), rs.getTimestamp(7), rs.getTimestamp(8));
                 engagements.add(ht);
             }
         } catch (SQLException ex) {
@@ -92,7 +93,7 @@ public class EngagementDAO extends SQLDatabase {
         }
         return engagements;
     }
-    
+
     public int addEngagement(final Engagement t) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
@@ -104,39 +105,60 @@ public class EngagementDAO extends SQLDatabase {
         );
         return ketQua;
     }
-    
+
     public Engagement getEngagementById(String id) {
         Engagement ketQua = null;
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM engagements WHERE id=?", id);
             if (rs.next()) {
-                ketQua = new Engagement(rs.getInt(1), rs.getInt(2),rs.getInt(3),rs.getInt(4),rs.getInt(5), rs.getString(6), rs.getTimestamp(7),rs.getTimestamp(8));
+                ketQua = new Engagement(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getString(6), rs.getTimestamp(7), rs.getTimestamp(8));
             }
         } catch (Exception e) {
         }
         return ketQua;
     }
-    
+
     public EngagementModelInfo getIdAsModel(Engagement t) {
         EngagementModelInfo info = new EngagementModelInfo();
-        
+
         info.setUser(Global.user.getListUserByIdString(t.getUserId() + ""));
         info.setDept(Global.department.getDepartmentById(t.getDepartmentId() + ""));
-        info.setClub(Global.clubDAO.getClubById(t.getClubId()+ ""));
-        info.setRole(Global.role.getRoleById(t.getRoleId()+ ""));
-        info.setEngagement(Global.engagement.getEngagementById(t.getId()+""));
+        info.setClub(Global.clubDAO.getClubById(t.getClubId() + ""));
+        info.setRole(Global.role.getRoleById(t.getRoleId() + ""));
+        info.setEngagement(Global.engagement.getEngagementById(t.getId() + ""));
         return info;
     }
-    
-    
-    
+
     public List<EngagementDAO.EngagementModelInfo> getEngagementModelList(List<Engagement> l) {
         List<EngagementDAO.EngagementModelInfo> res = new ArrayList<>();
-        
-        for(Engagement en : l) {
+
+        for (Engagement en : l) {
             res.add(getIdAsModel(en));
         }
-        
+
         return res;
+    }
+
+    public String[] getRoleByUserIdAndClubId(int userId, int clubId) {
+        try {
+            ResultSet rs = executeQueryPreparedStatement(
+                    "SELECT roles.id AS [roleId], roles.name AS [roleName] "
+                    + "FROM engagements "
+                    + "INNER JOIN roles "
+                    + "ON engagements.roleId = roles.id "
+                    + "WHERE userId=? AND clubId=?",
+                    userId,
+                    clubId
+            );
+            if (rs.next()) {
+                String res[] = new String[2];
+                res[0] = rs.getInt("roleId") + "";
+                res[1] = rs.getString("roleName");
+                return res;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return new String[]{"-1", ""};
     }
 }

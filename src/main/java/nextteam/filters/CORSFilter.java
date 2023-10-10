@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author vnitd
  */
 @WebFilter("/*")
-public class AllFilter implements Filter {
+public class CORSFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

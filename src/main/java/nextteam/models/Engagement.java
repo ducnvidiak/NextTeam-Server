@@ -20,6 +20,24 @@ public class Engagement {
     private String cvUrl;
     private Date createdAt;
     private Date updatedAt;
+    private int status;
+    private int points;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
 
     public Engagement(int id, int userId, int departmentId, int clubId, int roleId, String cvUrl, Date createdAt, Date updatedAt) {
         this.id = id;
@@ -38,8 +56,6 @@ public class Engagement {
         this.clubId = clubId;
         this.cvUrl = cvUrl;
     }
-    
-    
 
     public Engagement() {
     }

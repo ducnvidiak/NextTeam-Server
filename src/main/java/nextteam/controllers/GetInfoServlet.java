@@ -4,14 +4,15 @@
  */
 package nextteam.controllers;
 
+import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
+import nextteam.models.User;
 import nextteam.utils.encryption.AES;
 
 /**
@@ -21,6 +22,8 @@ import nextteam.utils.encryption.AES;
 @WebServlet(name = "GetInfoServlet", urlPatterns = {"/info-utils"})
 public class GetInfoServlet extends HttpServlet {
 
+    Gson gson = new Gson();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String cmd = req.getParameter("cmd");
@@ -29,10 +32,20 @@ public class GetInfoServlet extends HttpServlet {
         String res = "{}";
 
         if (cmd.equals("user")) {
-            System.out.println(data);
             if (!data.equals("undefined")) {
                 res = AES.decryptString(data);
             }
+        } else if (cmd.equals("user.role")) {
+            String json = AES.decryptString(data);
+
+            int clubId = Integer.parseInt(req.getParameter("clubId"));
+            int userId = gson.fromJson(json, User.class).getId();
+
+            String[] role = Global.engagement.getRoleByUserIdAndClubId(userId, clubId);
+
+            res = "{\"roleId\": \"" + role[0] + "\", \"roleName\": \"" + role[1] + "\"}";
+        } else if (cmd.equals("club.users")) {
+            res = Global.clubDAO.getAllUserOfClub(Integer.parseInt(data)).toString();
         }
 
         resp.getWriter().print(res);

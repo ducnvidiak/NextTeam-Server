@@ -6,12 +6,14 @@ package nextteam.utils.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.Global;
 import nextteam.models.Club;
+import nextteam.models.User;
 import nextteam.utils.SQLDatabase;
 
 /**
@@ -35,9 +37,9 @@ public class ClubDAO extends SQLDatabase {
 
                 list.add(new Club(rs.getInt(1), rs.getString(2),
                         rs.getString(3), rs.getInt(4),
-                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11),rs.getBoolean(12)));
-            
-            }   
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11), rs.getBoolean(12)));
+
+            }
 
         } catch (Exception e) {
             Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -52,7 +54,7 @@ public class ClubDAO extends SQLDatabase {
 
             while (rs.next()) {
                 list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3)));
-            }   
+            }
 
         } catch (Exception e) {
             Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -105,12 +107,65 @@ public class ClubDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM clubs WHERE id=?", id);
             if (rs.next()) {
-                ketQua = new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11), rs.getBoolean(12));}
+                ketQua = new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11), rs.getBoolean(12));
+            }
 
-            }catch (Exception e) {
+        } catch (Exception e) {
         }
-            return ketQua;
-        
+        return ketQua;
+
+    }
+
+    public List<User> getAllUserOfClub(int id) {
+        class OptionedUser extends User {
+
+            public OptionedUser(int id, String username, String firstname, String lastname) {
+                super(id, null, username, null, null, null, firstname, lastname, null, null, null, null, null, null, null, null, null, null, false, false);
+            }
+
+            @Override
+            public String toString() {
+                return """
+                    {
+                        "label": "%s",
+                        "username": "%s",
+                        "id": "%d",
+                        "isManager": "%d"
+                    }
+                    """.formatted(
+                        getFirstname() + " " + getLastname(),
+                        getUsername(),
+                        getId(),
+                        Global.engagement.getRoleByUserIdAndClubId(getId(), id)[0].equals("2") ? 1 : 0
+                );
+            }
+
+        }
+        List<User> users = new ArrayList<>();
+
+        ResultSet rs = executeQueryPreparedStatement(
+                """
+                SELECT users.*
+                FROM users
+                    INNER JOIN engagements
+                    ON users.id = engagements.userId
+                    INNER JOIN clubs
+                    ON clubs.id = engagements.clubId
+                WHERE clubs.id=? AND engagements.status=?
+                ORDER BY users.username
+                """,
+                id, 1
+        );
+
+        try {
+            while (rs.next()) {
+                users.add(new OptionedUser(rs.getInt("id"), rs.getString("username"), rs.getNString("firstname"), rs.getNString("lastname")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return users;
     }
 
     // test connection 

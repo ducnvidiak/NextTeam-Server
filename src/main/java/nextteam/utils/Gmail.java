@@ -5,16 +5,11 @@
 package nextteam.utils;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -51,10 +46,11 @@ public class Gmail {
 
     public Gmail(String... toEmail) {
         this.toEmail = "";
-        for(int i = toEmail.length - 1; i >= 0; i--) {
+        for (int i = toEmail.length - 1; i >= 0; i--) {
             this.toEmail += toEmail[i];
-            if(i != 0) 
+            if (i != 0) {
                 this.toEmail += ", ";
+            }
         }
 
     }

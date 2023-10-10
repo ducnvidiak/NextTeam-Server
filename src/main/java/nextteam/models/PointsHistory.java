@@ -4,7 +4,9 @@
  */
 package nextteam.models;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
+import nextteam.Global;
 
 /**
  *
@@ -18,10 +20,18 @@ public class PointsHistory {
     private int clubId;
     private int amount;
     private String reason;
-    private Date createdAt;
-    private Date updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
-    public PointsHistory(int id, int createdBy, int receivedBy, int clubId, int amount, String reason, Date createdAt, Date updatedAt) {
+    public PointsHistory(int createdBy, int receivedBy, int clubId, int amount, String reason) {
+        this.createdBy = createdBy;
+        this.receivedBy = receivedBy;
+        this.clubId = clubId;
+        this.amount = amount;
+        this.reason = reason;
+    }
+
+    public PointsHistory(int id, int createdBy, int receivedBy, int clubId, int amount, String reason, Timestamp createdAt, Timestamp updatedAt) {
         this.createdBy = createdBy;
         this.receivedBy = receivedBy;
         this.clubId = clubId;
@@ -80,19 +90,46 @@ public class PointsHistory {
         this.reason = reason;
     }
 
-    public Date getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Timestamp getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return """
+               {
+                    "id": "%d",
+                    "createdBy": "%s",
+                    "receivedBy": "%d",
+                    "receivedByName": "%s",
+                    "clubId": "%d",
+                    "amount": "%d",
+                    "reason": "%s",
+                    "createdAt": "%s",
+                    "updatedAt": "%s"
+               }""".formatted(
+                getId(),
+                Global.user.getUserById(getCreatedBy()).getFullname(),
+                getReceivedBy(),
+                Global.user.getUserById(getReceivedBy()).getFullname(),
+                getClubId(),
+                getAmount(),
+                getReason(),
+                getCreatedAt(),
+                getUpdatedAt()
+        );
+    }
+
 }
