@@ -32,6 +32,7 @@ public class User {
     private String createdAt;
     private String updatedAt;
     private boolean isActive;
+    private boolean isAdmin;
 
     public User() {
     }
@@ -69,7 +70,32 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isActive = isActive;
+        this.isAdmin = isAdmin;
     }
+
+    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive, boolean isAdmin) {
+        this.id = id;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.avatarURL = avatarURL;
+        this.bannerURL = bannerURL;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.phoneNumber = phoneNumber;
+        this.major = major;
+        this.academicYear = academicYear;
+        this.gender = gender;
+        this.dob = dob;
+        this.homeTown = homeTown;
+        this.facebookUrl = facebookUrl;
+        this.linkedInUrl = linkedInUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.isActive = isActive;
+        this.isAdmin = isAdmin;
+    }
+    
 
     public int getId() {
         return id;
@@ -229,4 +255,32 @@ public class User {
         this.isActive = isActive;
     }
 
+   @Override
+public String toString() {
+    return "{" +
+            "\"id\": " + id +
+            ", \"email\": \"" + email + "\"" +
+            ", \"username\": \"" + username + "\"" +
+            ", \"password\": \"" + password + "\"" +
+            ", \"avatarURL\": \"" + avatarURL + "\"" +
+            ", \"bannerURL\": \"" + bannerURL + "\"" +
+            ", \"firstname\": \"" + firstname + "\"" +
+            ", \"lastname\": \"" + lastname + "\"" +
+            ", \"phoneNumber\": \"" + phoneNumber + "\"" +
+            ", \"major\": \"" + major + "\"" +
+            ", \"academicYear\": \"" + academicYear + "\"" +
+            ", \"gender\": \"" + gender + "\"" +
+            ", \"dob\": \"" + dob + "\"" +
+            ", \"homeTown\": \"" + homeTown + "\"" +
+            ", \"facebookUrl\": \"" + facebookUrl + "\"" +
+            ", \"linkedInUrl\": \"" + linkedInUrl + "\"" +
+            ", \"createdAt\": \"" + getCreatedAt() + "\"" +
+            ", \"updatedAt\": \"" + getUpdatedAt() + "\"" +
+            ", \"isAdmin\": \"" + isAdmin + "\"" +
+            ", \"isActive\": " + isActive +
+            "}";
+}
+
+    
+    
 }

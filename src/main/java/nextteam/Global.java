@@ -19,6 +19,7 @@ import nextteam.utils.database.OtpCodeDAO;
 import nextteam.utils.database.PrivateNotificationDAO;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.RoleDAO;
+import nextteam.utils.database.StatisDAO;
 import nextteam.utils.database.UserDAO;
 import nextteam.utils.encryption.BCrypt;
 
@@ -32,11 +33,8 @@ public class Global {
     public static String database = "NextTeam";
     public static String username = "sa";
     public static String password = "123456aA@$";
-
     private static Connection conn;
-
     public static String workingPath;
-
     public static ClubDAO clubDAO;
     public static ClubCategoriesDAO clubCategoriesDAO;
     public static MajorDAO major;
@@ -49,6 +47,7 @@ public class Global {
     public static EngagementDAO engagement;
     public static RoleDAO role;
     public static NotificationDAO notification;
+    public static StatisDAO statis;
 
     public static final byte[] KEY = {
         46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
@@ -89,6 +88,7 @@ public class Global {
         engagement = new EngagementDAO(conn);
         role = new RoleDAO(conn);
         notification = new NotificationDAO(conn);
+        statis = new StatisDAO(conn);
     }
 
     public static void closeDAOConnection() {

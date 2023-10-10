@@ -34,7 +34,8 @@ public class UserDAO extends SQLDatabase {
         ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users");
         try {
             while (rs.next()) {
-                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19)));
+                //                 list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19)),rs.getBoolean(20));
+                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20)));
             }
 
         } catch (Exception e) {
@@ -230,7 +231,46 @@ public class UserDAO extends SQLDatabase {
         }
         return list;
     }
-
+    // block user 
+    public int blockUser(String id){
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  isActive='false' WHERE id=?",
+                id
+        );
+        return ketQua;
+        
+    }
+    // unblock user 
+    public int unblockUser(String id){
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  isActive='true' WHERE id=?",
+                id
+        );
+        return ketQua;
+        
+    }
+    
+    // dct user 
+    public int dct_admin(String id){
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  isAdmin='true' WHERE id=?",
+                id
+        );
+        return ketQua;
+    }
+    // dct user 
+    public int dct_user(String id){
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  isAdmin='false' WHERE id=?",
+                id
+        );
+        return ketQua;
+    }
+        
     // test connection 
     public void changePassword(int id, String password) {
         password = Global.getHashedPassword(password);
@@ -238,8 +278,7 @@ public class UserDAO extends SQLDatabase {
     }
 
     public static void main(String... args) {
-        User user = new UserDAO(Global.generateConnection()).getListUserByIdString("2");
-        System.out.println("Data from mssql: " + user.getFirstname());
+        System.out.println(new UserDAO(Global.generateConnection()).dct_user("2"));
     }
 
 }
