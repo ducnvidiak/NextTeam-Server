@@ -69,7 +69,7 @@ public class LoginServlet extends HttpServlet {
 
         final User userLogin = Global.user.login(email, password);
         
-        System.out.println(userLogin);
+        System.out.println(userLogin); 
         if (userLogin != null) {
             System.out.println("Đăng nhập thành công");
             final HttpSession session = request.getSession();

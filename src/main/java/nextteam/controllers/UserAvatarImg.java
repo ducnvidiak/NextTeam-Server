@@ -55,15 +55,20 @@ public class UserAvatarImg extends HttpServlet {
 
         byte[] decodeBytes = Base64.getDecoder().decode(imageBytes);
         String savePath = projectLocation + "NextTeam-Server/src/main/webapp/images/avatars";
+        
+        String imgPath = "http://localhost:8080/images/avatars/" + fileName;
         String filePath = savePath + File.separator + fileName;
+        
         try ( OutputStream outputStream = new FileOutputStream(filePath)) {
             outputStream.write(decodeBytes);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
         }
-        User user = new User(userId, "http://localhost:8080/images/avatars/" + fileName);
+        
+        User user = new User(userId, imgPath);
         System.out.println("new avatar: " + user.getId() + user.getAvatarURL());
+        
         
         int status = new UserDAO(Global.generateConnection()).updateAvatar(user);
       
@@ -71,7 +76,7 @@ public class UserAvatarImg extends HttpServlet {
         System.out.println("data: " + user.getAvatarURL());
         System.out.println("context path: " + getServletContext().getContextPath());
         
-        String resJsonString = this.gson.toJson(status == 1? new Success("success"): new Success("failure"));
+        String resJsonString = this.gson.toJson(status == 1? new Success("success",imgPath): new Success("failure"));
         PrintWriter out = response.getWriter();
         out.print(resJsonString);
         out.flush();

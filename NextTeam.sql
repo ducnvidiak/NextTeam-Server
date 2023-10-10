@@ -301,7 +301,7 @@ GO
 		content    NTEXT NOT NULL,
 		sendBy     INT NOT NULL,
 		attach     VARCHAR(100),
-		isApproved BIT DEFAULT(NULL),
+		isApproved VARCHAR(15) DEFAULT('pending'),
 		createdAt  DATETIME DEFAULT(GETDATE()),
 		updatedAt  DATETIME DEFAULT(GETDATE()),
 
@@ -801,3 +801,23 @@ GO
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 */
 GO
+
+select * from users
+
+
+INSERT INTO proposals (clubId, title, content, sendBy, attach, isApproved)
+VALUES
+  (1, 'Proposal 1', 'This is a longer content for Proposal 1. It contains more than 20 characters.', 3, 'attachment1.pdf', 'approved'),
+  (2, 'Proposal 2', 'Here is an example of longer content for Proposal 2. It exceeds the 20 character limit.', 3, 'attachment2.pdf', 'refused'),
+  (4, 'Proposal 3', 'This is another lengthy content for Proposal 3. It is longer than 20 characters.', 3, 'attachment3.pdf', 'pending'),
+  (3, 'Proposal 4', 'This is a lengthy content for Proposal 4. It has more than 20 characters in its text.', 3, 'attachment4.pdf', 'approved'),
+  (3, 'Proposal 5', 'Here is a longer content for Proposal 5. It surpasses the 20 character length requirement.', 3, 'attachment5.pdf', 'refused'),
+  (4, 'Proposal 6', 'This content for Proposal 6 is longer than 20 characters. It demonstrates the desired length.', 3, 'attachment6.pdf', 'pending'),
+  (1, 'Proposal 7', 'This is a lengthy content for Proposal 7. It exceeds the 20 character limit.', 3, 'attachment7.pdf', 'approved'),
+  (2, 'Proposal 8', 'Here is a longer content for Proposal 8. It has more than 20 characters in its text.', 3, 'attachment8.pdf', 'refused'),
+  (3, 'Proposal 9', 'This content for Proposal 9 is longer than 20 characters. It demonstrates the desired length.', 3, 'attachment9.pdf', 'pending'),
+  (1, 'Proposal 10', 'This is another lengthy content for Proposal 10. It is longer than 20 characters.', 3, 'attachment10.pdf', 'approved');
+
+delete from proposals
+
+select * from proposals
