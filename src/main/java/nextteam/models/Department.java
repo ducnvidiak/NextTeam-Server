@@ -20,7 +20,10 @@ public class Department {
         this.name = name;
     }
 
-    
+    public Department(int clubId,String name){
+        this.clubId = clubId;
+        this.name = name;
+    }
     public Department() {
     }
 
