@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import nextteam.Global;
 import nextteam.models.User;
 import com.google.gson.Gson;
+import nextteam.utils.encryption.AES;
 
 /**
  *
@@ -58,21 +59,25 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        
+        System.out.println("email: " + email);
+        System.out.println("password: " + password);
 
         response.setContentType("application/json");
         System.out.println("Yêu cầu đăng nhập");
         PrintWriter out = response.getWriter();
 
         final User userLogin = Global.user.login(email, password);
+        
         System.out.println(userLogin);
         if (userLogin != null) {
             System.out.println("Đăng nhập thành công");
             final HttpSession session = request.getSession();
             userLogin.setPassword("No Data");
             session.setAttribute("userLogin", (Object) userLogin);
-            String userJsonString = this.gson.toJson(userLogin);
+            String userJsonString = AES.encryptString(this.gson.toJson(userLogin));
             System.out.println(userJsonString);
-            out.print(userJsonString);
+            out.print("{\"id\": \"0\", \"res\": \"" + userJsonString + "\"}");
             out.flush();
         } else {
             System.out.println("Đăng nhập thất bại");

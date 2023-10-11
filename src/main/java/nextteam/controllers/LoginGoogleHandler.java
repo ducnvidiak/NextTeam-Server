@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import nextteam.Global;
 import nextteam.models.GoogleUserDTO;
 import nextteam.models.User;
+import nextteam.utils.encryption.AES;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
@@ -41,7 +42,7 @@ public class LoginGoogleHandler extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");
+        response.setContentType("text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         String code = request.getParameter("code");
         String accessToken = getToken(code);
@@ -50,6 +51,7 @@ public class LoginGoogleHandler extends HttpServlet {
         userLog.setEmail(user.getEmail());
         User userAuth = Global.user.selectByEmail(userLog.getEmail());
         PrintWriter out = response.getWriter();
+        String queryString = "";
 
         if (userAuth != null) {
             System.out.println("Đăng nhập thành công");
@@ -57,8 +59,10 @@ public class LoginGoogleHandler extends HttpServlet {
             session.setAttribute("userLogin", (Object) userAuth);
             String userJsonString = this.gson.toJson(userAuth);
             System.out.println(userJsonString);
-            out.print(userJsonString);
-            out.flush();
+//            out.print(userJsonString);
+//            out.flush();
+            queryString = "?successData=" + AES.encryptString(userJsonString) + "&googleLogin=1";
+            System.out.println(queryString);
         } else {
             System.out.println("Đăng nhập thất bại");
             String error = "Tài khoản không tồn tại";
@@ -66,6 +70,9 @@ public class LoginGoogleHandler extends HttpServlet {
             out.print(errorJsonString);
             out.flush();
         }
+        out.println();
+        out.println("<script>window.location.href = 'http://localhost:3000/auth/login/" + queryString + "';</script>");
+
     }
 
     public static String getToken(String code) throws ClientProtocolException, IOException {

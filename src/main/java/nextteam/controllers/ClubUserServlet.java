@@ -23,18 +23,9 @@ import nextteam.models.User;
  *
  * @author baopg
  */
-@WebServlet(name = "ClubUserServlet", urlPatterns = {"/club-user"})
 public class ClubUserServlet extends HttpServlet {
 private final Gson gson = new Gson();
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+  
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -43,32 +34,19 @@ private final Gson gson = new Gson();
         }
         else if(action.equals("view-club-member")){
             viewClubMember(request,response);
+        }else if(action.equals("view-list-user")){
+            viewListUser(request,response);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+  
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+   
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -83,7 +61,8 @@ private final Gson gson = new Gson();
         PrintWriter out = response.getWriter();
 
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<Club> clubs = Global.clubDAO.getListClubsOfMe(userId);
+        List<Club> clubs = Global.clubDAO.getListClubs();
+//                Global.clubDAO.getListClubsOfMe(userId);
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(clubs);
@@ -110,15 +89,22 @@ private final Gson gson = new Gson();
         out.print(json);
         out.flush();
     }
+    
+     protected void viewListUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+        PrintWriter out = response.getWriter();
+
+         List<User> users = Global.user.getListUsers();
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(users);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+    }
 
 }

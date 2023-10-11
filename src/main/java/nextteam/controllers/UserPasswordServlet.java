@@ -16,7 +16,6 @@ import nextteam.Global;
 import nextteam.models.Authentication;
 import nextteam.models.Success;
 import nextteam.models.User;
-import nextteam.utils.database.UserDAO;
 import nextteam.utils.encryption.BCrypt;
 
 /**
@@ -34,7 +33,7 @@ public class UserPasswordServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("id");
-
+        System.out.println("id: " + userId);
         BufferedReader reader = request.getReader();
         Authentication reAuth = gson.fromJson(reader, Authentication.class);
 
@@ -42,8 +41,8 @@ public class UserPasswordServlet extends HttpServlet {
         String newPassword = reAuth.getNewPassword();
         String email = reAuth.getEmail();
         int status = 0;
+      
         if (!oldPassword.equals(newPassword)) {
-
             String hash = Global.getHashedPassword(newPassword);
             User user = Global.user.getListUserByIdString(userId);
 

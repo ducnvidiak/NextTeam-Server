@@ -17,22 +17,24 @@ public class EntranceInterview {
     private Date endTime;
     private int engagementId;
     private String comment;
-    private int approvedBy;
     private boolean isApproved;
+    private int approvedBy;
     private Date createdAt;
     private Date updatedAt;
 
-    public EntranceInterview(int id, Date startTime, Date endTime, int engagementId, String comment, int approvedBy, boolean isApproved, Date createdAt, Date updatedAt) {
+    public EntranceInterview(int id, Date startTime, Date endTime, int engagementId, String comment, boolean isApproved, int approvedBy, Date createdAt, Date updatedAt) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.engagementId = engagementId;
         this.comment = comment;
-        this.approvedBy = approvedBy;
         this.isApproved = isApproved;
+        this.approvedBy = approvedBy;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    
 
     public int getId() {
         return id;

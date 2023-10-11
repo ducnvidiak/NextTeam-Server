@@ -38,7 +38,6 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
     }
@@ -52,7 +51,6 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
     }
@@ -74,7 +72,6 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
     }
@@ -90,7 +87,6 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
 
@@ -123,7 +119,6 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return events;
     }
@@ -139,7 +134,6 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
 
@@ -156,7 +150,6 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
 
@@ -175,7 +168,6 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
     }
@@ -193,7 +185,7 @@ public class StatisDAO extends SQLDatabase {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+           
         }
         return 0;
     }
