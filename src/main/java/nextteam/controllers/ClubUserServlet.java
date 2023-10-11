@@ -61,8 +61,7 @@ private final Gson gson = new Gson();
         PrintWriter out = response.getWriter();
 
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<Club> clubs = Global.clubDAO.getListClubs();
-//                Global.clubDAO.getListClubsOfMe(userId);
+        List<Club> clubs = Global.clubDAO.getListClubsOfMe(userId);             
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(clubs);
