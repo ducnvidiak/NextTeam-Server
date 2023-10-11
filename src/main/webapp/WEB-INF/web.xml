@@ -16,6 +16,10 @@
         <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
     </filter>-->
     <servlet>
+        <servlet-name>UserServlet</servlet-name>
+        <servlet-class>nextteam.controllers.UserInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>UserAvatarImg</servlet-name>
         <servlet-class>nextteam.controllers.UserAvatarImg</servlet-class>
     </servlet>
@@ -39,7 +43,6 @@
         <servlet-name>UserListServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserListServlet</servlet-class>
     </servlet>
-
     <servlet>
         <servlet-name>DepartmentServlet</servlet-name>
         <servlet-class>nextteam.controllers.DepartmentServlet</servlet-class>
@@ -57,9 +60,13 @@
         </multipart-config>
     </servlet>
     <servlet>
-        <servlet-name>UserServlet</servlet-name>
-        <servlet-class>nextteam.controllers.UserServlet</servlet-class>
+        <servlet-name>ClubUserServlet</servlet-name>
+        <servlet-class>nextteam.controllers.ClubUserServlet</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>UserServlet</servlet-name>
+        <url-pattern>/api/user</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ClubServlet</servlet-name>
         <url-pattern>/api/club</url-pattern>
@@ -83,7 +90,7 @@
     <servlet-mapping>
         <servlet-name>UserListServlet</servlet-name>
         <url-pattern>/api/userlist</url-pattern>
-    </servlet-mapping> 
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DepartmentServlet</servlet-name>
         <url-pattern>/department</url-pattern>
@@ -93,8 +100,8 @@
         <url-pattern>/engagement</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/api/user</url-pattern>
+        <servlet-name>ClubUserServlet</servlet-name>
+        <url-pattern>/club-user</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

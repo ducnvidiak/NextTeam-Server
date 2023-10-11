@@ -22,7 +22,7 @@ import nextteam.models.response.ClubResponse;
  *
  * @author bravee06
  */
-@WebServlet(name = "ClubUserServlet", urlPatterns = { "/clubs" })
+@WebServlet(name = "ClubUserServlet", urlPatterns = { "/api/club" })
 public class ClubServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
@@ -101,7 +101,7 @@ public class ClubServlet extends HttpServlet {
             String avatarUrl = request.getParameter("avatarUrl");
             String bannerUrl = request.getParameter("bannerUrl");
             boolean isActive = Boolean.parseBoolean(request.getParameter("isActive"));
-            System.out.println("abc");
+            
             System.out.println(isActive);
             int movementPoint;
             double balance;
