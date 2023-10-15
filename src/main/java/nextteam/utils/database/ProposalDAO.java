@@ -39,6 +39,21 @@ public class ProposalDAO extends SQLDatabase {
 
         return result;
     }
+    
+    public int getIdLatestProposal() {
+        int result = -1;
+        
+        try {
+            ResultSet rs = executeQueryPreparedStatement("SELECT MAX(id) AS id FROM proposals");
+            if (rs.next()) {
+                result = rs.getInt("id");
+            }
+        } catch (Exception e) {
+            
+        }
+        
+        return result;
+    }
 
     public List<Proposal> getListProposalByUserId(String userId) {
         List<Proposal> proposals = new ArrayList<>();
