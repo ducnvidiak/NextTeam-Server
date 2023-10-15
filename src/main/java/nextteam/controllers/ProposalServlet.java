@@ -208,8 +208,10 @@ public class ProposalServlet extends HttpServlet {
             try {
                 CloudFileInfo cloudFile = googleService.uploadFile(filesName.get(i), filesType.get(i), decodedBytes);
 
-//                FileRecord fileRecord = new FileRecord(cloudFile.fileId, Integer.toString(propId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
-//                result = new FileStorageDAO(Global.generateConnection()).createFileRecord(fileRecord);
+                FileRecord fileRecord = new FileRecord(cloudFile.fileId, Integer.toString(propId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
+                
+                
+                result = new FileStorageDAO(Global.generateConnection()).createFileRecord(fileRecord);
             } catch (GeneralSecurityException ex) {
                 Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
             }

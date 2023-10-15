@@ -319,12 +319,18 @@ GO
 		proposalId		INT NOT NULL, 
 		type			NVARCHAR(250),
 		name			NVARCHAR(250),
-		dowloadLink		NVARCHAR(500),
+		downloadLink		NVARCHAR(500),
 		viewLink		NVARCHAR(500),
 
 		PRIMARY KEY (id),
 		FOREIGN KEY (proposalId) REFERENCES proposals(id)
 	);
+
+	
+
+
+	drop table fileStorage
+	select * from fileStorage
 
 
 
