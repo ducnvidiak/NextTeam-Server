@@ -25,6 +25,14 @@ public class Proposal {
     public Proposal() {
     }
 
+    public Proposal(int id, String title, String content, String isApproved, Date updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.isApproved = isApproved;
+        this.updatedAt = updatedAt;
+    }
+
     public Proposal(int clubId, String title, String content, int sendBy, String isApproved) {
         this.clubId = clubId;
         this.title = title;

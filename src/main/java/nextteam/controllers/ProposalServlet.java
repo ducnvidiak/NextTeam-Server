@@ -21,7 +21,6 @@ import nextteam.models.Proposal;
 import nextteam.models.Success;
 import nextteam.utils.database.ProposalDAO;
 
-
 import com.google.auth.oauth2.GoogleCredentials;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -42,6 +41,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.Part;
@@ -108,20 +108,19 @@ class GoogleDriveUploader {
         File uploadedFile = drive.files().create(fileMetadata, fileContent).execute();
 
         // Set the file to public view
-        Permission permission = new Permission();
-        permission.setType("anyone");
-        permission.setRole("reader");
+        Permission permission = new Permission().setType("anyone").setRole("reader").setAllowFileDiscovery(false);
+
         drive.permissions().create(uploadedFile.getId(), permission).execute();
 
         // Get the download link
-        String downloadLink = "https://drive.google.com/uc?id=" + uploadedFile.getId();
+        String downloadLink = drive.files().get(uploadedFile.getId()).setFields("webContentLink").execute().getWebContentLink();
 
         // Get the view link
-        String viewLink = "https://drive.google.com/file/d/" + uploadedFile.getId();
-
+        String viewLink = drive.files().get(uploadedFile.getId()).setFields("webViewLink").execute().getWebViewLink();
+        String previewLink = viewLink.substring(0, viewLink.lastIndexOf("/") + 1) + "preview";
         CloudFileInfo result;
 
-        result = new CloudFileInfo(uploadedFile.getId(), downloadLink, viewLink);
+        result = new CloudFileInfo(uploadedFile.getId(), downloadLink, previewLink);
 
         return result;
     }
@@ -158,8 +157,18 @@ public class ProposalServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        List<Proposal> p = new ProposalDAO(Global.generateConnection()).getListProposalByUserId(request.getParameter("id"));
-        String resJsonString = this.gson.toJson(p);
+        String type = request.getParameter("type");
+        String id = request.getParameter("id");
+
+        String resJsonString;
+
+        if (type.equals("byProposalId")) {
+            Proposal p = new ProposalDAO(Global.generateConnection()).getProposalById(id);
+            resJsonString = this.gson.toJson(p);
+        } else {
+            List<Proposal> p = new ProposalDAO(Global.generateConnection()).getListProposalByUserId(request.getParameter("id"));
+            resJsonString = this.gson.toJson(p);
+        }
 
         PrintWriter out = response.getWriter();
         out.print(resJsonString);
@@ -170,6 +179,7 @@ public class ProposalServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
+        request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
         System.out.println("received request create proposal !");
@@ -178,6 +188,7 @@ public class ProposalServlet extends HttpServlet {
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         int clubId = Integer.parseInt(request.getParameter("clubId"));
+
         int numOfFile = Integer.parseInt(request.getParameter("numOfFile"));
 
         List<String> filesName = new ArrayList<>();
@@ -195,29 +206,29 @@ public class ProposalServlet extends HttpServlet {
             propId = new ProposalDAO(Global.generateConnection()).getIdLatestProposal();
         }
 
-        // Đẩy files lên cloud
-        GoogleDriveUploader googleService = new GoogleDriveUploader();
-        result = 0;
+        if (numOfFile > 0) {
+            // Đẩy files lên cloud
+            GoogleDriveUploader googleService = new GoogleDriveUploader();
+            result = 0;
 
-        for (int i = 0; i < numOfFile; i++) {
-            Part filePart = request.getPart("filescontent[" + i + "]");
-            InputStream fileInputStream = filePart.getInputStream();
-            byte[] fileBytes = fileInputStream.readAllBytes();
+            for (int i = 0; i < numOfFile; i++) {
+                Part filePart = request.getPart("filescontent[" + i + "]");
+                InputStream fileInputStream = filePart.getInputStream();
+                byte[] fileBytes = fileInputStream.readAllBytes();
 
-            byte[] decodedBytes = Base64.getDecoder().decode(fileBytes);
-            try {
-                CloudFileInfo cloudFile = googleService.uploadFile(filesName.get(i), filesType.get(i), decodedBytes);
+                byte[] decodedBytes = Base64.getDecoder().decode(fileBytes);
+                try {
+                    CloudFileInfo cloudFile = googleService.uploadFile(filesName.get(i), filesType.get(i), decodedBytes);
 
-                FileRecord fileRecord = new FileRecord(cloudFile.fileId, Integer.toString(propId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
-                
-                
-                result = new FileStorageDAO(Global.generateConnection()).createFileRecord(fileRecord);
-            } catch (GeneralSecurityException ex) {
-                Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    FileRecord fileRecord = new FileRecord(cloudFile.fileId, Integer.toString(propId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
+
+                    result = new FileStorageDAO(Global.generateConnection()).createFileRecord(fileRecord);
+                } catch (GeneralSecurityException ex) {
+                    Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
-
         }
-
         // Gửi file lên cloud
         // Tạo bản ghi lưu trữ file
         // Xác nhận mọi thứ đều ổn
@@ -227,7 +238,6 @@ public class ProposalServlet extends HttpServlet {
         if (propId != 0) {
             jsonRes.addProperty("propId", propId);
         }
-
         String resJsonString = this.gson.toJson(jsonRes);
         PrintWriter out = response.getWriter();
         out.print(resJsonString);
@@ -238,7 +248,88 @@ public class ProposalServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
+        request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+
+        System.out.println("received request update proposal !");
+        int propId = Integer.parseInt(request.getParameter("id"));
+
+        String title = request.getParameter("title");
+        String content = request.getParameter("content");
+
+        int numOfFile = Integer.parseInt(request.getParameter("numOfFile"));
+        int numOfDeleteFile = Integer.parseInt(request.getParameter("numOfDeleteFile"));
+
+        List<String> filesName = new ArrayList<>();
+        List<String> filesType = new ArrayList<>();
+        
+        List<String> deleteFileId = new ArrayList<>();
+
+        for (int i = 0; i < numOfFile; i++) {
+            filesName.add(request.getParameter("filesname[" + i + "]"));
+            filesType.add(request.getParameter("filesType[" + i + "]"));
+        }
+
+        for (int i = 0; i < numOfDeleteFile; i++) {
+            deleteFileId.add(request.getParameter("deleteFileId[" + i + "]"));
+            System.out.println(deleteFileId.get(i));
+        }
+
+        // Tạo record proposal
+        int result = new ProposalDAO(Global.generateConnection()).updateProposal(new Proposal(propId, title, content, "pending", new Date()));
+
+        if (numOfFile > 0) {
+            // Đẩy files lên cloud
+            GoogleDriveUploader googleService = new GoogleDriveUploader();
+            result = 0;
+
+            for (int i = 0; i < numOfFile; i++) {
+                Part filePart = request.getPart("filescontent[" + i + "]");
+                InputStream fileInputStream = filePart.getInputStream();
+                byte[] fileBytes = fileInputStream.readAllBytes();
+
+                byte[] decodedBytes = Base64.getDecoder().decode(fileBytes);
+                try {
+                    CloudFileInfo cloudFile = googleService.uploadFile(filesName.get(i), filesType.get(i), decodedBytes);
+
+                    FileRecord fileRecord = new FileRecord(cloudFile.fileId, Integer.toString(propId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
+
+                    result = new FileStorageDAO(Global.generateConnection()).createFileRecord(fileRecord);
+                } catch (GeneralSecurityException ex) {
+                    Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
+
+        if (numOfDeleteFile > 0) {
+            GoogleDriveUploader googleService = new GoogleDriveUploader();
+
+            for (int i = 0; i < numOfDeleteFile; i++) {
+                try {
+                    googleService.deleteFile(deleteFileId.get(i));
+                } catch (GeneralSecurityException ex) {
+                    Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                new FileStorageDAO(Global.generateConnection()).deleteFileRecord(deleteFileId.get(i));
+
+            }
+        }
+        
+        // Gửi file lên cloud
+        // Tạo bản ghi lưu trữ file
+        // Xác nhận mọi thứ đều ổn
+        JsonObject jsonRes = new JsonObject();
+        jsonRes.addProperty("status", (result == 1 ? "success" : "failure"));
+
+        if (propId != 0) {
+            jsonRes.addProperty("propId", propId);
+        }
+        String resJsonString = this.gson.toJson(jsonRes);
+        PrintWriter out = response.getWriter();
+        out.print(resJsonString);
+        out.flush();
 
     }
 
@@ -247,8 +338,26 @@ public class ProposalServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
 
-        int result = new ProposalDAO(Global.generateConnection()).deleteProposalById(request.getParameter("id"));
+        // xóa các file trên cloud
+        GoogleDriveUploader googleService = new GoogleDriveUploader();
+        List<String> fileIds = new FileStorageDAO(Global.generateConnection()).getAllFileIdByPropId(id);
+        if (!fileIds.isEmpty()) {
+            for (int i = 0; i < fileIds.size(); i++) {
+                try {
+                    googleService.deleteFile(fileIds.get(i));
+                } catch (GeneralSecurityException ex) {
+                    Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        // xóa các bản ghi file
+        new FileStorageDAO(Global.generateConnection()).deleteAllFileRecordByPropId(id);
+
+        // xóa proposal
+        int result = new ProposalDAO(Global.generateConnection()).deleteProposalById(id);
 
         String resJsonString = this.gson.toJson(result == 1 ? new Success("success") : new Success("failure"));
         PrintWriter out = response.getWriter();

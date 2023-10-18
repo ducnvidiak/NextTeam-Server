@@ -108,8 +108,8 @@ public class ProposalDAO extends SQLDatabase {
         int result = 0;
 
         try {
-            result = executeUpdatePreparedStatement("UPDATE proposals SET clubId=?, title=?, content=?, attach=?, isApproved=?, updatedAt=?",
-                    p.getClubId(), p.getTitle(), p.getContent(), p.getAttach(), p.getIsApproved(), p.getUpdatedAt());
+            result = executeUpdatePreparedStatement("UPDATE proposals SET title=?, content=?, isApproved=?, updatedAt=? WHERE id=?",
+                    p.getTitle(), p.getContent(), p.getIsApproved(), p.getUpdatedAt(), p.getId());
         } catch (Exception e) {
 
         }

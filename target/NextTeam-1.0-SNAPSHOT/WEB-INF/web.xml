@@ -63,6 +63,10 @@
         <servlet-name>ProposalServlet</servlet-name>
         <servlet-class>nextteam.controllers.ProposalServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProposalFiileServlet</servlet-name>
+        <servlet-class>nextteam.controllers.ProposalFiileServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
@@ -102,6 +106,10 @@
     <servlet-mapping>
         <servlet-name>ProposalServlet</servlet-name>
         <url-pattern>/api/proposal</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProposalFiileServlet</servlet-name>
+        <url-pattern>/api/proposal_files</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
