@@ -13,16 +13,17 @@ import java.io.BufferedReader;
 import java.util.List;
 import nextteam.Global;
 import nextteam.models.Event;
+import nextteam.models.Feedback;
 import nextteam.models.response.EventResponse;
 import nextteam.utils.database.EventDAO;
 
-@WebServlet(name = "EventServlet", urlPatterns = {"/events"})
-public class EventServlet extends HttpServlet {
+@WebServlet(name = "FeedbackController", urlPatterns = {"/feedbacks"})
+public class FeedbackController extends HttpServlet {
 
     private final Gson gson = new Gson();
     private final EventDAO eventDAO;
 
-    public EventServlet() {
+    public FeedbackController() {
         // Khởi tạo EventDAO với kết nối cơ sở dữ liệu
         this.eventDAO = Global.eventDao;
     }
@@ -31,14 +32,14 @@ public class EventServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String command = request.getParameter("cmd");
+        String eventId = request.getParameter("eventId");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
-        System.out.println(command);
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
-            List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
-            String eventsJsonString = gson.toJson(events);
+            List<Feedback> feedbacks = Global.feedback.getAllFeedBacksByEventId(eventId);
+            String eventsJsonString = gson.toJson(feedbacks);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
@@ -60,48 +61,20 @@ public class EventServlet extends HttpServlet {
             case "create" -> {
                 try {
                     // Đọc dữ liệu JSON từ request
-                    BufferedReader reader = request.getReader();
-                    StringBuilder jsonInput = new StringBuilder();
-                    String line;
 
-                    while ((line = reader.readLine()) != null) {
-                        jsonInput.append(line);
-                    }
-                    Event event = gson.fromJson(jsonInput.toString(), Event.class);
-                    System.out.println(event.getName());
-                    Global.eventDao.createEvent(event);
-                    response.setContentType("application/json");
-                    response.getWriter().write(gson.toJson(event));
-                } catch (JsonSyntaxException e) {
-                    // Xử lý ngoại lệ khi có lỗi cú pháp JSON
-                    System.out.println("????");
-                    System.out.println(e);
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().write("Invalid JSON data");
-                } catch (Exception e) {
-                    // Xử lý ngoại lệ chung
-                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    response.getWriter().write("Internal Server Error");
-                    e.printStackTrace(); // Ghi log ngoại lệ
-                }
-            }
-            case "update" -> {
-                try {
-                    // Đọc dữ liệu JSON từ request
                     BufferedReader reader = request.getReader();
                     StringBuilder jsonInput = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
                         jsonInput.append(line);
                     }
-                    Event event = gson.fromJson(jsonInput.toString(), Event.class);
-                    int rs = Global.eventDao.updateEventByEventId(eventId, event);
-                    List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
-                    String eventsJsonString = gson.toJson(events);
+
+//                    Event event = gson.fromJson(jsonInput.toString(), Event.class);
+                    Feedback feedback = gson.fromJson(jsonInput.toString(), Feedback.class);
+                    System.out.println("!!! "+feedback.getEventId());
+                    Global.feedback.createFeedback(feedback);
                     response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    PrintWriter out = response.getWriter();
-                    response.getWriter().write(events.toString());
+                    response.getWriter().write(gson.toJson(feedback));
                 } catch (JsonSyntaxException e) {
                     // Xử lý ngoại lệ khi có lỗi cú pháp JSON
                     System.out.println("????");
@@ -115,16 +88,7 @@ public class EventServlet extends HttpServlet {
                     e.printStackTrace(); // Ghi log ngoại lệ
                 }
             }
-            case "delete" -> {
-                System.out.println("delete!!!!!");
-                int rs = Global.eventDao.deleteEventByEventId(eventId);
-                List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
-                String eventsJsonString = gson.toJson(events);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                PrintWriter out = response.getWriter();
-                response.getWriter().write(events.toString());
-            }
+            
             default -> {
             }
         }

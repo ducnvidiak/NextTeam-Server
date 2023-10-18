@@ -22,15 +22,14 @@ import nextteam.models.response.ClubResponse;
  *
  * @author bravee06
  */
-@WebServlet(name = "ClubUserServlet", urlPatterns = {"/clubs"})
+@WebServlet(name = "ClubUserServlet", urlPatterns = { "/api/club" })
 public class ClubServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
 
     protected void doGet(
             HttpServletRequest request,
-            HttpServletResponse response
-    ) throws ServletException, IOException {
+            HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -80,7 +79,8 @@ public class ClubServlet extends HttpServlet {
                 categoryId = 0;
             }
 
-            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance, isActive);
+            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,
+                    isActive);
             System.out.println(c.isIsActive());
             int added = Global.clubDAO.addClub(c);
             String json = "";
@@ -101,6 +101,8 @@ public class ClubServlet extends HttpServlet {
             String avatarUrl = request.getParameter("avatarUrl");
             String bannerUrl = request.getParameter("bannerUrl");
             boolean isActive = Boolean.parseBoolean(request.getParameter("isActive"));
+            
+            System.out.println(isActive);
             int movementPoint;
             double balance;
             try {
@@ -119,21 +121,20 @@ public class ClubServlet extends HttpServlet {
                 categoryId = 0;
             }
 
-            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance, isActive);
+            Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,
+                    isActive);
             System.out.println(c);
             int updated = Global.clubDAO.updateClub(c, id);
             String json = "";
             if (updated == 1) {
                 json = "[{ \"status\": \"success\"}]";
-
                 out.print(json);
             } else {
                 json = "[{ \"status\": \"failed\"}]";
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                
                 out.print(json);
             }
-            out.print(json);
-            out.flush();
+            
         } else {
             int id = Integer.parseInt(request.getParameter("id"));
 

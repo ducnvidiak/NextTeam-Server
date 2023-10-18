@@ -20,12 +20,20 @@ import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
 import nextteam.models.Department;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.Part;
 import nextteam.models.Engagement;
+import nextteam.models.EntranceInterview;
+import nextteam.models.Location;
+import nextteam.utils.Gmail;
 import nextteam.utils.database.EngagementDAO;
 
 /**
@@ -52,6 +60,14 @@ public class EngagementServlet extends HttpServlet {
             addEngagement(request, response);
         } else if (action.equals("application-list-of-user")) {
             applicationListOfUser(request, response);
+        } else if (action.equals("approve-application")) {
+            approveApplication(request, response);
+        } else if (action.equals("reject-application")) {
+            rejectApplication(request, response);
+        } else if (action.equals("set-interview")) {
+            setInterview(request, response);
+        } else if (action.equals("interview")) {
+            interview(request, response);
         }
     }
 
@@ -96,13 +112,13 @@ public class EngagementServlet extends HttpServlet {
         // Nhận file từ yêu cầu
         //xử lý upload file
         String folderName = "/cv";
-        String uploadPath = "/Users/baopg/NetBeansProjects/NextTeam-Server/src/main/webapp/cv";//for netbeans use this code
+        String uploadPath = "/Users/mac/Documents/SWP301/NextTeam-Server/src/main/webapp/cv";//for netbeans use this code
         File dir = new File(uploadPath);
         if (!dir.exists()) {
             dir.mkdirs();
         }
         Part filePart = request.getPart("cvUrl");
-        String fileName ="ApplicationRegister-"+ System.currentTimeMillis() +"-UserId"+ userId + "-" + filePart.getSubmittedFileName().replaceAll(" ", "");
+        String fileName = "ApplicationRegister-" + System.currentTimeMillis() + "-UserId" + userId + "-" + filePart.getSubmittedFileName().replaceAll(" ", "");
         String path = folderName + File.separator + fileName;
         System.out.println("Path: " + uploadPath);
         InputStream is = filePart.getInputStream();
@@ -139,6 +155,130 @@ public class EngagementServlet extends HttpServlet {
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(emis);
         System.out.println(json);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+
+    }
+
+    protected void approveApplication(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
+
+        PrintWriter out = response.getWriter();
+
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        int status = Global.engagement.ApproveApplication(id);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson("Đã cập nhật phê duyệt đơn đăng ký");
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+    }
+
+    protected void rejectApplication(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
+
+        PrintWriter out = response.getWriter();
+
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        int status = Global.engagement.RejectApplication(id);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson("Đã cập nhật từ chối đơn đăng ký");
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+    }
+
+    private void sendContentMail(String subject, String club, String name, Date startTime, Date endTime, String location, String note, String... email) {
+        try {
+            new Gmail(email)
+                    .setContentType("text/html; charset=UTF-8")
+                    .setSubject(subject)
+                    .initMacro()
+                    .appendMacro("NAME", name)
+                    .appendMacro("CLUB", club)
+                    .appendMacro("STARTTIME", startTime + "")
+                    .appendMacro("ENDTIME", endTime + "")
+                    .appendMacro("LOCATION", location)
+                    .appendMacro("NOTE", note)
+                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_interview.jsp"));
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(NotificationServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    protected void setInterview(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String club = request.getParameter("club");
+        String name = request.getParameter("name");
+        String location = request.getParameter("location");
+        String note = request.getParameter("note");
+        String email = request.getParameter("email");
+
+        Location location1 = Global.location.getLocationById(location);
+
+        BufferedReader reader = request.getReader();
+        EntranceInterview pn = this.gson.fromJson(reader, EntranceInterview.class);
+        int status = Global.engagement.InterviewApplication(pn.getEngagementId() + "");
+        response.setContentType("application/json");
+        System.out.println("Yêu cầu tạo lịch phỏng vấn");
+        PrintWriter out = response.getWriter();
+        int interview = Global.entranceInterview.addInterview(pn);
+        System.out.println("Tạo lịch phỏng vấn thành công");
+        String userJsonString = this.gson.toJson(pn);
+        out.print(userJsonString);
+        out.flush();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                sendContentMail(
+                        club + " - THƯ MỜI THAM GIA PHỎNG VẤN",
+                        club,
+                        name,
+                        pn.getStartTime(),
+                        pn.getEndTime(),
+                        location1.getName(),
+                        note,
+                        email
+                );
+            }
+        });
+        t.start();
+        System.out.println("Tạo thông báo email thành công");
+    }
+
+    protected void interview(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter out = response.getWriter();
+        BufferedReader reader = request.getReader();
+        EntranceInterview pn = this.gson.fromJson(reader, EntranceInterview.class);
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        int update = Global.entranceInterview.Update(pn);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson("Đã cập nhật thông tin phỏng vấn");
+        if (pn.isIsApproved()) {
+            int status = Global.engagement.ApproveApplication(pn.getEngagementId() + "");
+        } else {
+            int status = Global.engagement.InterviewApplication(pn.getEngagementId() + "");
+        }
 
         // Gửi JSON response về client
         out.print(json);

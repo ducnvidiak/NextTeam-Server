@@ -14,15 +14,20 @@ import nextteam.utils.database.ClubCategoriesDAO;
 import nextteam.utils.database.ClubDAO;
 import nextteam.utils.database.DepartmentDAO;
 import nextteam.utils.database.EngagementDAO;
+import nextteam.utils.database.EntranceInterviewDAO;
 import nextteam.utils.database.EventDAO;
 import nextteam.utils.database.EventRegistrationDAO;
+import nextteam.utils.database.FeedbackDAO;
 import nextteam.utils.database.LocationDAO;
 import nextteam.utils.database.MajorDAO;
 import nextteam.utils.database.NotificationDAO;
 import nextteam.utils.database.OtpCodeDAO;
+import nextteam.utils.database.PointHistoryDAO;
+import nextteam.utils.database.PaymentDAO;
 import nextteam.utils.database.PrivateNotificationDAO;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.RoleDAO;
+import nextteam.utils.database.StatisDAO;
 import nextteam.utils.database.UserDAO;
 import nextteam.utils.encryption.BCrypt;
 
@@ -36,11 +41,8 @@ public class Global {
     public static String database = "NextTeam";
     public static String username = "sa";
     public static String password = "1";
-
     private static Connection conn;
-
     public static String workingPath;
-
     public static ClubDAO clubDAO;
     public static MajorDAO major;
     public static EventDAO eventDao;
@@ -52,9 +54,14 @@ public class Global {
     public static EngagementDAO engagement;
     public static RoleDAO role;
     public static NotificationDAO notification;
+    public static StatisDAO statis;
+    public static PointHistoryDAO pointHistory;
+    public static EntranceInterviewDAO entranceInterview;
     public static LocationDAO location;
     public static EventRegistrationDAO eventRegistration;
     public static ClubCategoriesDAO clubCategories;
+    public static PaymentDAO payment;
+    public static FeedbackDAO feedback;
 
     public static final byte[] KEY = {
         46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
@@ -94,9 +101,14 @@ public class Global {
         engagement = new EngagementDAO(conn);
         role = new RoleDAO(conn);
         notification = new NotificationDAO(conn);
+        statis = new StatisDAO(conn);
+        pointHistory = new PointHistoryDAO(conn);
+        entranceInterview = new EntranceInterviewDAO(conn);
         location = new LocationDAO(conn);
         eventRegistration = new EventRegistrationDAO(conn);
         clubCategories = new ClubCategoriesDAO(conn);
+        payment = new PaymentDAO(conn);
+        feedback = new FeedbackDAO(conn);
     }
 
     public static void closeDAOConnection() {

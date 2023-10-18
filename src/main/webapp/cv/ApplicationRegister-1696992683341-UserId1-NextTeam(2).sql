@@ -1,4 +1,4 @@
-﻿USE NextTeam
+USE NextTeam
 GO
 /*
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -119,7 +119,7 @@ GO
 		status 	     INT DEFAULT(0),
 		points       INT DEFAULT(0),
 		createdAt    DATETIME DEFAULT(GETDATE()),
-		updatedAt    DATETIME DEFAULT(GETDATE())
+		updatedAt    DATETIME DEFAULT(GETDATE()),
 
 		PRIMARY KEY (id),
 		FOREIGN KEY (userId)       REFERENCES users(id),
@@ -234,7 +234,7 @@ GO
 
 	CREATE TABLE privateNotifications (
 		id        INT NOT NULL IDENTITY(1, 1),
-		clubId    INT,
+		clubId    INT NOT NULL,
 		sendTo    INT NOT NULL,
 		hasSeen   BIT DEFAULT(0),
 		seenTime  DATETIME,
@@ -304,7 +304,7 @@ GO
 		content    NTEXT NOT NULL,
 		sendBy     INT NOT NULL,
 		attach     VARCHAR(100),
-		isApproved VARCHAR(15) DEFAULT('pending'),
+		isApproved BIT DEFAULT(NULL),
 		createdAt  DATETIME DEFAULT(GETDATE()),
 		updatedAt  DATETIME DEFAULT(GETDATE()),
 
@@ -312,30 +312,6 @@ GO
 		FOREIGN KEY (clubId) REFERENCES clubs(id),
 		FOREIGN KEY (sendBy) REFERENCES users(id)
 	);
-
-	select * from proposals
-	select max(id) from proposals
-
-	CREATE TABLE fileStorage (
-		id				INT NOT NULL IDENTITY(1, 1),
-		fileId			NVARCHAR(250),
-		proposalId		INT NOT NULL, 
-		type			NVARCHAR(250),
-		name			NVARCHAR(250),
-		downloadLink		NVARCHAR(500),
-		viewLink		NVARCHAR(500),
-
-		PRIMARY KEY (id),
-		FOREIGN KEY (proposalId) REFERENCES proposals(id)
-	);
-
-	
-
-
-	drop table fileStorage
-	select * from fileStorage
-
-
 
 	CREATE TABLE paymentCategories (
 		id          INT NOT NULL IDENTITY(1, 1),
@@ -751,41 +727,19 @@ GO
 	AFTER DELETE
 	AS 
 	BEGIN
-		DECLARE @engagementPoint INT, @engagementId INT, @amount INT, @clubId INT;
-
-		SELECT @amount=SUM(amount), @clubId=clubId
+		DECLARE @amount INT, @engagementId INT, @clubId INT
+  
+		SELECT @amount = amount FROM deleted
+		SELECT @engagementId = engagements.id, @clubId = engagements.clubId
 		FROM deleted
-		GROUP BY clubId;
+		INNER JOIN engagements ON deleted.receivedBy = engagements.userId
+		WHERE engagements.clubId = @clubId
 
-		SELECT @engagementId=engagements.id, @engagementPoint=points
-		FROM engagements
-			INNER JOIN deleted
-			ON engagements.userId = deleted.receivedBy
-		WHERE engagements.clubId=@clubId;
-
-		UPDATE engagements
-		SET points=@engagementPoint-@amount
-		WHERE id=@engagementId;
+		UPDATE engagements 
+		SET points = points - @amount
+		WHERE id = @engagementId
 	END
 	GO
-	IF OBJECT_ID('TR_AfterInsertPaymentCategory', 'TR') IS NOT NULL /* for paymentCategories */
-		DROP TRIGGER TR_AfterInsertPaymentCategory;
-	GO
-	CREATE TRIGGER TR_AfterInsertPaymentCategory
-	ON [NextTeam].[dbo].[paymentCategories]
-	AFTER INSERT
-	AS
-	BEGIN
-		DECLARE @NewCategoryId INT;
-		DECLARE @ClubId INT;
-    
-		SELECT @NewCategoryId = [id], @ClubId = [clubId]
-		FROM inserted;
-		INSERT INTO [NextTeam].[dbo].[transactionHistories] ([paidBy], [categoryId], [status])
-		SELECT  [userId], @NewCategoryId, 0
-		FROM engagements
-		WHERE [clubId] = @ClubId AND [status] =1;
-	END;
 
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -878,9 +832,8 @@ GO
 		   ('manager')
 
 	INSERT INTO users(email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber, major, academicYear, gender, dob, homeTown, isAdmin)
-	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn Bảo', N'Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', '', 0),
-           ('tranvietdangquang@gmail.com', 'DE170014', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Việt Đăng', N'Quang', '0866191103', 1, 2021, 'Male', '2023-11-19', '', 1),
-           ('vnitd.owner@gmail.com', 'DE170015', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Thị Hải', N'Đăng', '0123456789', 1, 2021, 'Female', '2003-11-19', '', 0)
+	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn', N'Bảo Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', '', 0),
+           ('tranvietdangquang@gmail.com', 'DE170014', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Việt', N'Đăng Quang', '0866191103', 1, 2021, 'Male', '2023-11-19', '', 1)
 
 	INSERT INTO publicNotifications(clubId, title, content)
 	VALUES (1, N'FUDN [FPTU.DN-DVSV] - V/v triển khai đăng ký học bằng lái xe kỳ Fall 2023 (Đợt 1)', N'PHAN GIA BẢO'),
@@ -922,13 +875,12 @@ GO
 	VALUES (1, N'Ban Nhân sự'),
 		   (2, N'Ban Học thuật');
 
-	INSERT INTO engagements(userId, departmentId, clubId, roleId, cvUrl, status)
-	VALUES (1, 1, 1, 2, '', 1),
-	       (2, 2, 1, 1, '', 1),
-	       (3, 2, 1, 1, '', 1);
+	INSERT INTO engagements(userId, departmentId, clubId, roleId, cvUrl)
+	VALUES (1, 1, 1, 2, ''),
+	       (2, 2, 1, 1, '');
 
 	INSERT INTO pointsHistories(createdBy, receivedBy, clubId, amount, reason)
-	VALUES (1, 2, 1, -5, N'Vắng mặt trong sự kiện #0'),(1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
+	VALUES (1, 2, 1, -5, 'Ahihi'),(1, 2, 1, '20', 'Ahihi');
 
 
 /*
@@ -936,28 +888,4 @@ GO
 >>>>>>>>>> END: DỮ LIỆU MẪU >>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 */
-<<<<<<< HEAD
 GO
-
-select * from users
-
-
-INSERT INTO proposals (clubId, title, content, sendBy, attach, isApproved)
-VALUES
-  (1, 'Proposal 1', 'This is a longer content for Proposal 1. It contains more than 20 characters.', 6, 'attachment1.pdf', 'approved'),
-  (2, 'Proposal 2', 'Here is an example of longer content for Proposal 2. It exceeds the 20 character limit.', 6, 'attachment2.pdf', 'refused'),
-  (4, 'Proposal 3', 'This is another lengthy content for Proposal 3. It is longer than 20 characters.', 6, 'attachment3.pdf', 'pending'),
-  (3, 'Proposal 4', 'This is a lengthy content for Proposal 4. It has more than 20 characters in its text.', 6, 'attachment4.pdf', 'approved'),
-  (3, 'Proposal 5', 'Here is a longer content for Proposal 5. It surpasses the 20 character length requirement.', 6, 'attachment5.pdf', 'refused'),
-  (4, 'Proposal 6', 'This content for Proposal 6 is longer than 20 characters. It demonstrates the desired length.', 6, 'attachment6.pdf', 'pending'),
-  (1, 'Proposal 7', 'This is a lengthy content for Proposal 7. It exceeds the 20 character limit.', 6, 'attachment7.pdf', 'approved'),
-  (2, 'Proposal 8', 'Here is a longer content for Proposal 8. It has more than 20 characters in its text.', 6, 'attachment8.pdf', 'refused'),
-  (3, 'Proposal 9', 'This content for Proposal 9 is longer than 20 characters. It demonstrates the desired length.', 6, 'attachment9.pdf', 'pending'),
-  (1, 'Proposal 10', 'This is another lengthy content for Proposal 10. It is longer than 20 characters.', 6, 'attachment10.pdf', 'approved');
-
-delete from proposals
-
-select * from proposals
-=======
-GO
->>>>>>> ea28d638d4cbb541ebcdb9e5642348e2f10515be

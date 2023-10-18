@@ -44,6 +44,18 @@ public class LocationDAO extends SQLDatabase {
         }
         return list;
     }
+    
+    public Location getLocationById(String id) {
+        Location ketQua = null;
+        try {
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM locations WHERE id=?", id);
+            if (rs.next()) {
+                ketQua = new Location(rs.getInt(1), rs.getNString(2));
+            }
+        } catch (Exception e) {
+        }
+        return ketQua;
+    }
 }
 
 

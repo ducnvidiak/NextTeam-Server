@@ -21,7 +21,6 @@ import nextteam.models.PublicNotification;
  *
  * @author baopg
  */
-@WebServlet(name = "ClubDetailServlet", urlPatterns = {"/club-detail"})
 public class ClubDetailServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
@@ -56,6 +55,7 @@ public class ClubDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("!!!!");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");

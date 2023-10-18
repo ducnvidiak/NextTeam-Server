@@ -2,7 +2,7 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <filter>
         <filter-name>CorsFilter</filter-name>
-        <filter-class>filters.CorsFilter</filter-class>
+        <filter-class>nextteam.filters.CORSFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>CorsFilter</filter-name>
@@ -67,6 +67,10 @@
         <servlet-name>ProposalFiileServlet</servlet-name>
         <servlet-class>nextteam.controllers.ProposalFiileServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ClubUserServlet</servlet-name>
+        <servlet-class>nextteam.controllers.ClubUserServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
@@ -110,6 +114,10 @@
     <servlet-mapping>
         <servlet-name>ProposalFiileServlet</servlet-name>
         <url-pattern>/api/proposal_files</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClubUserServlet</servlet-name>
+        <url-pattern>/club-user</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

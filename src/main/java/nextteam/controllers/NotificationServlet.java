@@ -28,6 +28,7 @@ import nextteam.models.User;
 import nextteam.utils.Gmail;
 import nextteam.utils.database.NotificationDAO.Notification;
 import nextteam.utils.database.PrivateNotificationDAO;
+import nextteam.utils.database.PrivateNotificationDAO.PrivateNotificationDetail;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.UserDAO;
 
@@ -51,18 +52,18 @@ public class NotificationServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action.equals("add-noti")) {
+        if (action.equals("add-noti")) { // add public notification
             addNoti(request, response);
-        } else if (action.equals("list-noti")) { //trộn cả 2
+        } else if (action.equals("add-private-noti")) { // add private notification
+            addPrivateNoti(request, response);
+        } else if (action.equals("list-noti")) { //trộn cả public notification và private notification
             listNoti(request, response);
-        } else if (action.equals("search-noti")) { //trộn cả 2
+        } else if (action.equals("search-noti")) { //trộn cả public notification và private notification
             searchNoti(request, response);
-        } else if (action.equals("list-10-noti")) { // trộn cả 2
+        } else if (action.equals("list-10-noti")) { //trộn cả public notification và private notification
             list10Noti(request, response);
         } else if (action.equals("send-public-email")) {
             sendEmail(request, response);
-        } else if (action.equals("add-private-noti")) {
-            addPrivateNoti(request, response);
         } else if (action.equals("send-private-email")) {
             sendPrivateEmail(request, response);
         } else if (action.equals("update-view-private-email")) {
@@ -71,15 +72,19 @@ public class NotificationServlet extends HttpServlet {
             updateViewPublicEmail(request, response);
         } else if (action.equals("delete-public-noti")) {
             deletePublicNoti(request, response);
+        } else if (action.equals("delete-private-noti")) {
+            deletePrivateNoti(request, response);
         } else if (action.equals("update-public-noti")) {
             updatePublicNoti(request, response);
         } else if (action.equals("update-private-noti")) {
             updatePrivateNoti(request, response);
         } else if (action.equals("list-private-noti")) {
             listPrivateNoti(request, response);
-        } else if (action.equals("delete-private-noti")) {
-            deletePrivateNoti(request, response);
-        } 
+        } else if (action.equals("list-wide-noti")) {
+            listWideNoti(request, response);
+        }else if (action.equals("list-private-noti-from-admin")) {
+            listPrivateNotiFromAdmin(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -154,7 +159,12 @@ public class NotificationServlet extends HttpServlet {
             throws ServletException, IOException {
         BufferedReader reader = request.getReader();
         PublicNotification pn = this.gson.fromJson(reader, PublicNotification.class);
-        List<User> users = Global.user.getListMember(pn.getClubId() + "");
+        List<User> users;
+        if (pn.getClubId() == 0) {
+            users = Global.user.getListUsers();
+        } else {
+            users = Global.user.getListMember(pn.getClubId() + "");
+        }
 
         response.setContentType("application/json");
         System.out.println("Yêu cầu tạo thông báo qua email");
@@ -223,7 +233,45 @@ public class NotificationServlet extends HttpServlet {
         out.flush();
 
     }
+
+    protected void listWideNoti(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter out = response.getWriter();
+
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        List<PublicNotification> notifications = Global.publicNotification.getAllWideNotifications();
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(notifications);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+
+    }
     
+    protected void listPrivateNotiFromAdmin(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter out = response.getWriter();
+
+        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        List<PrivateNotificationDetail> notifications = Global.privateNotification.getAllPrivateNotificationsFromAdmin();
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(notifications);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+
+    }
+
     protected void listPrivateNoti(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -321,6 +369,7 @@ public class NotificationServlet extends HttpServlet {
         out.flush();
 
     }
+
     protected void updateViewPublicEmail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -331,7 +380,7 @@ public class NotificationServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        int status = Global.publicNotification.updateView(id,userId);
+        int status = Global.publicNotification.updateView(id, userId);
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson("Đã cập nhật tình trạng xem");
@@ -340,7 +389,6 @@ public class NotificationServlet extends HttpServlet {
         out.print(json);
         out.flush();
     }
-
 
     protected void deletePublicNoti(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -361,6 +409,7 @@ public class NotificationServlet extends HttpServlet {
         out.flush();
 
     }
+
     protected void deletePrivateNoti(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -380,7 +429,6 @@ public class NotificationServlet extends HttpServlet {
         out.flush();
 
     }
-    
 
     protected void updatePublicNoti(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -399,7 +447,7 @@ public class NotificationServlet extends HttpServlet {
 
     }
 
-     protected void updatePrivateNoti(HttpServletRequest request, HttpServletResponse response)
+    protected void updatePrivateNoti(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

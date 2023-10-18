@@ -6,6 +6,7 @@ package nextteam.utils.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -55,9 +56,12 @@ public class ClubDAO extends SQLDatabase {
 
             while (rs.next()) {
                 //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
-
-                list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11), rs.getBoolean(12)));
-
+byte bitValue = rs.getByte(12);
+            boolean booleanValue = (bitValue != 0);
+                System.out.println(booleanValue);
+                Club newClub = new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11), booleanValue);
+                newClub.setIsActive(booleanValue);
+                list.add(newClub);
             }
 
         } catch (Exception e) {
@@ -89,14 +93,13 @@ public class ClubDAO extends SQLDatabase {
 
     public ArrayList<Club> getListClubsOfMe(String userId) {
         ArrayList<Club> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT clubs.id, clubs.name, clubs.subname FROM engagements INNER JOIN clubs ON engagements.clubId = clubs.id WHERE engagements.userId =?", userId);
+        ResultSet rs = executeQueryPreparedStatement("SELECT clubs.id, clubs.name, clubs.subname FROM engagements INNER JOIN clubs ON engagements.clubId = clubs.id WHERE engagements.userId =? AND engagements.status=1", userId);
         try {
 
             while (rs.next()) {
                 //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
 
                 list.add(new Club(rs.getInt(1), rs.getString(2), rs.getString(3)));
-
             }
 
         } catch (Exception e) {
@@ -158,7 +161,7 @@ public class ClubDAO extends SQLDatabase {
                 c.getBannerUrl(),
                 c.getMovementPoint(),
                 c.getBalance(),
-                c.isIsActive(),
+                (c.isIsActive()?1:0),
                 id);
         return rs;
     }
@@ -182,6 +185,61 @@ public class ClubDAO extends SQLDatabase {
         return ketQua;
 
     }
+
+    public List<User> getAllUserOfClub(int id) {
+        class OptionedUser extends User {
+
+            public OptionedUser(int id, String username, String firstname, String lastname) {
+                super(id, null, username, null, null, null, firstname, lastname, null, null, null, null, null, null, null, null, null, null, false, false);
+            }
+
+            @Override
+            public String toString() {
+                return """
+                    {
+                        "label": "%s",
+                        "username": "%s",
+                        "id": "%d",
+                        "isManager": "%d"
+                    }
+                    """.formatted(
+                        getFirstname() + " " + getLastname(),
+                        getUsername(),
+                        getId(),
+                        Global.engagement.getRoleByUserIdAndClubId(getId(), id)[0].equals("2") ? 1 : 0
+                );
+            }
+
+        }
+        List<User> users = new ArrayList<>();
+
+        ResultSet rs = executeQueryPreparedStatement(
+                """
+                SELECT users.*
+                FROM users
+                    INNER JOIN engagements
+                    ON users.id = engagements.userId
+                    INNER JOIN clubs
+                    ON clubs.id = engagements.clubId
+                WHERE clubs.id=? AND engagements.status=?
+                ORDER BY users.username
+                """,
+                id, 1
+        );
+
+        try {
+            while (rs.next()) {
+                users.add(new OptionedUser(rs.getInt("id"), rs.getString("username"), rs.getNString("firstname"), rs.getNString("lastname")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return users;
+    }
+    
+    
+    
 
     // test connection 
     public static void main(String... args) {
