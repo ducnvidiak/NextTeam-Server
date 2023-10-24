@@ -41,8 +41,24 @@ public class PaymentDAO extends SQLDatabase {
         private Date createdAt;
         private Date updatedAt;
         private int clubId;
+        private String paymentForm;
 
-        public Payment(int id, String title, String description, double amount, String type, String status, String firstname, String lastname, Date createdAt, Date updatedAt, int clubId) {
+        public Payment(int id, String title, String description, double amount, String type, String status, String firstname, String lastname, Date createdAt, Date updatedAt, int clubId, String paymentForm) {
+            this.id = id;
+            this.title = title;
+            this.description = description;
+            this.amount = amount;
+            this.type = type;
+            this.status = status;
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.clubId = clubId;
+            this.paymentForm = paymentForm;
+        }
+        
+         public Payment(int id, String title, String description, double amount, String type, String status, String firstname, String lastname, Date createdAt, Date updatedAt, int clubId) {
             this.id = id;
             this.title = title;
             this.description = description;
@@ -64,6 +80,17 @@ public class PaymentDAO extends SQLDatabase {
             this.status = status;
             this.createdAt = createdAt;
             this.updatedAt = updatedAt;
+        }
+        
+          public Payment(int id, String title, String description, double amount, String type,Date createdAt, Date updatedAt,int clubId) {
+            this.id = id;
+            this.title = title;
+            this.description = description;
+            this.amount = amount;
+             this.type = type;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.clubId = clubId;
         }
 
         public int getId() {
@@ -219,6 +246,50 @@ public class PaymentDAO extends SQLDatabase {
         }
         return payments;
     }
+    
+    public List<Payment> getAllPaymentInCategory(String categoryId) {
+        List<Payment> payments = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT th.id, pc.title, pc.description, pc.amount, 'in' AS type, th.status, users.firstname, users.lastname, th.createdAt, th.updatedAt, pc.clubId, th.paymentForm\n"
+                + "FROM transactionHistories th\n"
+                + "INNER JOIN paymentCategories pc\n"
+                + "ON th.categoryId = pc.id\n"
+                + "INNER JOIN users\n"
+                + "ON th.paidBy = users.id\n"
+                + "WHERE pc.id = ?\n"
+                + "ORDER BY createdAt DESC\n",
+                categoryId);
+        try {
+            while (rs.next()) {
+                Payment m = new Payment(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getTimestamp(9), rs.getTimestamp(10), rs.getInt(11),rs.getString(12));
+                payments.add(m);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PaymentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return payments;
+    }
+
+    public List<Payment> getAllPaymentByCategory(String clubId) {
+        List<Payment> payments = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT pc.id, pc.title, pc.description, pc.amount * (SELECT COUNT(*) FROM transactionHistories  WHERE clubId = ? AND status = 1) AS amount, 'in' AS type, pc.createdAt, pc.updatedAt ,pc.clubId\n"
+                + "              FROM paymentCategories pc\n"
+                + "      UNION ALL\n"
+                + "       SELECT id,title,description,amount, 'out' AS type, createdAt,updatedAt, clubId\n"
+                + "        FROM paymentExpenses\n"
+                + "  WHERE clubId = ?\n"
+                + "     ORDER BY createdAt DESC",
+                clubId, clubId
+        );
+        try {
+            while (rs.next()) {
+                Payment m = new Payment(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getString(5),  rs.getTimestamp(6), rs.getTimestamp(7), rs.getInt(8));
+                payments.add(m);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PaymentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return payments;
+    }
 
     public List<Payment> getAllPaymentOfMe(String userId) {
         List<Payment> payments = new ArrayList<>();
@@ -280,7 +351,18 @@ public class PaymentDAO extends SQLDatabase {
 
     }
     
-     public int addExpense(final PaymentExpense t) {
+    public int payByOnline(String id, String status ) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE transactionHistories SET  status=?, paymentForm='online' WHERE id=?",
+                status
+                ,id
+        );
+        return ketQua;
+
+    }
+
+    public int addExpense(final PaymentExpense t) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "INSERT INTO paymentExpenses (title, description, clubId, amount )  VALUES (?,?,?,?)",
@@ -290,6 +372,16 @@ public class PaymentDAO extends SQLDatabase {
                 t.getAmount()
         );
         return ketQua;
+    }
+    
+    public int updateBalance(String clubId, String balance) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE clubs SET  balance=? WHERE id=?",
+                balance,clubId
+        );
+        return ketQua;
+
     }
 
 }
