@@ -17,6 +17,10 @@
     </filter>-->
     <servlet>
         <servlet-name>UserServlet</servlet-name>
+        <servlet-class>nextteam.controllers.UserServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserInfoServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserInfoServlet</servlet-class>
     </servlet>
     <servlet>

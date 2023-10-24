@@ -243,24 +243,8 @@ byte bitValue = rs.getByte(12);
 
     // test connection 
     public static void main(String... args) {
-        List<Club> club = new ClubDAO(Global.generateConnection()).getListClubs();
+        Club club = new ClubDAO(Global.generateConnection()).getClubById("1");
         System.out.println(club);
-//String name = "Club Name Tuan";
-//String subname = "Subname";
-//int categoryId = 2;
-//String description = "";
-//String avatarUrl = "";
-//String bannerUrl = "";
-//int movementPoint = 100;
-//double balance = 1000.0;
-//int id = 17;
-//Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance);
-//
-//        int a = new ClubDAO(Global.generateConnection()).updateClub(c, id);
-//        System.out.println(a);
-//        int b = new ClubDAO(Global.generateConnection()).deleteClub(id);
-//        System.out.println(b);
-
 
     }
 
