@@ -8,15 +8,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
 import java.util.List;
+import javax.servlet.annotation.MultipartConfig;
 import nextteam.Global;
 import nextteam.models.Event;
 import nextteam.models.response.EventResponse;
 import nextteam.utils.database.EventDAO;
 
 @WebServlet(name = "EventAdminServlet", urlPatterns = {"/admin-events"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 50
+)
 public class EventAdminServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
@@ -35,15 +42,16 @@ public class EventAdminServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
-        System.out.println(command);
+        System.out.println(command + "zys");
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
             List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
+            
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
-            response.getWriter().write(events.toString());
+            response.getWriter().write(eventsJsonString);
 //            out.print(events.toString());
             out.flush();
         }
@@ -121,6 +129,7 @@ public class EventAdminServlet extends HttpServlet {
                     e.printStackTrace(); // Ghi log ngoại lệ
                 }
             }
+
             case "delete" -> {
                 int rs = Global.eventDao.deleteEventByEventId(eventId);
                 List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
@@ -139,6 +148,27 @@ public class EventAdminServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+       response.setContentType("application/json");
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        String eventId = request.getParameter("id");
+        String status = request.getParameter("status");
+        String feedback = request.getParameter("feedback");
+
+        System.out.println("feedback: " + feedback + "  " + status);
+
+        int result = eventDAO.updateEventStatus(eventId, status, feedback);
+        System.out.println("Received update status request: " + status + "  " + eventId);
+
+        JsonObject jsonRes = new JsonObject();
+        jsonRes.addProperty("status", (result == 1 ? "success" : "failure"));
+
+        String resJsonString = this.gson.toJson(jsonRes);
+        PrintWriter out = response.getWriter();
+        out.print(resJsonString);
+        out.flush();
 
     }
 

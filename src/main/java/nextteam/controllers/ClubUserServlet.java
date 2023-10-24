@@ -59,7 +59,6 @@ public class ClubUserServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Club> clubs = Global.clubDAO.getListClubsOfMe(userId);
 
         // Chuyển danh sách thành dạng JSON
@@ -78,7 +77,6 @@ public class ClubUserServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<User> users = Global.user.getListMember(clubId);
 
         // Chuyển danh sách thành dạng JSON

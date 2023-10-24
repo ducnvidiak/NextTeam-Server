@@ -27,6 +27,7 @@ public class Club {
     private Date createdAt;
     private Date updatedAt;
     private boolean isActive;
+//    private int numberOfMembers;
 
     public Club() {
     }
@@ -74,13 +75,24 @@ public class Club {
         this.movementPoint = movementPoint;
         this.balance = balance;
     }
-
+    // id, name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, createdAt
     public Club(int id, String name, String subname, String avatarUrl, int movementPoint) {
         this.id = id;
         this.name = name;
         this.subname = subname;
         this.avatarUrl = avatarUrl;
         this.movementPoint = movementPoint;
+    }
+    
+    public Club(int id, String name,String subname,String avatarUrl,String bannerUrl,int categoryId,String description,Date createAt) {
+        this.id = id;
+        this.name = name;
+        this.subname = subname;
+        this.categoryId = categoryId;
+        this.description = description;
+        this.avatarUrl = avatarUrl;
+        this.bannerUrl = bannerUrl;
+        this.createdAt = createAt;
     }
 
 // get club of me
@@ -91,17 +103,7 @@ public class Club {
     }
 // getClubDetailBySubname
 
-    public Club(int aInt, String string, String string0, String string1, String string2, int aInt0, int aInt1, String string3, Timestamp timestamp, boolean aBoolean) {
-        this.id = aInt;
-        this.name = string;
-        this.subname = string0;
-        this.avatarUrl = string1;
-        this.bannerUrl = string2;
-        this.categoryId = aInt0;
-        this.categoryId = aInt1;
-        this.description = string3;
-        this.createdAt = timestamp;
-    }
+    
 
     public Club(String name, String subname, int categoryId, String description, String avatarUrl,
             String bannerUrl, int movementPoint, double balance, boolean isActive) {

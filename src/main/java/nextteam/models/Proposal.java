@@ -7,7 +7,7 @@ package nextteam.models;
 import java.util.Date;
 
 /**
- *
+ * 
  * @author vnitd
  */
 public class Proposal {
@@ -17,11 +17,30 @@ public class Proposal {
     private String title;
     private String content;
     private int sendBy;
-    private boolean isApproved;
+    private String isApproved;
     private Date createdAt;
     private Date updatedAt;
 
-    public Proposal(int id, int clubId, String title, String content, int sendBy, boolean isApproved, Date createdAt, Date updatedAt) {
+    public Proposal() {
+    }
+
+    public Proposal(int id, String title, String content, String isApproved, Date updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.isApproved = isApproved;
+        this.updatedAt = updatedAt;
+    }
+
+    public Proposal(int clubId, String title, String content, int sendBy, String isApproved) {
+        this.clubId = clubId;
+        this.title = title;
+        this.content = content;
+        this.sendBy = sendBy;
+        this.isApproved = isApproved;
+    }
+
+    public Proposal(int id, int clubId, String title, String content, int sendBy, String isApproved, Date createdAt, Date updatedAt) {
         this.clubId = clubId;
         this.title = title;
         this.content = content;
@@ -72,11 +91,11 @@ public class Proposal {
         this.sendBy = sendBy;
     }
 
-    public boolean isIsApproved() {
+    public String getIsApproved() {
         return isApproved;
     }
 
-    public void setIsApproved(boolean isApproved) {
+    public void setIsApproved(String isApproved) {
         this.isApproved = isApproved;
     }
 

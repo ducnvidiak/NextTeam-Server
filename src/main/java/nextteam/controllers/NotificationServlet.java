@@ -82,7 +82,7 @@ public class NotificationServlet extends HttpServlet {
             listPrivateNoti(request, response);
         } else if (action.equals("list-wide-noti")) {
             listWideNoti(request, response);
-        }else if (action.equals("list-private-noti-from-admin")) {
+        } else if (action.equals("list-private-noti-from-admin")) {
             listPrivateNotiFromAdmin(request, response);
         }
     }
@@ -222,7 +222,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Notification> notifications = Global.notification.getListNotification(clubId, userId);
 
         // Chuyển danh sách thành dạng JSON
@@ -241,7 +240,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<PublicNotification> notifications = Global.publicNotification.getAllWideNotifications();
 
         // Chuyển danh sách thành dạng JSON
@@ -252,7 +250,7 @@ public class NotificationServlet extends HttpServlet {
         out.flush();
 
     }
-    
+
     protected void listPrivateNotiFromAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -260,7 +258,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<PrivateNotificationDetail> notifications = Global.privateNotification.getAllPrivateNotificationsFromAdmin();
 
         // Chuyển danh sách thành dạng JSON
@@ -280,7 +277,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<PrivateNotificationDAO.PrivateNotificationDetail> notifications = Global.privateNotification.getAllPrivateNotificationDetails(clubId);
 
         // Chuyển danh sách thành dạng JSON
@@ -302,7 +298,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Notification> notifications = Global.notification.searchNotification(clubId, userId, search);
 
         // Chuyển danh sách thành dạng JSON
@@ -323,7 +318,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Notification> notifications = Global.notification.getList10Notification(clubId, userId);
 
         // Chuyển danh sách thành dạng JSON
@@ -358,7 +352,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         int status = Global.privateNotification.updateSeen(id);
 
         // Chuyển danh sách thành dạng JSON
@@ -379,7 +372,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         int status = Global.publicNotification.updateView(id, userId);
 
         // Chuyển danh sách thành dạng JSON
@@ -398,7 +390,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         int status = Global.publicNotification.deletePublicNotification(id);
 
         // Chuyển danh sách thành dạng JSON
@@ -418,7 +409,6 @@ public class NotificationServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         int status = Global.privateNotification.deletePrivateNotification(id);
 
         // Chuyển danh sách thành dạng JSON

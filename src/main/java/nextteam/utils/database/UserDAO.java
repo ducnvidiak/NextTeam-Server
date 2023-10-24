@@ -29,31 +29,61 @@ public class UserDAO extends SQLDatabase {
 
     public UserDAO(Connection connection) {
         super(connection);
-    } 
-    
+    }
+
     public ArrayList<User> getListUsers() {
         ArrayList<User> list = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users");
         try {
             while (rs.next()) {
-                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20)));
+                // list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3),
+                // rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7),
+                // rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11),
+                // rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
+                // rs.getString(16), rs.getString(17), rs.getString(18),
+                // rs.getBoolean(19)),rs.getBoolean(20));
+                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+                        rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10),
+                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
+                        rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20)));
             }
 
         } catch (Exception e) {
-           
+
+        }
+        return list;
+    }
+
+    public ArrayList<UserCard> getUsersCardList(String clubId) {
+        ArrayList<UserCard> list = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT u.id, u.avatarUrl, u.firstname, u.lastname, u.username, u.gender FROM users AS u JOIN engagements AS e ON u.id = e.userId WHERE e.clubId = ? AND e.status != 0", clubId);
+        try {
+            while (rs.next()) {
+                list.add(new UserCard(rs.getInt(1), rs.getString(2), rs.getNString(3) + " " + rs.getNString(4),
+                        rs.getString(5), rs.getString(6)));
+            }
+        } catch (Exception e) {
+
         }
         return list;
     }
     
-    public ArrayList<UserCard> getUsersCardList() {
+    public ArrayList<UserCard> getUsersCardListForManage(String clubId) {
         ArrayList<UserCard> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT id, avatarUrl, firstname, lastname, username FROM users");
+        String status;
+        ResultSet rs = executeQueryPreparedStatement("SELECT u.id, u.avatarUrl, u.firstname, u.lastname, u.username, u.gender, d.id, e.status  FROM users as u JOIN engagements as e ON u.id = e.userId JOIN departments as d ON e.departmentId = d.id WHERE e.clubId = ? ", clubId);
         try {
-            while(rs.next()) {
-                list.add(new UserCard(rs.getInt(1), rs.getString(2), rs.getNString(3) + " " + rs.getNString(4), rs.getString(5)));
+            while (rs.next()) {
+                if (rs.getInt("status") == 0) {
+                    status = "inactive";
+                } else {
+                    status = "active";
+                }
+                list.add(new UserCard(rs.getInt(1), rs.getString(2), rs.getNString(3) + " " + rs.getNString(4),
+                        rs.getString(5), rs.getString(6), rs.getInt(7), status));
             }
-        } catch(Exception e) {
-            
+        } catch (Exception e) {
+
         }
         return list;
     }
@@ -63,7 +93,10 @@ public class UserDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE id=?", t.getId());
             if (rs.next()) {
-                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
+                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+                        rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10),
+                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
+                        rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
             }
 
         } catch (Exception e) {
@@ -76,7 +109,10 @@ public class UserDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE id=?", t);
             if (rs.next()) {
-                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
+                ketQua = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+                        rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10),
+                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
+                        rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
             }
         } catch (Exception e) {
         }
@@ -107,8 +143,7 @@ public class UserDAO extends SQLDatabase {
                 t.getDob(),
                 t.getHomeTown(),
                 t.getFacebookUrl(),
-                t.getLinkedInUrl()
-        );
+                t.getLinkedInUrl());
         return ketQua;
     }
 
@@ -123,8 +158,7 @@ public class UserDAO extends SQLDatabase {
                 t.getFirstname(),
                 t.getLastname(),
                 t.getPhoneNumber(),
-                t.getGender()
-        );
+                t.getGender());
         return ketQua;
     }
 
@@ -155,8 +189,7 @@ public class UserDAO extends SQLDatabase {
                 t.getHomeTown(),
                 t.getFacebookUrl(),
                 t.getLinkedInUrl(),
-                t.getId()
-        );
+                t.getId());
         return ketQua;
 
     }
@@ -167,8 +200,7 @@ public class UserDAO extends SQLDatabase {
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE users  SET  avatarUrl=? WHERE id=?",
                 t.getAvatarURL(),
-                t.getId()
-        );
+                t.getId());
         return ketQua;
     }
 
@@ -177,8 +209,7 @@ public class UserDAO extends SQLDatabase {
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE users  SET  password=? WHERE id=?",
                 t.getPassword(),
-                t.getId()
-        );
+                t.getId());
         return ketQua;
     }
 
@@ -189,8 +220,15 @@ public class UserDAO extends SQLDatabase {
             if (rs.next()) {
                 String hashedPw = rs.getString("password");
                 if (BCrypt.checkpw(password, hashedPw)) {
-                    // public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String studentCode, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive) {
-                    return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
+                    // public User(int id, String email, String username, String password, String
+                    // avatarURL, String bannerURL, String firstname, String lastname, String
+                    // studentCode, String phoneNumber, String major, String academicYear, String
+                    // gender, String dob, String homeTown, String facebookUrl, String linkedInUrl,
+                    // String createdAt, String updatedAt, boolean isActive) {
+                    return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+                            rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10),
+                            rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
+                            rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
                 }
             }
         } catch (Exception e) {
@@ -205,7 +243,10 @@ public class UserDAO extends SQLDatabase {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE email=?", email);
             if (rs.next()) {
-                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
+                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+                        rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10),
+                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
+                        rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -217,9 +258,9 @@ public class UserDAO extends SQLDatabase {
     public boolean StudentCodeCheck(String studentCode) {
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE username = ?", studentCode);
-//            System.out.println("aaa");
+            // System.out.println("aaa");
             if (rs.next()) {
-//                System.out.println(rs.getInt(1));
+                // System.out.println(rs.getInt(1));
                 return true;
             }
         } catch (SQLException e) {
@@ -231,15 +272,20 @@ public class UserDAO extends SQLDatabase {
     public ArrayList<User> getListMember(String clubId) {
         ArrayList<User> list = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("""
-                                                     SELECT * 
-                                                     FROM users
-                                                     WHERE id IN (SELECT userId FROM engagements WHERE clubId = ?);""", clubId);
+                SELECT *
+                FROM users
+                WHERE id IN (SELECT userId FROM engagements WHERE clubId = ?);""", clubId);
         try {
 
             while (rs.next()) {
-                //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
+                // public Club(int id, String name, String subname, int categoryId, String
+                // description, String avatarUrl, String bannerUrl, int movementPoint, double
+                // balance, Date createdAt, Date updatedAt) {
 
-                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20)));
+                list.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+                        rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10),
+                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
+                        rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20)));
 
             }
 
@@ -249,7 +295,45 @@ public class UserDAO extends SQLDatabase {
         return list;
     }
 
-    // test connection 
+    // block user
+    public int blockUser(String id) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  isActive='false' WHERE id=?",
+                id);
+        return ketQua;
+
+    }
+
+    // unblock user
+    public int unblockUser(String id) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  isActive='true' WHERE id=?",
+                id);
+        return ketQua;
+
+    }
+
+    // dct user
+    public int dct_admin(String id) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  isAdmin='true' WHERE id=?",
+                id);
+        return ketQua;
+    }
+
+    // dct user
+    public int dct_user(String id) {
+        int ketQua = 0;
+        ketQua = executeUpdatePreparedStatement(
+                "UPDATE users  SET  isAdmin='false' WHERE id=?",
+                id);
+        return ketQua;
+    }
+
+    // test connection
     public void changePassword(int id, String password) {
         password = Global.getHashedPassword(password);
         executeUpdatePreparedStatement("UPDATE users SET password=? WHERE id=?", password, id);
@@ -259,7 +343,10 @@ public class UserDAO extends SQLDatabase {
         ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE id=?", id);
         try {
             if (rs.next()) {
-                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
+                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+                        rs.getString(6), rs.getNString(7), rs.getNString(8), rs.getString(9), rs.getString(10),
+                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
+                        rs.getString(16), rs.getString(17), rs.getString(18), rs.getBoolean(19), rs.getBoolean(20));
             }
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -269,8 +356,7 @@ public class UserDAO extends SQLDatabase {
     }
 
     public static void main(String... args) {
-        User user = new UserDAO(Global.generateConnection()).getListUserByIdString("2");
-        System.out.println("Data from mssql: " + user.getFirstname());
+        System.out.println(new UserDAO(Global.generateConnection()).getListUsers());
     }
 
 }

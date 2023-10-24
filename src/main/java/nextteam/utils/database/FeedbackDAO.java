@@ -58,11 +58,6 @@ public class FeedbackDAO extends SQLDatabase {
 
     public int createFeedback(Feedback f) {
         int rs = 0;
-        System.out.println("!!!!");
-        System.out.println(f.getUserId());
-        System.out.println(f.getEventId());
-        System.out.println(f.getPoint());
-        System.out.println(f.getContent());
         rs = executeUpdatePreparedStatement(
                 "INSERT INTO feedbacks (userId, eventId, point, content) VALUES (?, ?, ?, ?);",
                 f.getUserId(),

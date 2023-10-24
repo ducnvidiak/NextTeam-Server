@@ -41,7 +41,7 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("type"),
                         rs.getString("planUrl"),
                         rs.getString("bannerUrl"),
-                        rs.getBoolean("isApprove"),
+                        rs.getString("isApprove"),
                         rs.getString("response"),
                         rs.getInt("clubId"),
                         rs.getTimestamp("createdAt"),
@@ -74,7 +74,6 @@ public class EventDAO extends SQLDatabase {
     }
 
     public int createEventForAdmin(Event e) {
-        System.out.println("!!!!" + e.getClubId());
         int rs = 0;
         rs = executeUpdatePreparedStatement(
                 "INSERT INTO events (name, description, registeredBy, bannerUrl, startTime, endTime, locationId, type, planUrl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -94,21 +93,18 @@ public class EventDAO extends SQLDatabase {
     public int deleteEventByEventId(String eventId) {
         int rs = 0;
         rs = executeUpdatePreparedStatement(
-                "DELETE er \n"
-                + "FROM eventRegistrations er\n"
-                + "INNER JOIN events e ON e.id = er.event\n"
-                + "WHERE e.id = ?\n"
-                + "\n"
-                + "DELETE e \n"
-                + "FROM events e\n"
-                + "WHERE e.id = ?",
-                eventId, eventId
+                "DELETE FROM feedbacks WHERE eventId = ?;\n"
+                + "DELETE FROM eventRegistrations WHERE event = ?;\n"
+                + "DELETE FROM events\n"
+                + "WHERE id = ?;",
+                eventId, eventId, eventId
         );
         return rs;
     }
 
     public int updateEventByEventId(String eventId, Event e) {
         int rs = 0;
+        System.out.println(e.toString());
         System.out.println("time: " + e.getStartTime());
         rs = executeUpdatePreparedStatement(
                 "UPDATE events \n"
@@ -133,61 +129,104 @@ public class EventDAO extends SQLDatabase {
                 eventId
         );
         return rs;
-        //2023-10-10 10:00:00
-        //2023-10-11 02:00:00
-        //2023-10-13 01:00:00
-        //2023-10-10 12:00:00.0
-        //2023-10-13 01:00:00.0
+    }
+
+    public int updateEventStatus(String eventId, String status, String feedback) {
+        int result = executeUpdatePreparedStatement("UPDATE events SET isApproved = ?, response = ? WHERE events.id = ?", status, feedback, eventId);
+        return result;
     }
 
     public List<EventResponse> getAllEventsDetail(String userId) {
         List<EventResponse> events = new ArrayList<>();
-        System.out.println("userId" + userId);
-        ResultSet rs = executeQueryPreparedStatement("SELECT \n"
-                + "  e.id AS id, \n"
-                + "  e.name AS name, \n"
-                + "  e.name AS description, \n"
-                + "  e.type AS type, \n"
-                + "  e.bannerUrl AS bannerUrl,\n"
-                + "  l.name AS locationName,\n"
-                + "  e.startTime AS startTime, \n"
-                + "  e.endTime AS endTime,\n"
-                + "  e.isApproved AS isApproved,\n"
-                + "  c.subname AS clubSubname,\n"
-                + "  c.avatarUrl AS clubAvatarUrl,\n"
-                + "  CASE WHEN er.event IS NOT NULL THEN 1 ELSE 0 END AS isRegistered,\n"
-                + "  CAST(AVG(CAST(f.point AS REAL)) as decimal(2,1)) AS avgRating,\n"
-                + "  CASE WHEN f.userId = ? THEN 1 ELSE 0 END AS isFeedback\n"
-                + "FROM events e\n"
+        ResultSet rs = executeQueryPreparedStatement("SELECT\n"
+                + "    e.id,\n"
+                + "    e.name,\n"
+                + "    e.description,\n"
+                + "    e.bannerUrl,\n"
+                + "    l.name AS locationName,\n"
+                + "    e.startTime,\n"
+                + "    e.endTime,\n"
+                + "    c.subname AS clubSubname,\n"
+                + "    c.avatarUrl AS clubAvatarUrl,\n"
+                + "    CASE WHEN er.event IS NULL THEN 0 ELSE 1 END AS isRegistered,\n"
+                + "    CASE WHEN f.eventId IS NULL THEN 0 ELSE 1 END AS isFeedback,\n"
+                + "    ROUND(CAST((SELECT AVG(CAST(point AS DECIMAL(10, 1))) \n"
+                + "           FROM feedbacks\n"
+                + "           WHERE eventId = e.id) AS DECIMAL(10, 1)), 1) AS avgRating\n"
+                + "FROM events e \n"
                 + "JOIN locations l ON e.locationId = l.id\n"
-                + "JOIN clubs c ON e.clubId = c.id\n"
-                + "LEFT JOIN eventRegistrations er ON e.id = er.event AND er.registeredBy = ?  \n"
-                + "LEFT JOIN feedbacks f ON e.id = f.eventId\n"
-                + "GROUP BY \n"
-                + "  e.id, e.name, e.type, e.bannerUrl,\n"
-                + "  l.name, e.startTime, e.endTime, \n"
-                + "  e.isApproved, c.subname, c.avatarUrl, \n"
-                + "  er.event, f.userId\n"
-                + "ORDER BY \n"
-                + "  e.startTime DESC, e.id ASC;", userId, userId);
+                + "LEFT OUTER JOIN clubs c ON e.clubId = c.id\n"
+                + "LEFT JOIN eventRegistrations er ON e.id = er.event AND er.registeredBy = ?\n"
+                + "LEFT JOIN feedbacks f ON e.id = f.eventId AND f.userId = ?\n"
+                + "WHERE e.type = 'public'\n"
+                + "AND e.isApproved = 'accepted' ORDER BY e.startTime DESC;", userId, userId);
 
         try {
             while (rs.next()) {
                 EventResponse event = new EventResponse(
                         rs.getInt("id"),
                         rs.getString("name"),
-                        rs.getString("type"),
                         rs.getString("description"),
                         rs.getString("bannerUrl"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
-                        rs.getBoolean("isApproved"),
                         rs.getString("locationName"),
                         rs.getString("clubSubname"),
                         rs.getString("clubAvatarUrl"),
                         rs.getBoolean("isRegistered"),
-                        rs.getFloat("avgRating"),
-                        rs.getBoolean("isFeedback")
+                        rs.getBoolean("isFeedback"),
+                        rs.getFloat("avgRating")
+                );
+                System.out.println("event");
+//                System.out.println(event.);
+                events.add(event);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return events;
+    }
+
+    public List<EventResponse> getAllEventsDetailForGuest() {
+        List<EventResponse> events = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT\n"
+                + "    e.id,\n"
+                + "    e.name,\n"
+                + "    e.description,\n"
+                + "    e.bannerUrl,\n"
+                + "    l.name AS locationName,\n"
+                + "    e.startTime,\n"
+                + "    e.endTime,\n"
+                + "    c.subname AS clubSubname,\n"
+                + "    c.avatarUrl AS clubAvatarUrl,\n"
+                + "    CASE WHEN er.event IS NULL THEN 0 ELSE 1 END AS isRegistered,\n"
+                + "    CASE WHEN f.eventId IS NULL THEN 0 ELSE 1 END AS isFeedback,\n"
+                + "    ROUND(CAST((SELECT AVG(CAST(point AS DECIMAL(10, 1))) \n"
+                + "           FROM feedbacks\n"
+                + "           WHERE eventId = e.id) AS DECIMAL(10, 1)), 1) AS avgRating\n"
+                + "FROM events e \n"
+                + "JOIN locations l ON e.locationId = l.id\n"
+                + "LEFT OUTER JOIN clubs c ON e.clubId = c.id\n"
+                + "LEFT JOIN eventRegistrations er ON e.id = er.event AND er.registeredBy = null\n"
+                + "LEFT JOIN feedbacks f ON e.id = f.eventId AND f.userId = null\n"
+                + "WHERE e.type = 'public'\n"
+                + "AND e.isApproved = 'accepted' ORDER BY e.startTime DESC;");
+
+        try {
+            while (rs.next()) {
+                EventResponse event = new EventResponse(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("bannerUrl"),
+                        rs.getTimestamp("startTime"),
+                        rs.getTimestamp("endTime"),
+                        rs.getString("locationName"),
+                        rs.getString("clubSubname"),
+                        rs.getString("clubAvatarUrl"),
+                        rs.getBoolean("isRegistered"),
+                        rs.getBoolean("isFeedback"),
+                        rs.getFloat("avgRating")
                 );
                 System.out.println("event");
 //                System.out.println(event.);
@@ -201,7 +240,6 @@ public class EventDAO extends SQLDatabase {
 
     public List<EventResponse> getAllEventsDetailForManager(String clubId) {
         List<EventResponse> events = new ArrayList<>();
-        System.out.println(clubId);
         ResultSet rs = executeQueryPreparedStatement("SELECT\n"
                 + "  e.id,\n"
                 + "  e.name,\n"
@@ -211,6 +249,7 @@ public class EventDAO extends SQLDatabase {
                 + "  e.startTime,\n"
                 + "  e.endTime,\n"
                 + "  e.isApproved,\n"
+                + "  e.planUrl,\n"
                 + "  l.name AS locationName,\n"
                 + "  c.subname AS clubSubname,\n"
                 + "  c.avatarUrl AS clubAvatarUrl\n"
@@ -229,13 +268,12 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("bannerUrl"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
-                        rs.getBoolean("isApproved"),
+                        rs.getString("isApproved"),
+                        rs.getString("planUrl"),
                         rs.getString("locationName"),
                         rs.getString("clubSubname"),
                         rs.getString("clubAvatarUrl")
                 );
-                System.out.println("event");
-//                System.out.println(event.);
                 events.add(event);
             }
         } catch (SQLException ex) {
@@ -250,20 +288,17 @@ public class EventDAO extends SQLDatabase {
                 + "  e.id,\n"
                 + "  e.name,\n"
                 + "  e.type,\n"
-                + "  e.clubId,\n"
-                + "  e.description,\n"
+                + "  e.description, \n"
                 + "  e.bannerUrl,\n"
-                + "  e.startTime, \n"
+                + "  e.startTime,\n"
                 + "  e.endTime,\n"
                 + "  e.isApproved,\n"
-                + "  l.name AS locationName,\n"
-                + "  c.subname AS clubSubname,\n"
-                + "  c.avatarUrl AS clubAvatarUrl\n"
+                + "  e.planUrl,\n"
+                + "  l.name AS locationName\n"
                 + "FROM events e\n"
-                + "INNER JOIN locations l ON l.id = e.locationId\n"
-                + "LEFT JOIN clubs c ON c.id = e.clubId\n"
+                + "INNER JOIN locations l ON l.id = e.locationId \n"
                 + "WHERE e.clubId IS NULL\n"
-                + "ORDER BY e.startTime DESC");
+                + "ORDER BY e.startTime DESC;");
 
         try {
             while (rs.next()) {
@@ -275,10 +310,7 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("bannerUrl"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
-                        rs.getBoolean("isApproved"),
-                        rs.getString("locationName"),
-                        rs.getString("clubSubname"),
-                        rs.getString("clubAvatarUrl")
+                        rs.getString("locationName")
                 );
 //                System.out.println("event");
 //                System.out.println(event.);
@@ -293,27 +325,28 @@ public class EventDAO extends SQLDatabase {
     public List<EventResponse> getAllEventsDetailForMember(String clubId, String userId) {
         List<EventResponse> events = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT\n"
-                + "  e.id,\n"
-                + "  e.name,\n"
-                + "  e.type,\n"
-                + "  e.description,\n"
-                + "  e.bannerUrl,\n"
-                + "  e.startTime, \n"
-                + "  e.endTime,\n"
-                + "  e.isApproved,\n"
-                + "  l.name AS locationName,\n"
-                + "  c.subname AS clubSubname,\n"
-                + "  c.avatarUrl AS clubAvatarUrl,\n"
-                + "  CASE \n"
-                + "    WHEN er.id IS NULL THEN 'false'\n"
-                + "    ELSE 'true' \n"
-                + "  END AS isRegistered\n"
-                + "FROM events e  \n"
-                + "INNER JOIN locations l ON l.id = e.locationId\n"
-                + "INNER JOIN clubs c ON c.id = e.clubId\n"
-                + "LEFT JOIN eventRegistrations er ON er.event = e.id AND er.registeredBy = ?\n"
+                + "e.id,\n"
+                + "e.name,\n"
+                + "e.description,\n"
+                + "e.bannerUrl,\n"
+                + "e.type,\n"
+                + "l.name AS locationName,\n"
+                + "e.startTime,\n"
+                + "e.endTime,\n"
+                + "c.subname AS clubSubname,\n"
+                + "c.avatarUrl AS clubAvatarUrl,\n"
+                + "CASE WHEN er.event IS NULL THEN 0 ELSE 1 END AS isRegistered,\n"
+                + "CASE WHEN f.eventId IS NULL THEN 0 ELSE 1 END AS isFeedback,\n"
+                + "ROUND(CAST((SELECT AVG(CAST(point AS DECIMAL(10, 1))) \n"
+                + "FROM feedbacks\n"
+                + "WHERE eventId = e.id) AS DECIMAL(10, 1)), 1) AS avgRating\n"
+                + "FROM events e \n"
+                + "JOIN locations l ON e.locationId = l.id\n"
+                + "JOIN clubs c ON e.clubId = c.id\n"
+                + "LEFT JOIN eventRegistrations er ON e.id = er.event AND er.registeredBy = ?\n"
+                + "LEFT JOIN feedbacks f ON e.id = f.eventId AND f.userId = ?\n"
                 + "WHERE e.clubId = ?\n"
-                + "ORDER BY e.startTime DESC", userId, clubId);
+                + "AND e.isApproved = 'accepted' ORDER BY e.startTime DESC;", userId, userId, clubId);
 
         try {
             while (rs.next()) {
@@ -325,11 +358,12 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("bannerUrl"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
-                        rs.getBoolean("isApproved"),
                         rs.getString("locationName"),
                         rs.getString("clubSubname"),
                         rs.getString("clubAvatarUrl"),
-                        rs.getBoolean("isRegistered")
+                        rs.getBoolean("isRegistered"),
+                        rs.getBoolean("isFeedback"),
+                        rs.getFloat("avgRating")
                 );
                 System.out.println("event");
                 events.add(event);

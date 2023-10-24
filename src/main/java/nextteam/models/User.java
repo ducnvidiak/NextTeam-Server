@@ -37,6 +37,9 @@ public class User {
     public User() {
     }
 
+    public User(int id) {
+        this.id = id;
+    }
     public User(int id, String avatarURL) {
         this.id = id;
         this.avatarURL = avatarURL;
@@ -50,7 +53,6 @@ public class User {
         this.gender = gender;
     }
 
-
     public User(String email, String username, String password, String firstname, String lastname, String phoneNumber) {
         this.email = email;
         this.username = username;
@@ -59,9 +61,11 @@ public class User {
         this.lastname = lastname;
         this.phoneNumber = phoneNumber;
     }
-    
-    
-    public User(int id, String email, String username, String password, String avatarURL, String bannerURL, String firstname, String lastname, String phoneNumber, String major, String academicYear, String gender, String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt, boolean isActive, boolean isAdmin) {
+
+    public User(int id, String email, String username, String password, String avatarURL, String bannerURL,
+            String firstname, String lastname, String phoneNumber, String major, String academicYear, String gender,
+            String dob, String homeTown, String facebookUrl, String linkedInUrl, String createdAt, String updatedAt,
+            boolean isActive, boolean isAdmin) {
 
         this.id = id;
         this.email = email;
@@ -241,6 +245,32 @@ public class User {
 
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\": " + id +
+                ", \"email\": \"" + email + "\"" +
+                ", \"username\": \"" + username + "\"" +
+                ", \"password\": \"" + password + "\"" +
+                ", \"avatarURL\": \"" + avatarURL + "\"" +
+                ", \"bannerURL\": \"" + bannerURL + "\"" +
+                ", \"firstname\": \"" + firstname + "\"" +
+                ", \"lastname\": \"" + lastname + "\"" +
+                ", \"phoneNumber\": \"" + phoneNumber + "\"" +
+                ", \"major\": \"" + major + "\"" +
+                ", \"academicYear\": \"" + academicYear + "\"" +
+                ", \"gender\": \"" + gender + "\"" +
+                ", \"dob\": \"" + dob + "\"" +
+                ", \"homeTown\": \"" + homeTown + "\"" +
+                ", \"facebookUrl\": \"" + facebookUrl + "\"" +
+                ", \"linkedInUrl\": \"" + linkedInUrl + "\"" +
+                ", \"createdAt\": \"" + getCreatedAt() + "\"" +
+                ", \"updatedAt\": \"" + getUpdatedAt() + "\"" +
+                ", \"isAdmin\": \"" + isAdmin + "\"" +
+                ", \"isActive\": " + isActive +
+                "}";
     }
 
     public String getFullname() {
