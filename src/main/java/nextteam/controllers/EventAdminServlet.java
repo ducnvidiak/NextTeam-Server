@@ -46,7 +46,7 @@ public class EventAdminServlet extends HttpServlet {
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
             List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
-            
+
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -110,12 +110,12 @@ public class EventAdminServlet extends HttpServlet {
                     }
                     Event event = gson.fromJson(jsonInput.toString(), Event.class);
                     int rs = Global.eventDao.updateEventByEventId(eventId, event);
-                    List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+                    List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
                     String eventsJsonString = gson.toJson(events);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     PrintWriter out = response.getWriter();
-                    response.getWriter().write(events.toString());
+                    response.getWriter().write(eventsJsonString);
                 } catch (JsonSyntaxException e) {
                     // Xử lý ngoại lệ khi có lỗi cú pháp JSON
                     System.out.println("????");
@@ -137,7 +137,7 @@ public class EventAdminServlet extends HttpServlet {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 PrintWriter out = response.getWriter();
-                response.getWriter().write(events.toString());
+                response.getWriter().write(eventsJsonString);
             }
             default -> {
             }
