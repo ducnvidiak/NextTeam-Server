@@ -6,11 +6,13 @@ package nextteam.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
+import nextteam.models.User;
 
 /**
  *
@@ -27,7 +29,7 @@ public class UserServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         String json = "";
         String cmd = request.getParameter("cmd");
- 
+       
         if (cmd.equals("list")) {
             String res = Global.user.getListUsers().toString();
             out.print(res);

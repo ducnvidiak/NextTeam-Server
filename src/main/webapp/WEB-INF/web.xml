@@ -101,7 +101,7 @@
         <servlet-class>nextteam.controllers.ClubDetailServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>UserInfoServlet</servlet-name>
+        <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
     </servlet-mapping>
     <servlet-mapping>

@@ -28,6 +28,7 @@ public class StatisDAO extends SQLDatabase {
     public List<ClubCounter> getClubData() {
         List<ClubCounter> clubs = new ArrayList<>();
         String sql = "SELECT \n" +
+"    c.id AS ClubId, \n" +
 "    c.name AS ClubName, \n" +
 "    COUNT(DISTINCT e.id) AS EventCount, \n" +
 "    COUNT(DISTINCT eng.userId) AS MemberCount, \n" +
@@ -50,7 +51,7 @@ public class StatisDAO extends SQLDatabase {
 "    WHERE endTime > GETDATE() \n" +
 "    GROUP BY clubId, name) eUpcoming ON c.id = eUpcoming.clubId\n" +
 "GROUP BY\n" +
-"    c.name, c.balance, c.movementPoint, eUpcoming.name, eUpcoming.endTime";
+"    c.id,c.name, c.balance, c.movementPoint, eUpcoming.name, eUpcoming.endTime";
 
         try {
             ResultSet rs = executeQueryPreparedStatement(sql);
@@ -60,8 +61,7 @@ public class StatisDAO extends SQLDatabase {
     club.setEventCount(rs.getInt("EventCount"));
     club.setMemberCount(rs.getInt("MemberCount"));
     club.setBalance(rs.getDouble("Balance"));
-    club.setActiviyPoint(rs.getInt("ActivityPoints"));
-    
+    club.setActiviyPoint(Global.clubDAO.getPointClubById(""+rs.getInt("ClubId")));
     
     if(rs.getString("UpcomingEventName") == null){
         club.setUpcomingEventName("Không có sự kiện diễn ra sắp tới");
