@@ -109,7 +109,7 @@ public class StatisServlet extends HttpServlet {
         int[] total_event_months = Global.statis.getNumberEventEachMonth(clubID);
         int[] total_enga_months = Global.statis.getNumberEngaEachMonth(clubID);
         int balance = Global.statis.getBalanceClub(clubID);
-        int activity_point = Global.statis.getActivityPoint(clubID);
+        int activity_point = Global.clubDAO.getPointClubById(clubID);
         int total_report = Global.statis.getTotalReport(clubID);
         int total_post = Global.statis.getTotalPost(clubID);
         Club c = Global.clubDAO.getClubById(clubID);

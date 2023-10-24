@@ -78,7 +78,11 @@ public class ClubDAO extends SQLDatabase {
 
     public int getPointClubById(String clubId) {
 
-        ResultSet rs = executeQueryPreparedStatement("select sum(points)   from engagements");
+        ResultSet rs = executeQueryPreparedStatement("SELECT SUM(ph.amount) AS total_amount\n" +
+"FROM pointsHistories ph\n" +
+"JOIN users u ON ph.receivedBy = u.id\n" +
+"WHERE ph.clubId = '" +clubId+"'");
+        
         try {
             while (rs.next()) {
                 return rs.getInt(1);
