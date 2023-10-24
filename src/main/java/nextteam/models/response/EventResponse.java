@@ -78,6 +78,11 @@ public class EventResponse extends Event {
         this.locationName = locationName;
 
     }
+    
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName) {
+        super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
+        this.locationName = locationName;
+    }
 
     public String getLocationName() {
         return locationName;
@@ -87,6 +92,22 @@ public class EventResponse extends Event {
         this.locationName = locationName;
     }
 
+    public float getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(float avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public boolean isIsFeedback() {
+        return isFeedback;
+    }
+
+    public void setIsFeedback(boolean isFeedback) {
+        this.isFeedback = isFeedback;
+    }
+    
     public String getClubSubname() {
         return clubSubname;
     }

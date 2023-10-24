@@ -295,9 +295,9 @@ public class EventDAO extends SQLDatabase {
                 + "  e.planUrl,\n"
                 + "  l.name AS locationName\n"
                 + "FROM events e\n"
-                + "INNER JOIN locations l ON l.id = e.locationId \n"
-                + "WHERE e.clubId IS NULL\n"
-                + "ORDER BY e.startTime DESC;");
+                + "INNER JOIN locations l ON l.id = e.locationId \n");
+//                + "WHERE e.clubId IS NOT NULL\n"
+//                + "ORDER BY e.startTime DESC;");
 
         try {
             while (rs.next()) {
@@ -309,6 +309,7 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("bannerUrl"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
+                        rs.getString("isApproved"),
                         rs.getString("locationName")
                 );
                 System.out.println("event");
