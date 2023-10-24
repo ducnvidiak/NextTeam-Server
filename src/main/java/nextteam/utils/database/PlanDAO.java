@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import nextteam.models.Plan;
+import nextteam.models.PlanDetail;
 import nextteam.utils.SQLDatabase;
 
 public class PlanDAO extends SQLDatabase {
@@ -75,6 +76,31 @@ public class PlanDAO extends SQLDatabase {
         }
         return plans;
     }
+    
+    public List<PlanDetail> getListAllPlans() {
+        List<PlanDetail> plans = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT p.*, c.name FROM Plans AS p JOIN clubs AS c ON p.clubId = c.id");
+        try {
+            while (rs.next()) {
+                plans.add(
+                        new PlanDetail(
+                                rs.getInt("id"),
+                                rs.getInt("clubId"),
+                                rs.getString("title"),
+                                rs.getString("content"),
+                                rs.getString("response"),
+                                rs.getString("isApproved"),
+                                rs.getDate("createdAt"),
+                                rs.getDate("updatedAt"),
+                                rs.getString("name")
+                        )
+                );
+            }
+        } catch (Exception e) {
+
+        }
+        return plans;
+    }
 
     public Plan getPlanById(String id) {
         Plan plan = new Plan();
@@ -101,10 +127,10 @@ public class PlanDAO extends SQLDatabase {
 
     public int updatePlan(Plan p) {
         int result = 0;
-
+        System.out.println("received update plan");
         try {
-            result = executeUpdatePreparedStatement("UPDATE plans SET title=?, content=?, response=?, isApproved=?, updatedAt=? WHERE id=?",
-                    p.getTitle(), p.getContent(), p.getResponse(), p.getIsApproved(), p.getUpdatedAt(), p.getId());
+            result = executeUpdatePreparedStatement("UPDATE plans SET title=?, content=?, isApproved=?, updatedAt=? WHERE id=?",
+                    p.getTitle(), p.getContent(), p.getIsApproved(), p.getUpdatedAt(), p.getId());
         } catch (Exception e) {
 
         }
@@ -112,12 +138,12 @@ public class PlanDAO extends SQLDatabase {
         return result;
     }
     
-    public int updatePlanStatus(String id, String status) {
+    public int updatePlanStatus(String id, String status, String response) {
         int result = 0;
 
         try {
-            result = executeUpdatePreparedStatement("UPDATE plans SET isApproved=? WHERE id=?",
-                    status, id);
+            result = executeUpdatePreparedStatement("UPDATE plans SET isApproved=?, response=? WHERE id=?",
+                    status, response, id);
         } catch (Exception e) {
 
         }

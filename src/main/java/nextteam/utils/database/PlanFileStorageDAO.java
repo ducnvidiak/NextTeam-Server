@@ -78,6 +78,32 @@ public class PlanFileStorageDAO extends SQLDatabase {
         return fileRecords;
 
     }
+    
+    public List<PlanFileRecord> getListAllFileRecords() {
+        List<PlanFileRecord> fileRecords = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM planFileStorage");
+
+        try {
+            while (rs.next()) {
+                fileRecords.add(
+                        new PlanFileRecord(
+                                rs.getInt("id"),
+                                rs.getString("fileId"),
+                                rs.getString("planId"),
+                                rs.getString("type"),
+                                rs.getString("name"),
+                                rs.getString("downloadLink"),
+                                rs.getString("viewLink")
+                        )
+                );
+            }
+        } catch (Exception e) {
+
+        }
+
+        return fileRecords;
+
+    }
 
     public List<PlanFileRecord> getAllFileRecordByClubId(String id) {
         List<PlanFileRecord> fileRecords = new ArrayList<>();

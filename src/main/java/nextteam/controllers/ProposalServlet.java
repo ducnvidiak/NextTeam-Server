@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.Part;
 import nextteam.models.FileRecord;
+import nextteam.models.ProposalDetail;
 import nextteam.utils.database.FileStorageDAO;
 import nextteam.utils.GoogleDriveUploader;
 import nextteam.utils.CloudFileInfo;
@@ -62,10 +63,11 @@ public class ProposalServlet extends HttpServlet {
             Proposal p = new ProposalDAO(Global.generateConnection()).getProposalById(id);
             resJsonString = this.gson.toJson(p);
         } else if (type.equals("byUserId")) {
-            List<Proposal> p = new ProposalDAO(Global.generateConnection()).getListProposalByUserId(request.getParameter("id"));
+            List<ProposalDetail> p = new ProposalDAO(Global.generateConnection()).getListProposalByUserId(request.getParameter("id"));
             resJsonString = this.gson.toJson(p);
         } else if (type.equals("byClubId")) {
-            List<Proposal> p = new ProposalDAO(Global.generateConnection()).getListProposalByClubId(request.getParameter("id"));
+            System.out.println("clubid proposal");
+            List<ProposalDetail> p = new ProposalDAO(Global.generateConnection()).getListProposalByClubId(request.getParameter("id"));
             resJsonString = this.gson.toJson(p);
         }
 

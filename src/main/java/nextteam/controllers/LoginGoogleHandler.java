@@ -63,15 +63,18 @@ public class LoginGoogleHandler extends HttpServlet {
 //            out.flush();
             queryString = "?successData=" + AES.encryptString(userJsonString) + "&googleLogin=1";
             System.out.println(queryString);
+            out.println();
+            out.println("<script>window.location.href = 'https://next-team-client.vercel.app/auth/login/" + queryString + "';</script>");
         } else {
             System.out.println("Đăng nhập thất bại");
             String error = "Tài khoản không tồn tại";
             String errorJsonString = this.gson.toJson(error);
             out.print(errorJsonString);
             out.flush();
+            queryString = "?fail=1&email=" + user.getEmail() + "&family_name=" + user.getFamily_name() + "&given_name=" + user.getGiven_name();
+            out.println();
+            out.println("<script>window.location.href = 'https://next-team-client.vercel.app/auth/register/" + queryString + "';</script>");
         }
-        out.println();
-        out.println("<script>window.location.href = 'http://localhost:3000/auth/login/" + queryString + "';</script>");
 
     }
 

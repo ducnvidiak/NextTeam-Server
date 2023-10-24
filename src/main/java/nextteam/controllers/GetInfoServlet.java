@@ -31,39 +31,64 @@ public class GetInfoServlet extends HttpServlet {
 
         String res = "{\"code\": \"-1\"}";
 
-        if (cmd.equals("user")) {
-            if (!data.equals("undefined")) {
-                res = AES.decryptString(data);
+        switch (cmd) {
+            case "user":
+                if (!data.equals("undefined")) {
+                    res = AES.decryptString(data);
+                }
+                break;
+            case "user.role": {
+                String json = AES.decryptString(data);
+                int clubId = Integer.parseInt(req.getParameter("clubId"));
+                int userId = gson.fromJson(json, User.class).getId();
+                String[] role = Global.engagement.getRoleByUserIdAndClubId(userId, clubId);
+                res = "{\"roleId\": \"" + role[0] + "\", \"roleName\": \"" + role[1] + "\"}";
+                break;
             }
-        } else if (cmd.equals("user.role")) {
-            String json = AES.decryptString(data);
-
-            int clubId = Integer.parseInt(req.getParameter("clubId"));
-            int userId = gson.fromJson(json, User.class).getId();
-
-            String[] role = Global.engagement.getRoleByUserIdAndClubId(userId, clubId);
-
-            res = "{\"roleId\": \"" + role[0] + "\", \"roleName\": \"" + role[1] + "\"}";
-        } else if (cmd.equals("club.users")) {
-            res = Global.clubDAO.getAllUserOfClub(Integer.parseInt(data)).toString();
-        } else if (cmd.equals("user.points")) {
-            int clubId = Integer.parseInt(req.getParameter("clubId"));
-            int userId = Integer.parseInt(req.getParameter("userId"));
-
-            res = """
-                  {
-                    "code": "0",
-                    "result": %s
-                  }""".formatted(Global.engagement.getEngagementsPointsRanking(userId, clubId));
-        } else if (cmd.equals("user.points.history")) {
-            int clubId = Integer.parseInt(req.getParameter("clubId"));
-            int userId = Integer.parseInt(req.getParameter("userId"));
-
-            res = """
-                  {
-                    "code": "0",
-                    "result": %s
-                  }""".formatted(Global.pointHistory.listOfSpecifiedUser(clubId, userId));
+            case "club.users":
+                res = Global.clubDAO.getAllUserOfClub(Integer.parseInt(data)).toString();
+                break;
+            case "user.points": {
+                int clubId = Integer.parseInt(req.getParameter("clubId"));
+                int userId = Integer.parseInt(req.getParameter("userId"));
+                res = """
+                        {
+                          "code": "0",
+                          "result": %s
+                        }""".formatted(Global.engagement.getEngagementsPointsRanking(userId, clubId));
+                break;
+            }
+            case "user.points.history": {
+                int clubId = Integer.parseInt(req.getParameter("clubId"));
+                int userId = Integer.parseInt(req.getParameter("userId"));
+                res = """
+                        {
+                          "code": "0",
+                          "result": %s
+                        }""".formatted(Global.pointHistory.listOfSpecifiedUser(clubId, userId));
+                break;
+            }
+            case "club.events": {
+                String clubId = req.getParameter("data");
+                res = """
+                        {
+                          "code": "0",
+                          "result": %s
+                        }""".formatted(Global.eventDao.getAllEventsDetailForTakingAttendance(clubId));
+                break;
+            }
+            case "club.events.attendances": {
+                String eventId = req.getParameter("data");
+                System.out.println(eventId);
+                res = """
+                        {
+                          "code": "0",
+                          "result": %s
+                        }""".formatted(Global.eventRegistration.getAllEventRegistrationByEventIdForAttendance(eventId));
+                break;
+            }
+            default:
+                break;
         }
 
         resp.getWriter().print(res);
