@@ -51,7 +51,7 @@ public class DepartmentDAO extends SQLDatabase {
 
     public int updateClub(Department d, int id) {
         int rs = 0;
-        rs = executeUpdatePreparedStatement("UPDATE departments  SET clubid=? WHERE id=?",
+        rs = executeUpdatePreparedStatement("UPDATE departments  SET clubId=?,name=? WHERE id=?",
                 d.getClubId(),
                 d.getName(),
                 id);

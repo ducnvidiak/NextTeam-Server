@@ -21,7 +21,9 @@ import nextteam.models.PublicNotification;
  * @author baopg
  */
 public class DepartmentServlet extends HttpServlet {
-private final Gson gson = new Gson();
+
+    private final Gson gson = new Gson();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,6 +38,12 @@ private final Gson gson = new Gson();
         String action = request.getParameter("action");
         if (action.equals("list-dept")) {
             listDept(request, response);
+        }else if(action.equals("add-dept")){
+            addDept(request, response);
+        }else if(action.equals("edit-dept")){
+            editDept(request,response);
+        }else{
+            deleteDept(request,response);
         }
     }
 
@@ -67,7 +75,7 @@ private final Gson gson = new Gson();
             throws ServletException, IOException {
         processRequest(request, response);
     }
-    
+
     protected void listDept(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -81,17 +89,84 @@ private final Gson gson = new Gson();
         // Gửi JSON response về client
         out.print(json);
         out.flush();
-
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    protected void addDept(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        String clubId_raw = request.getParameter("clubId");
+        try {
+            int clubId = Integer.parseInt(clubId_raw);
+            String name = request.getParameter("name");
+            int result = Global.department.addDepartment(new Department(clubId, name));
+            String json = "";
+            if (result == 1) {
+                json = "[{ \"status\": \"success\"}]";
+            } else {
+                json = "[{ \"status\": \"failed\"}]";
+            }
+            out.print(json);
+            out.flush();
+        } catch (NumberFormatException e) {
+            String json = "[{ \"status\": \"failed\"}]";
+            out.print(json);
+            out.flush();
+        }
+
+    }
+    
+   
+    protected void editDept(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        String clubId_raw = request.getParameter("clubId");
+        String depId_Raw = request.getParameter("depId");
+        try {
+            int depId = Integer.parseInt(depId_Raw);
+            int clubId = Integer.parseInt(clubId_raw);
+            String name = request.getParameter("name");
+            int result = Global.department.updateClub(new Department(clubId, name),depId);
+            String json = "";
+            if (result == 1) {
+                json = "[{ \"status\": \"success\"}]";
+            } else {
+                json = "[{ \"status\": \"failed\"}]";
+            }
+            out.print(json);
+            out.flush();
+        } catch (NumberFormatException e) {
+            String json = "[{ \"status\": \"failed\"}]";
+            out.print(json);
+            out.flush();
+        }
+    }
+
+    protected void deleteDept(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        String depId_Raw = request.getParameter("depId");
+        try {
+
+            int depId = Integer.parseInt(depId_Raw);
+            int result = Global.department.deleteClub(depId);
+      
+            String json = "";
+            if (result == 1) {
+                json = "[{ \"status\": \"success\"}]";
+            } else {
+                json = "[{ \"status\": \"failed\"}]";
+            }
+            out.print(json);
+            out.flush();
+        } catch (NumberFormatException e) {
+            String json = "[{ \"status\": \"failed\"}]";
+            out.print(json);
+            out.flush();
+        }
+    }
 
 }
