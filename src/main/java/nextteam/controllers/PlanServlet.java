@@ -59,7 +59,6 @@ class CloudFileInfo {
         this.viewLink = viewLink;
     }
 }
-
 class GoogleDriveUploader {
 
     private static final String APPLICATION_NAME = "Google Drive API";
