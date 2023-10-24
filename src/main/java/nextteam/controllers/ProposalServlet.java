@@ -7,8 +7,6 @@ package nextteam.controllers;
 import com.google.gson.Gson;
 
 import com.google.gson.JsonObject;
-
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -21,127 +19,24 @@ import nextteam.models.Proposal;
 import nextteam.models.Success;
 import nextteam.utils.database.ProposalDAO;
 
-import com.google.auth.oauth2.GoogleCredentials;
-
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.ByteArrayContent;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.Permission;
-import com.google.auth.http.HttpCredentialsAdapter;
-import java.io.FileInputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.Part;
 import nextteam.models.FileRecord;
 import nextteam.utils.database.FileStorageDAO;
+import nextteam.utils.GoogleDriveUploader;
+import nextteam.utils.CloudFileInfo;
 
 /**
  *
  * @author admin
  */
-class CloudFileInfo {
-
-    public String fileId;
-    public String downloadLink;
-    public String viewLink;
-
-    public CloudFileInfo() {
-    }
-
-    public CloudFileInfo(String fileId, String downloadLink, String viewLink) {
-        this.fileId = fileId;
-        this.downloadLink = downloadLink;
-        this.viewLink = viewLink;
-    }
-}
-
-class GoogleDriveUploader {
-
-    private static final String APPLICATION_NAME = "Google Drive API";
-    private static final String CREDENTIALS_FILE_PATH = "E:\\google_drive_api_credential\\credentials.json";
-    private static final String PARENT_FOLDER_ID = "1-KNh7MIpZV-T0QpxmCLDrDGCtdwrag08";
-
-    private static GoogleCredentials authorize() throws IOException {
-        InputStream credentialsStream = new FileInputStream(CREDENTIALS_FILE_PATH);
-        GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsStream)
-                .createScoped(Collections.singleton("https://www.googleapis.com/auth/drive"));
-
-        return credentials;
-    }
-
-    public CloudFileInfo uploadFile(String fileName, String fileType, byte[] data) throws IOException, GeneralSecurityException {
-        GoogleCredentials credential = authorize();
-
-        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
-
-        Drive drive = new Drive.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                requestInitializer)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        // Create a new file on Google Drive
-        File fileMetadata = new File();
-        fileMetadata.setName(fileName);
-
-        // Set the parent folder(s) for the file
-        fileMetadata.setParents(Collections.singletonList(PARENT_FOLDER_ID));
-
-        // Create file content from binary data
-        ByteArrayContent fileContent = new ByteArrayContent(fileType, data);
-
-        // Send the request to create a new file
-        File uploadedFile = drive.files().create(fileMetadata, fileContent).execute();
-
-        // Set the file to public view
-        Permission permission = new Permission().setType("anyone").setRole("reader").setAllowFileDiscovery(false);
-
-        drive.permissions().create(uploadedFile.getId(), permission).execute();
-
-        // Get the download link
-        String downloadLink = drive.files().get(uploadedFile.getId()).setFields("webContentLink").execute().getWebContentLink();
-
-        // Get the view link
-        String viewLink = drive.files().get(uploadedFile.getId()).setFields("webViewLink").execute().getWebViewLink();
-        String previewLink = viewLink.substring(0, viewLink.lastIndexOf("/") + 1) + "preview";
-        CloudFileInfo result;
-
-        result = new CloudFileInfo(uploadedFile.getId(), downloadLink, previewLink);
-
-        return result;
-    }
-
-    public int deleteFile(String fileId) throws IOException, GeneralSecurityException {
-        GoogleCredentials credential = authorize();
-
-        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
-
-        Drive drive = new Drive.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                requestInitializer)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        drive.files().delete(fileId).execute();
-        return 1;
-    }
-}
-
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024 * 10,
@@ -149,6 +44,7 @@ class GoogleDriveUploader {
 )
 public class ProposalServlet extends HttpServlet {
 
+    String PARENT_FOLDER_ID = "1-KNh7MIpZV-T0QpxmCLDrDGCtdwrag08";
     private final Gson gson = new Gson();
 
     @Override
@@ -211,7 +107,7 @@ public class ProposalServlet extends HttpServlet {
 
         if (numOfFile > 0) {
             // Đẩy files lên cloud
-            GoogleDriveUploader googleService = new GoogleDriveUploader();
+            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
             result = 0;
 
             for (int i = 0; i < numOfFile; i++) {
@@ -287,7 +183,7 @@ public class ProposalServlet extends HttpServlet {
 
             if (numOfFile > 0) {
                 // Đẩy files lên cloud
-                GoogleDriveUploader googleService = new GoogleDriveUploader();
+                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
                 result = 0;
 
                 for (int i = 0; i < numOfFile; i++) {
@@ -310,7 +206,7 @@ public class ProposalServlet extends HttpServlet {
             }
 
             if (numOfDeleteFile > 0) {
-                GoogleDriveUploader googleService = new GoogleDriveUploader();
+                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
 
                 for (int i = 0; i < numOfDeleteFile; i++) {
                     try {
@@ -325,9 +221,9 @@ public class ProposalServlet extends HttpServlet {
             }
         } else {
             String status = request.getParameter("status");
-            result = new ProposalDAO(Global.generateConnection()).updateProposalStatus(propId+"", status);
+            result = new ProposalDAO(Global.generateConnection()).updateProposalStatus(propId + "", status);
             System.out.println("status");
-            
+
         }
 
         // Gửi file lên cloud
@@ -354,7 +250,7 @@ public class ProposalServlet extends HttpServlet {
         String id = request.getParameter("id");
 
         // xóa các file trên cloud
-        GoogleDriveUploader googleService = new GoogleDriveUploader();
+        GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
         List<String> fileIds = new FileStorageDAO(Global.generateConnection()).getAllFileIdByPropId(id);
         if (!fileIds.isEmpty()) {
             for (int i = 0; i < fileIds.size(); i++) {

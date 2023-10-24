@@ -16,7 +16,7 @@
         <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
     </filter>-->
     <servlet>
-        <servlet-name>UserServlet</servlet-name>
+        <servlet-name>UserInfoServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserInfoServlet</servlet-class>
     </servlet>
     <servlet>
@@ -92,7 +92,7 @@
         <servlet-class>nextteam.controllers.PlanFileServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
+        <servlet-name>UserInfoServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
