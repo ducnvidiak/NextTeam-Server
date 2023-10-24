@@ -43,7 +43,7 @@ public class EventManagerServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
-            response.getWriter().write(events.toString());
+            response.getWriter().write(eventsJsonString);
 //            out.print(events.toString());
             out.flush();
         }
@@ -102,15 +102,13 @@ public class EventManagerServlet extends HttpServlet {
                     }
                     Event event = gson.fromJson(jsonInput.toString(), Event.class);
                     int rs = Global.eventDao.updateEventByEventId(eventId, event);
-                    List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+                    List<EventResponse> events = eventDAO.getAllEventsDetailForManager(userId);
                     String eventsJsonString = gson.toJson(events);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     PrintWriter out = response.getWriter();
-                    response.getWriter().write(events.toString());
+                    response.getWriter().write(eventsJsonString);
                 } catch (JsonSyntaxException e) {
-                    // Xử lý ngoại lệ khi có lỗi cú pháp JSON
-                    System.out.println("????");
                     System.out.println(e);
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     response.getWriter().write("Invalid JSON data");
@@ -124,12 +122,12 @@ public class EventManagerServlet extends HttpServlet {
             case "delete" -> {
                 System.out.println("delete!!!!!");
                 int rs = Global.eventDao.deleteEventByEventId(eventId);
-                List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+                List<EventResponse> events = eventDAO.getAllEventsDetailForManager(userId);
                 String eventsJsonString = gson.toJson(events);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 PrintWriter out = response.getWriter();
-                response.getWriter().write(events.toString());
+                response.getWriter().write(eventsJsonString);
             }
             default -> {
             }

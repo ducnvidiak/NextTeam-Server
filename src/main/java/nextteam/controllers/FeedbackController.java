@@ -60,25 +60,22 @@ public class FeedbackController extends HttpServlet {
         switch (cmd) {
             case "create" -> {
                 try {
-                    // Đọc dữ liệu JSON từ request
-
                     BufferedReader reader = request.getReader();
                     StringBuilder jsonInput = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
                         jsonInput.append(line);
                     }
-
-//                    Event event = gson.fromJson(jsonInput.toString(), Event.class);
                     Feedback feedback = gson.fromJson(jsonInput.toString(), Feedback.class);
-                    System.out.println("!!! "+feedback.getEventId());
                     Global.feedback.createFeedback(feedback);
+                    List<EventResponse> events;
+                    events = eventDAO.getAllEventsDetail(userId);
+                    String eventsJsonString = gson.toJson(events);
                     response.setContentType("application/json");
-                    response.getWriter().write(gson.toJson(feedback));
+                    response.setCharacterEncoding("UTF-8");
+                    PrintWriter out = response.getWriter();
+                    response.getWriter().write(eventsJsonString);
                 } catch (JsonSyntaxException e) {
-                    // Xử lý ngoại lệ khi có lỗi cú pháp JSON
-                    System.out.println("????");
-                    System.out.println(e);
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     response.getWriter().write("Invalid JSON data");
                 } catch (Exception e) {
@@ -88,7 +85,7 @@ public class FeedbackController extends HttpServlet {
                     e.printStackTrace(); // Ghi log ngoại lệ
                 }
             }
-            
+
             default -> {
             }
         }
