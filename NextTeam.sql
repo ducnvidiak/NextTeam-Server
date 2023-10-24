@@ -955,4 +955,7 @@ select * from proposals
 select * from engagements
 select * from users
 
+select * from plans
+select * from events
+
 UPDATE engagements SET status = 0 WHERE userId = 4 AND clubId = 2

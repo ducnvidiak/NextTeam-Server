@@ -25,19 +25,17 @@ import javax.servlet.http.Part;
 import nextteam.Global;
 import nextteam.models.PlanFileRecord;
 import nextteam.models.Plan;
+import nextteam.models.PlanDetail;
 import nextteam.models.Success;
 import nextteam.utils.database.PlanFileStorageDAO;
 import nextteam.utils.database.PlanDAO;
 import nextteam.utils.CloudFileInfo;
 import nextteam.utils.GoogleDriveUploader;
 
-
 /**
  *
  * @author admin
  */
-
-
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024 * 10,
@@ -61,6 +59,9 @@ public class PlanServlet extends HttpServlet {
 
         if (type.equals("byPlanId")) {
             Plan p = new PlanDAO(Global.generateConnection()).getPlanById(id);
+            resJsonString = this.gson.toJson(p);
+        } else if (type.equals("all")) {
+            List<PlanDetail> p = new PlanDAO(Global.generateConnection()).getListAllPlans();
             resJsonString = this.gson.toJson(p);
         } else {
             List<Plan> p = new PlanDAO(Global.generateConnection()).getListPlanByClubId(request.getParameter("id"));
@@ -121,7 +122,7 @@ public class PlanServlet extends HttpServlet {
 
                     result = new PlanFileStorageDAO(Global.generateConnection()).createPlanFileRecord(fileRecord);
                 } catch (GeneralSecurityException ex) {
-                    Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PlanServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -156,18 +157,19 @@ public class PlanServlet extends HttpServlet {
         if (type.equals("changeStatus")) {
             String status = request.getParameter("status");
             System.out.println("received request update plan status !");
-            
-            result = new PlanDAO(Global.generateConnection()).updatePlanStatus(planId+"", status);
+
+            String feedback = request.getParameter("feedback");
+
+            result = new PlanDAO(Global.generateConnection()).updatePlanStatus(planId + "", status, feedback);
             if (result == 1) {
-                 jsonRes.addProperty("planStatus", (result == 1 ? status : "failure"));
+                jsonRes.addProperty("planStatus", (result == 1 ? status : "failure"));
             }
         } else {
 
             System.out.println("received request update plan !");
-
             String title = request.getParameter("title");
             String content = request.getParameter("content");
-            String planResponse = request.getParameter("response");
+//            String planResponse = request.getParameter("response");
 
             int numOfFile = Integer.parseInt(request.getParameter("numOfFile"));
             int numOfDeleteFile = Integer.parseInt(request.getParameter("numOfDeleteFile"));
@@ -188,7 +190,7 @@ public class PlanServlet extends HttpServlet {
             }
 
             // Tạo record proposal
-            result = new PlanDAO(Global.generateConnection()).updatePlan(new Plan(title, content, planResponse, "pending", new Date()));
+            result = new PlanDAO(Global.generateConnection()).updatePlan(new Plan(planId, title, content, "pending", new Date()));
 
             if (numOfFile > 0) {
                 // Đẩy files lên cloud
@@ -220,11 +222,11 @@ public class PlanServlet extends HttpServlet {
                 for (int i = 0; i < numOfDeleteFile; i++) {
                     try {
                         googleService.deleteFile(deleteFileId.get(i));
-                    } catch (GeneralSecurityException ex) {
-                        Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
-                    }
 
-                    new PlanFileStorageDAO(Global.generateConnection()).deleteFileRecord(deleteFileId.get(i));
+                        new PlanFileStorageDAO(Global.generateConnection()).deleteFileRecord(deleteFileId.get(i));
+                    } catch (GeneralSecurityException ex) {
+                        Logger.getLogger(PlanServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 }
             }
@@ -233,7 +235,7 @@ public class PlanServlet extends HttpServlet {
             // Tạo bản ghi lưu trữ file
             // Xác nhận mọi thứ đều ổn
             if (planId != 0) {
-                jsonRes.addProperty("clubId", planId);
+                jsonRes.addProperty("planId", planId);
             }
         }
 
