@@ -48,6 +48,18 @@
         <servlet-class>nextteam.controllers.DepartmentServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ajaxServlet</servlet-name>
+        <servlet-class>nextteam.controllers.vnpay.ajaxServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayQuery</servlet-name>
+        <servlet-class>nextteam.controllers.vnpay.vnpayQuery</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayRefund</servlet-name>
+        <servlet-class>nextteam.controllers.vnpay.vnpayRefund</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>EngagementServlet</servlet-name>
         <servlet-class>nextteam.controllers.EngagementServlet</servlet-class>
         <multipart-config>
@@ -134,6 +146,18 @@
     <servlet-mapping>
         <servlet-name>PlanFileServlet</servlet-name>
         <url-pattern>/api/plan_files</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ajaxServlet</servlet-name>
+        <url-pattern>/vnpayajax/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>vnpayQuery</servlet-name>
+        <url-pattern>/vnpayquery/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>vnpayRefund</servlet-name>
+        <url-pattern>/vnpayrefund/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

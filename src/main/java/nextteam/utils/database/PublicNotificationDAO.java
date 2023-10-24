@@ -41,7 +41,8 @@ public class PublicNotificationDAO extends SQLDatabase {
         }
         return publicNotifications;
     }
-
+    
+   
     public List<PublicNotification> get10PublicNotifications(String t) {
         List<PublicNotification> publicNotifications = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT TOP 10 * FROM publicNotifications WHERE clubId = ?\n"

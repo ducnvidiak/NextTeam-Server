@@ -24,34 +24,33 @@ import nextteam.models.User;
  * @author baopg
  */
 public class ClubUserServlet extends HttpServlet {
-private final Gson gson = new Gson();
-  
+
+    private final Gson gson = new Gson();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action.equals("view-my-list")){
+        if (action.equals("view-my-list")) {
             viewMyList(request, response);
-        }
-        else if(action.equals("view-club-member")){
-            viewClubMember(request,response);
-        }else if(action.equals("view-list-user")){
-            viewListUser(request,response);
+        } else if (action.equals("view-club-member")) {
+            viewClubMember(request, response);
+        } else if (action.equals("view-list-user")) {
+            viewListUser(request, response);
         }
     }
 
-  
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-   
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
+
     protected void viewMyList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -60,8 +59,7 @@ private final Gson gson = new Gson();
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
-        List<Club> clubs = Global.clubDAO.getListClubsOfMe(userId);             
+        List<Club> clubs = Global.clubDAO.getListClubsOfMe(userId);
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(clubs);
@@ -70,6 +68,7 @@ private final Gson gson = new Gson();
         out.print(json);
         out.flush();
     }
+
     protected void viewClubMember(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -78,7 +77,6 @@ private final Gson gson = new Gson();
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<User> users = Global.user.getListMember(clubId);
 
         // Chuyển danh sách thành dạng JSON
@@ -88,15 +86,15 @@ private final Gson gson = new Gson();
         out.print(json);
         out.flush();
     }
-    
-     protected void viewListUser(HttpServletRequest request, HttpServletResponse response)
+
+    protected void viewListUser(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         PrintWriter out = response.getWriter();
 
-         List<User> users = Global.user.getListUsers();
+        List<User> users = Global.user.getListUsers();
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson(users);
