@@ -25,7 +25,7 @@ import java.util.Collections;
  */
 public class GoogleDriveUploader {
     private static final String APPLICATION_NAME = "Google Drive API";
-    private static final String CREDENTIALS_FILE_PATH = "E:\\google_drive_api_credential\\credentials.json";
+    private static final String CREDENTIALS_FILE_PATH = "E:/Fall23/project/NextTeam-Server/src/main/java/nextteam/utils/credentials.json";
     public String PARENT_FOLDER_ID;
 
     public GoogleDriveUploader(String PARENT_FOLDER_ID) {
