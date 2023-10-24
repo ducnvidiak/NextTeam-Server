@@ -14,6 +14,7 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nextteam.models.Event;
+import nextteam.models.response.EventAttendanceResponse;
 import nextteam.models.response.EventResponse;
 import nextteam.utils.SQLDatabase;
 
@@ -279,7 +280,7 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("clubSubname"),
                         rs.getString("clubAvatarUrl")
                 );
-                System.out.println("event");
+//                System.out.println("event");
 //                System.out.println(event.);
                 events.add(event);
             }
@@ -339,4 +340,33 @@ public class EventDAO extends SQLDatabase {
         return events;
     }
 
+    public List<EventAttendanceResponse> getAllEventsDetailForTakingAttendance(String clubId) {
+        List<EventAttendanceResponse> events = new ArrayList<>();
+        System.out.println(clubId);
+        ResultSet rs = executeQueryPreparedStatement("SELECT\n"
+                + "  e.id,\n"
+                + "  e.name,\n"
+                + "  e.startTime,\n"
+                + "  e.endTime\n"
+                + "FROM events e\n"
+                + "WHERE e.clubId = ? AND e.isApproved = 1 AND e.startTime < GETDATE()\n"
+                + "ORDER BY e.startTime DESC", clubId);
+
+        try {
+            while (rs.next()) {
+                EventAttendanceResponse event = new EventAttendanceResponse(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getTimestamp("startTime"),
+                        rs.getTimestamp("endTime")
+                );
+//                System.out.println("event");
+//                System.out.println(event.);
+                events.add(event);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return events;
+    }
 }
