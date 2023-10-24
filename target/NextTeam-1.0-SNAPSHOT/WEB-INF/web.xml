@@ -20,7 +20,6 @@
         <servlet-class>nextteam.controllers.UserServlet</servlet-class>
     </servlet>
     <servlet>
-
         <servlet-name>UserInfoServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserInfoServlet</servlet-class>
     </servlet>
@@ -101,9 +100,12 @@
         <servlet-class>nextteam.controllers.ClubDetailServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
+        <servlet-name>UserInfoServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
     </servlet-mapping>
+    
+  
+    
     <servlet-mapping>
         <servlet-name>ClubServlet</servlet-name>
         <url-pattern>/api/club</url-pattern>
