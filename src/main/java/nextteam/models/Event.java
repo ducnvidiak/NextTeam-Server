@@ -24,13 +24,13 @@ public class Event {
     private String type;
     private String planUrl;
     private String bannerUrl;
-    private boolean isApproved;
+    private String isApproved;
     private String response;
     private int clubId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Timestamp startTime, Timestamp endTime, String type, String planUrl, String bannerUrl, boolean isApproved, String response, int clubId, Timestamp createdAt, Timestamp updatedAt) {
+    public Event(int id, String name, String description, int registeredBy, int locationId, String checkInCode, Timestamp startTime, Timestamp endTime, String type, String planUrl, String bannerUrl, String isApproved, String response, int clubId, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -49,7 +49,7 @@ public class Event {
         this.updatedAt = updatedAt;
     }
 
-    public Event(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, boolean isApproved) {
+    public Event(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -148,11 +148,11 @@ public class Event {
         this.bannerUrl = bannerUrl;
     }
 
-    public boolean isIsApproved() {
+    public String getIsApproved() {
         return isApproved;
     }
 
-    public void setIsApproved(boolean isApproved) {
+    public void setIsApproved(String isApproved) {
         this.isApproved = isApproved;
     }
 

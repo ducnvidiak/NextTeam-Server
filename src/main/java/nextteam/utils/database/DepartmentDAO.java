@@ -57,6 +57,12 @@ public class DepartmentDAO extends SQLDatabase {
                 id);
         return rs;
     }
+    
+    public int updateUserDepartment(String userId, String depId, String clubId) {
+        int rs = 0;
+        rs = executeUpdatePreparedStatement("UPDATE engagements SET departmentId = ? WHERE userId = ? AND clubId = ?", depId, userId, clubId);
+        return rs;
+    }
 
     public int deleteClub(int id) {
         int rs = 0;

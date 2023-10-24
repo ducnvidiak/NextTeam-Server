@@ -112,13 +112,14 @@ public class EngagementServlet extends HttpServlet {
         // Nhận file từ yêu cầu
         //xử lý upload file
         String folderName = "/cv";
-        String uploadPath = "/Users/mac/Documents/SWP301/NextTeam-Server/src/main/webapp/cv";//for netbeans use this code
+        String uploadPath = "E:\\Fall23\\project\\NextTeam-Server\\src\\main\\webapp\\cv";//for netbeans use this code
         File dir = new File(uploadPath);
         if (!dir.exists()) {
             dir.mkdirs();
         }
         Part filePart = request.getPart("cvUrl");
         String fileName = "ApplicationRegister-" + System.currentTimeMillis() + "-UserId" + userId + "-" + filePart.getSubmittedFileName().replaceAll(" ", "");
+
         String path = folderName + File.separator + fileName;
         System.out.println("Path: " + uploadPath);
         InputStream is = filePart.getInputStream();
@@ -284,6 +285,27 @@ public class EngagementServlet extends HttpServlet {
         out.print(json);
         out.flush();
 
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String clubId = request.getParameter("clubId");
+        String userId = request.getParameter("userId");
+        int status = Integer.parseInt(request.getParameter("status"));
+        System.out.println("Received request change user status: " + clubId + " " + userId + " " + status);
+        int result = 0;
+        
+        result = Global.engagement.updateUserStatus(clubId, userId, status);
+        
+        JsonObject jsonRes = new JsonObject();
+        jsonRes.addProperty("status", (result == 1 ? "success" : "failure"));
+
+        PrintWriter out = response.getWriter();
+        String resJsonString = this.gson.toJson(jsonRes);
+        out.print(resJsonString);
+        out.flush();
     }
 
     /**

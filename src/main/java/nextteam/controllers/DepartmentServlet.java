@@ -5,6 +5,7 @@
 package nextteam.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -38,12 +39,12 @@ public class DepartmentServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action.equals("list-dept")) {
             listDept(request, response);
-        }else if(action.equals("add-dept")){
+        } else if (action.equals("add-dept")) {
             addDept(request, response);
-        }else if(action.equals("edit-dept")){
-            editDept(request,response);
-        }else{
-            deleteDept(request,response);
+        } else if (action.equals("edit-dept")) {
+            editDept(request, response);
+        } else {
+            deleteDept(request, response);
         }
     }
 
@@ -116,8 +117,7 @@ public class DepartmentServlet extends HttpServlet {
         }
 
     }
-    
-   
+
     protected void editDept(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -128,7 +128,7 @@ public class DepartmentServlet extends HttpServlet {
             int depId = Integer.parseInt(depId_Raw);
             int clubId = Integer.parseInt(clubId_raw);
             String name = request.getParameter("name");
-            int result = Global.department.updateClub(new Department(clubId, name),depId);
+            int result = Global.department.updateClub(new Department(clubId, name), depId);
             String json = "";
             if (result == 1) {
                 json = "[{ \"status\": \"success\"}]";
@@ -153,7 +153,7 @@ public class DepartmentServlet extends HttpServlet {
 
             int depId = Integer.parseInt(depId_Raw);
             int result = Global.department.deleteClub(depId);
-      
+
             String json = "";
             if (result == 1) {
                 json = "[{ \"status\": \"success\"}]";
@@ -167,6 +167,27 @@ public class DepartmentServlet extends HttpServlet {
             out.print(json);
             out.flush();
         }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        String clubId = request.getParameter("clubId");
+        String depId = request.getParameter("depId");
+        String userId = request.getParameter("userId");
+        int result = 0;
+
+        System.out.println("received requested change department: " + clubId + " " + depId + " " + userId);
+        result = Global.department.updateUserDepartment(userId, depId, clubId);
+
+        JsonObject jsonRes = new JsonObject();
+        jsonRes.addProperty("status", (result == 1 ? "success" : "failure"));
+
+        String resJsonString = this.gson.toJson(jsonRes);
+        out.print(resJsonString);
+        out.flush();
     }
 
 }

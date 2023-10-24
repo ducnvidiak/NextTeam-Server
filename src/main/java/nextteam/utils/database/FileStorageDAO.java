@@ -105,6 +105,32 @@ public class FileStorageDAO extends SQLDatabase {
     
     }
     
+    public List<FileRecord> getAllFileRecordByClubId(String id) {
+        List<FileRecord> fileRecords = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT fs.* FROM fileStorage fs JOIN proposals p ON fs.proposalId = p.id WHERE p.clubId=?", id);
+        
+        try {
+            while (rs.next()) {
+                fileRecords.add(
+                        new FileRecord(
+                                rs.getInt("id"),
+                                rs.getString("fileId"),
+                                rs.getString("proposalId"),
+                                rs.getString("type"),
+                                rs.getString("name"),
+                                rs.getString("downloadLink"),
+                                rs.getString("viewLink")
+                        )
+                );
+            }
+        } catch (Exception e) {
+
+        }
+        
+        return fileRecords;
+    
+    }
+    
     public int deleteFileRecord(String fileId) {
         int result = 0;
         try {

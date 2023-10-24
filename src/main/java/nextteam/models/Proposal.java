@@ -17,7 +17,6 @@ public class Proposal {
     private String title;
     private String content;
     private int sendBy;
-    private String attach;
     private String isApproved;
     private Date createdAt;
     private Date updatedAt;
@@ -41,12 +40,11 @@ public class Proposal {
         this.isApproved = isApproved;
     }
 
-    public Proposal(int id, int clubId, String title, String content, int sendBy, String attach, String isApproved, Date createdAt, Date updatedAt) {
+    public Proposal(int id, int clubId, String title, String content, int sendBy, String isApproved, Date createdAt, Date updatedAt) {
         this.clubId = clubId;
         this.title = title;
         this.content = content;
         this.sendBy = sendBy;
-        this.attach = attach;
         this.isApproved = isApproved;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -91,14 +89,6 @@ public class Proposal {
 
     public void setSendBy(int sendBy) {
         this.sendBy = sendBy;
-    }
-
-    public String getAttach() {
-        return attach;
-    }
-
-    public void setAttach(String attach) {
-        this.attach = attach;
     }
 
     public String getIsApproved() {

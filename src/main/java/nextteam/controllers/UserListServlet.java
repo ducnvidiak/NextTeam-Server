@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package nextteam.controllers;
 
 import com.google.gson.Gson;
@@ -23,25 +22,34 @@ import nextteam.utils.database.UserDAO;
  * @author admin
  */
 public class UserListServlet extends HttpServlet {
+
     private final Gson gson = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        ArrayList<UserCard> list = new ArrayList<>();
+        String type = request.getParameter("type");
+        String clubId = request.getParameter("clubId");
         
-        ArrayList<UserCard> list =  new UserDAO(Global.generateConnection()).getUsersCardList();
-       
+        if (type.equals("list")) {
+            list = new UserDAO(Global.generateConnection()).getUsersCardList(clubId);
+            System.out.println("output: " + list.get(0).getAvatarURL());
+        } else if (type.equals("managelist")) {
+            list = new UserDAO(Global.generateConnection()).getUsersCardListForManage(clubId);
+        }
+
         String resJsonString = this.gson.toJson(list);
         PrintWriter out = response.getWriter();
         out.print(resJsonString);
         out.flush();
-    } 
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        
+            throws ServletException, IOException {
+
     }
 }

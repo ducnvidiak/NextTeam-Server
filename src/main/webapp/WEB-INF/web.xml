@@ -71,6 +71,14 @@
         <servlet-name>ClubUserServlet</servlet-name>
         <servlet-class>nextteam.controllers.ClubUserServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PlanServlet</servlet-name>
+        <servlet-class>nextteam.controllers.PlanServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PlanFileServlet</servlet-name>
+        <servlet-class>nextteam.controllers.PlanFileServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
@@ -118,6 +126,14 @@
     <servlet-mapping>
         <servlet-name>ClubUserServlet</servlet-name>
         <url-pattern>/club-user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlanServlet</servlet-name>
+        <url-pattern>/api/plans</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlanFileServlet</servlet-name>
+        <url-pattern>/api/plan_files</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

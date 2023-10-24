@@ -164,7 +164,7 @@ GO
 		type         VARCHAR(255),
 		planUrl      VARCHAR(MAX), /*add*/
 		bannerUrl	 VARCHAR(MAX),  /* add 2 */
-		isApproved   BIT DEFAULT(NULL),
+		isApproved   VARCHAR(15) DEFAULT('pending'),
 		response     NTEXT,
 		clubId       INT,
 		createdAt    DATETIME DEFAULT(GETDATE()),
@@ -208,14 +208,26 @@ GO
 		clubId      INT NOT NULL,
 		title       NVARCHAR(255),
 		content     NTEXT,
-		attachement VARCHAR(255), /* URL to the file */
 		response    NTEXT,
-		isApproved  BIT DEFAULT(NULL), /* is approve by Admin */
+		isApproved  VARCHAR(15) DEFAULT('pending'), /* is approve by Admin */
 		createdAt   DATETIME DEFAULT(GETDATE()),
 		updatedAt   DATETIME DEFAULT(GETDATE()),
 
 		PRIMARY KEY (id),
 		FOREIGN KEY (clubId) REFERENCES clubs(id)
+	);
+
+	CREATE TABLE planFileStorage (
+		id				INT NOT NULL IDENTITY(1, 1),
+		fileId			NVARCHAR(250),
+		planId		INT NOT NULL, 
+		type			NVARCHAR(250),
+		name			NVARCHAR(250),
+		downloadLink		NVARCHAR(500),
+		viewLink		NVARCHAR(500),
+
+		PRIMARY KEY (id),
+		FOREIGN KEY (planId) REFERENCES plans(id)
 	);
 
 	CREATE TABLE feedbacks (
@@ -303,7 +315,6 @@ GO
 		title      NVARCHAR(128) NOT NULL,
 		content    NTEXT NOT NULL,
 		sendBy     INT NOT NULL,
-		attach     VARCHAR(100),
 		isApproved VARCHAR(15) DEFAULT('pending'),
 		createdAt  DATETIME DEFAULT(GETDATE()),
 		updatedAt  DATETIME DEFAULT(GETDATE()),
@@ -312,9 +323,6 @@ GO
 		FOREIGN KEY (clubId) REFERENCES clubs(id),
 		FOREIGN KEY (sendBy) REFERENCES users(id)
 	);
-
-	select * from proposals
-	select max(id) from proposals
 
 	CREATE TABLE fileStorage (
 		id				INT NOT NULL IDENTITY(1, 1),
@@ -328,14 +336,6 @@ GO
 		PRIMARY KEY (id),
 		FOREIGN KEY (proposalId) REFERENCES proposals(id)
 	);
-
-	
-
-
-	drop table fileStorage
-	select * from fileStorage
-
-
 
 	CREATE TABLE paymentCategories (
 		id          INT NOT NULL IDENTITY(1, 1),
@@ -878,9 +878,9 @@ GO
 		   ('manager')
 
 	INSERT INTO users(email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber, major, academicYear, gender, dob, homeTown, isAdmin)
-	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn Bảo', N'Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', '', 0),
-           ('tranvietdangquang@gmail.com', 'DE170014', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Việt Đăng', N'Quang', '0866191103', 1, 2021, 'Male', '2023-11-19', '', 1),
-           ('vnitd.owner@gmail.com', 'DE170015', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', 'https://images.vexels.com/media/users/3/129616/isolated/preview/fb517f8913bd99cd48ef00facb4a67c0-businessman-avatar-silhouette-by-vexels.png', 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Thị Hải', N'Đăng', '0123456789', 1, 2021, 'Female', '2003-11-19', '', 0)
+	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', NULL, 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn Bảo', N'Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', '', 0),
+           ('tranvietdangquang@gmail.com', 'DE170014', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', NULL, 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Việt Đăng', N'Quang', '0866191103', 1, 2021, 'Male', '2023-11-19', '', 1),
+           ('vnitd.owner@gmail.com', 'DE170015', '$2a$10$QEsErWOOKq8RSo30NfqRDurENcgx4UnMdExhsrMMvzvmd956zoVAq', NULL, 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Thị Hải', N'Đăng', '0123456789', 1, 2021, 'Female', '2003-11-19', '', 0)
 
 	INSERT INTO publicNotifications(clubId, title, content)
 	VALUES (1, N'FUDN [FPTU.DN-DVSV] - V/v triển khai đăng ký học bằng lái xe kỳ Fall 2023 (Đợt 1)', N'PHAN GIA BẢO'),
@@ -898,7 +898,7 @@ GO
 		'public',
 		NULL,
 		'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,quality=75,width=960,height=480/event-covers/w9/21154ed7-dc92-4c28-b582-9a5adb206fa7',
-		NULL,
+		'pending',
 		NULL,
 		1
 	),
@@ -913,14 +913,20 @@ GO
 		'public',
 		NULL,
 		'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,quality=75,width=960,height=480/event-covers/n3/845d20e9-4aec-494c-a3fc-6014cf787ae1',
-		NULL,
+		'pending',
 		NULL,
 		2
 	);
 
+	select * from events
+
 	INSERT INTO departments
 	VALUES (1, N'Ban Nhân sự'),
 		   (2, N'Ban Học thuật');
+
+	INSERT INTO departments
+	VALUES (2, N'Ban Nhân sự'),
+		   (2, N'Ban Truyền Thông');
 
 	INSERT INTO engagements(userId, departmentId, clubId, roleId, cvUrl, status)
 	VALUES (1, 1, 1, 2, '', 1),
@@ -931,33 +937,22 @@ GO
 	VALUES (1, 2, 1, -5, N'Vắng mặt trong sự kiện #0'),(1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
 
 
+	INSERT INTO plans (clubId, title, content) 
+	VALUES
+		(2, N'Bản kế hoạch 1', N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.'),
+		(2, N'Bản kế hoạch 2', N'Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.')
+
+	select * from plans 
+
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>> END: DỮ LIỆU MẪU >>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 */
-<<<<<<< HEAD
-GO
 
+select * from clubs
+select * from proposals
+select * from engagements
 select * from users
 
-
-INSERT INTO proposals (clubId, title, content, sendBy, attach, isApproved)
-VALUES
-  (1, 'Proposal 1', 'This is a longer content for Proposal 1. It contains more than 20 characters.', 6, 'attachment1.pdf', 'approved'),
-  (2, 'Proposal 2', 'Here is an example of longer content for Proposal 2. It exceeds the 20 character limit.', 6, 'attachment2.pdf', 'refused'),
-  (4, 'Proposal 3', 'This is another lengthy content for Proposal 3. It is longer than 20 characters.', 6, 'attachment3.pdf', 'pending'),
-  (3, 'Proposal 4', 'This is a lengthy content for Proposal 4. It has more than 20 characters in its text.', 6, 'attachment4.pdf', 'approved'),
-  (3, 'Proposal 5', 'Here is a longer content for Proposal 5. It surpasses the 20 character length requirement.', 6, 'attachment5.pdf', 'refused'),
-  (4, 'Proposal 6', 'This content for Proposal 6 is longer than 20 characters. It demonstrates the desired length.', 6, 'attachment6.pdf', 'pending'),
-  (1, 'Proposal 7', 'This is a lengthy content for Proposal 7. It exceeds the 20 character limit.', 6, 'attachment7.pdf', 'approved'),
-  (2, 'Proposal 8', 'Here is a longer content for Proposal 8. It has more than 20 characters in its text.', 6, 'attachment8.pdf', 'refused'),
-  (3, 'Proposal 9', 'This content for Proposal 9 is longer than 20 characters. It demonstrates the desired length.', 6, 'attachment9.pdf', 'pending'),
-  (1, 'Proposal 10', 'This is another lengthy content for Proposal 10. It is longer than 20 characters.', 6, 'attachment10.pdf', 'approved');
-
-delete from proposals
-
-select * from proposals
-=======
-GO
->>>>>>> ea28d638d4cbb541ebcdb9e5642348e2f10515be
+UPDATE engagements SET status = 0 WHERE userId = 4 AND clubId = 2

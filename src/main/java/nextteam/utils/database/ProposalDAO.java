@@ -26,12 +26,11 @@ public class ProposalDAO extends SQLDatabase {
 
         try {
             result = executeUpdatePreparedStatement(
-                    "INSERT INTO proposals (clubId, title, content, sendBy, attach, isApproved) VALUES (?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO proposals (clubId, title, content, sendBy, isApproved) VALUES (?, ?, ?, ?, ?)",
                     p.getClubId(),
                     p.getTitle(),
                     p.getContent(),
                     p.getSendBy(),
-                    p.getAttach(),
                     p.getIsApproved());
         } catch (Exception e) {
 
@@ -67,7 +66,29 @@ public class ProposalDAO extends SQLDatabase {
                                 rs.getString("title"),
                                 rs.getString("content"),
                                 rs.getInt("sendBy"),
-                                rs.getString("attach"),
+                                rs.getString("isApproved"),
+                                rs.getDate("createdAt"),
+                                rs.getDate("updatedAt")
+                        )
+                );
+            }
+        } catch (Exception e) {
+
+        }
+        return proposals;
+    }
+    public List<Proposal> getListProposalByClubId(String clubId) {
+        List<Proposal> proposals = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM proposals WHERE clubId=?", clubId);
+        try {
+            while (rs.next()) {
+                proposals.add(
+                        new Proposal(
+                                rs.getInt("id"),
+                                rs.getInt("clubId"),
+                                rs.getString("title"),
+                                rs.getString("content"),
+                                rs.getInt("sendBy"),
                                 rs.getString("isApproved"),
                                 rs.getDate("createdAt"),
                                 rs.getDate("updatedAt")
@@ -91,7 +112,6 @@ public class ProposalDAO extends SQLDatabase {
                         rs.getString("title"),
                         rs.getString("content"),
                         rs.getInt("sendBy"),
-                        rs.getString("attach"),
                         rs.getString("isApproved"),
                         rs.getDate("createdAt"),
                         rs.getDate("updatedAt")
@@ -110,6 +130,19 @@ public class ProposalDAO extends SQLDatabase {
         try {
             result = executeUpdatePreparedStatement("UPDATE proposals SET title=?, content=?, isApproved=?, updatedAt=? WHERE id=?",
                     p.getTitle(), p.getContent(), p.getIsApproved(), p.getUpdatedAt(), p.getId());
+        } catch (Exception e) {
+
+        }
+
+        return result;
+    }
+    
+    public int updateProposalStatus(String propId, String status) {
+        int result = 0;
+
+        try {
+            result = executeUpdatePreparedStatement("UPDATE proposals SET isApproved=? WHERE id=?",
+                    status, propId);
         } catch (Exception e) {
 
         }
