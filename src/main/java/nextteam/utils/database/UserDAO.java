@@ -356,7 +356,7 @@ public class UserDAO extends SQLDatabase {
     }
 
     public static void main(String... args) {
-        System.out.println(new UserDAO(Global.generateConnection()).dct_user("2"));
+        System.out.println(new UserDAO(Global.generateConnection()).getListUsers());
     }
 
 }
