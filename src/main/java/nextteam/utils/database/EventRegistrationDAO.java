@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
+import nextteam.models.Attendance;
 import nextteam.models.Event;
 import nextteam.models.User;
 import nextteam.models.response.EventResponse;
 import nextteam.utils.SQLDatabase;
 import nextteam.models.EventRegistration;
+import nextteam.models.response.EventRegistrationAttendanceResponse;
 import nextteam.models.response.EventRegistrationResponse;
 
 public class EventRegistrationDAO extends SQLDatabase {
@@ -67,4 +69,42 @@ public class EventRegistrationDAO extends SQLDatabase {
         return list;
     }
 
+    public List<EventRegistrationAttendanceResponse> getAllEventRegistrationByEventIdForAttendance(String eventId) {
+        List<EventRegistrationAttendanceResponse> list = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("""
+                                                     SELECT 
+                                                     id, registeredBy, isJoined, reasonsForAbsence, createdAt, updatedAt
+                                                     FROM eventRegistrations
+                                                     WHERE event = ?
+                                                     ORDER BY createdAt DESC""", eventId);
+        try {
+            while (rs.next()) {
+                EventRegistrationAttendanceResponse eventRegistrationResponse = new EventRegistrationAttendanceResponse(
+                        rs.getInt("id"),
+                        rs.getInt("registeredBy"),
+                        rs.getBoolean("isJoined"),
+                        rs.getNString("reasonsForAbsence") == null ? "" : rs.getNString("reasonsForAbsence"),
+                        rs.getTimestamp("createdAt"),
+                        rs.getTimestamp("updatedAt")
+                );
+                list.add(eventRegistrationResponse);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public int setAttendance(Attendance atten) {
+        return executeUpdatePreparedStatement(
+                "UPDATE eventRegistrations SET reasonsForAbsence=?, isJoined=? WHERE id=?",
+                atten.getNote(), atten.isAtten(), atten.getId()
+        );
+    }
+
+    public void takeAttendances(List<Attendance> attendances) {
+        for (Attendance atten : attendances) {
+            setAttendance(atten);
+        }
+    }
 }

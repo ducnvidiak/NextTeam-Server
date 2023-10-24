@@ -888,34 +888,58 @@ GO
 
 	INSERT INTO events (name, description, registeredBy, locationId, checkinCode, startTime, endTime, type, planUrl, bannerUrl, isApproved, response, clubId)
 	VALUES (
-		N'Zoom | FES-TECHSpeak #03 | CHANGE TO CHANCE - Công nghệ AI & Ứng dụng trong đồ họa sáng tạo',
-		N'🎤 Host: Anh Lê Ngọc Tuấn - Giám đốc Trải nghiệm Công Nghệ, Ban Công tác học đường, Tổ chức giáo dục FPT  ​🗣️ Diễn giả:   ​Anh Vũ Hồng Chiên - Giám đốc Trung tâm Nghiên cứu và Ứng dụng Trí tuệ nhân tạo Quy Nhơn (QAI - FPT Software)  ​Anh Đặng Việt Hùng - Design Manager tại Gianty chi nhánh Đà Nẵng  ​Topic:  ​• Giải mã công nghệ “Generative AI\\\" và xu hướng ứng dụng trong các nghề nghiệp tương lai  • Nghề thiết kế đồ họa và ứng dụng công cụ AI trong thiết kế  • Thảo luận chủ đề AI có thay thế được chuyên gia đồ họa và thiết kế trong sáng tạo, xây dựng ứng dụng?',
+		N'Thủ tướng phê duyệt Chiến lược phát triển Chính phủ điện tử hướng tới Chính phủ số',
+		N'Ngày 15/6/2021, Thủ tướng đã phê duyệt Chiến lược phát triển Chính phủ điện tử hướng tới Chính phủ số giai đoạn 2021-2025. Bản chiến lược này có vai trò quan trọng, mở ra một bước ngoặt mới cho công cuộc chuyển đổi số nói chung và phát triển Chính phủ số nói riêng của Việt Nam.',
 		1,
-		1,
+		10,
 		NULL,
-		'2023-09-20T16:00:00',
-		'2023-09-20T20:00:00',
+		'2023-10-13T02:00:00',
+		'2023-10-13T02:00:00',
 		'public',
+		'',
+		'https://i.ibb.co/4WFLt6V/mobifone-chinh-thuc-trien-khai-thi-diem-mobile-money-crop-1637327805883.webp',
+		1,
 		NULL,
 		'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,quality=75,width=960,height=480/event-covers/w9/21154ed7-dc92-4c28-b582-9a5adb206fa7',
-		'pending',
+		NULL,
 		NULL,
 		1
 	),
 	(
 		N'Zoom | FES-TECHSpeak #02 | BORN 2 BOND - Xây dựng và phát triển Câu lạc bộ',
-		N'​FES-TECHSpeak #02 IN YOUR AREA  ​​“BORN 2 BOND - XÂY DỰNG VÀ PHÁT TRIỂN CÂU LẠC BỘ” 🚀  ​​💡 Bạn có phải là thành viên của câu lạc bộ Công nghệ và đang tìm kiếm lời khuyên về cách xây dựng một cộng đồng mạnh mẽ và sôi nổi? Bạn có muốn tìm hiểu cách tổ chức các hoạt động hấp dẫn để giữ chân các thành viên của mình và thu hút những người mới không? Đừng tìm kiếm đâu xa! 🚀  ​​Vì ngay tại FES-TECHSpeak #02 | BORN 2 BOND, bạn sẽ được lắng nghe những chia sẻ về cách xây dựng và phát triển câu lạc bộ hiệu quả và thảo luận cùng các diễn giả giàu kinh nghiệm trong lĩnh vực này.🎙️  ​​Cho dù bạn là thành viên, một người leader đầy tham vọng hay chỉ đơn giản là tò mò về sự phát triển của câu lạc bộ, thì buổi nói chuyện này là dành cho bạn! 🙌🏼  ​​Thông tin cụ thể:  ​​📅 Thời gian 09:00-10:30 Thứ Bảy, ngày 29/07/2023  ​​📍 Link Zoom tại đây  ​​🗣️ Diễn giả:  ​​Anh Lê Ngọc Tuấn: Giám đốc Trải nghiệm Công nghệ, Ban Công tác học đường, Tổ chức giáo dục FPT  ​​Chị Nguyễn Kim Chi: Cán bộ Phòng Hợp tác Quốc tế & Phát triển Cá nhân, Trường Đại học FPT Hà Nội  ​​Anh Võ Hoàng Sơn - Thực tập sinh lĩnh vực Mobile Development & Penetration Testing tại VNPT Cyber Immunity, Chủ nhiệm Câu lạc bộ Google Developer Student Clubs, Trường Đại học FPT Đà Nẵng',
+		N'Bản chiến lược cũng đã đặt ra sứ mệnh và mục tiêu cao cho chặng đường phát triển hướng tới Chính phủ số thời gian tới. Tầm nhìn đặt ra là Việt Nam có chỉ số phát triển Chính phủ điện tử, Chính phủ số ở mức độ cao trên thế giới, thuộc nhóm 50 nước dẫn đầu vào năm 2025, thuộc nhóm 30 nước dẫn đầu vào năm 2030 theo xếp hạng của Liên hợp quốc.',
 		1,
-		2,
+		14,
 		NULL,
-		'2023-09-19T12:00:00',
-		'2023-09-23T16:00:00',
+		'2023-10-24T08:00:00',
+		'2023-10-24T23:59:59',
 		'public',
+		'',
+		'https://i.ibb.co/Wytq69g/IMG-3386.jpg',
+		1,
 		NULL,
-		'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,quality=75,width=960,height=480/event-covers/n3/845d20e9-4aec-494c-a3fc-6014cf787ae1',
-		'pending',
-		NULL,
-		2
+		1
+	);
+
+	INSERT INTO eventRegistrations(event, registeredBy, isJoined, reasonsForAbsence)
+	VALUES
+	(
+		3, 
+		1, 
+		0,
+		NULL
+	),
+	(
+		3, 
+		2, 
+		0, 
+		NULL
+	),
+	(
+		2, 
+		3, 
+		0, 
+		NULL
 	);
 
 	select * from events

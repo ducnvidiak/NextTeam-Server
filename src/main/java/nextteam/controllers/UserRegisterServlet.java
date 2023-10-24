@@ -29,7 +29,7 @@ import nextteam.utils.encryption.BCrypt;
  */
 @WebServlet(name = "UserRegisterServlet", urlPatterns = {"/user-register"})
 public class UserRegisterServlet extends HttpServlet {
-
+    
     private final Gson gson = new Gson();
 
     /**
@@ -96,7 +96,7 @@ public class UserRegisterServlet extends HttpServlet {
             Logger.getLogger(UserRegisterServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private String[] MESSAGE = {
         "Success!",
         "Email không đúng định dạng!",
@@ -106,7 +106,7 @@ public class UserRegisterServlet extends HttpServlet {
         "Mã sinh viên đã tồn tại! Vui lòng thử mã sinh viên khác!",
         "Email đã tồn tại! Vui lòng thử email khác"
     };
-
+    
     private int checkUser(User user) {
         UserDAO userDb = Global.user;
         if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
@@ -126,13 +126,13 @@ public class UserRegisterServlet extends HttpServlet {
         }
         return 0;
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BufferedReader reader = request.getReader();
         User user = gson.fromJson(reader, User.class);
-        
+
 //        String email = request.getParameter("email");
 //        String password = request.getParameter("password");
 //        String firstname = request.getParameter("firstname");
@@ -140,6 +140,8 @@ public class UserRegisterServlet extends HttpServlet {
 //        String username = request.getParameter("studentCode").toUpperCase();
 //        String phoneNumber = request.getParameter("phoneNumber");
 //        String gender = request.getParameter("gender");
+        user.setFirstname(user.getFirstname().trim().replaceAll("\\s+", " "));
+        user.setLastname(user.getLastname().trim().replaceAll("\\s+", " "));
         System.out.println("email: " + user.getEmail());
         System.out.println("password: " + user.getPassword());
         System.out.println("firstname: " + user.getFirstname());
@@ -158,7 +160,7 @@ public class UserRegisterServlet extends HttpServlet {
         ////////////////////////
         int res = checkUser(user);
         user.setPassword(Global.getHashedPassword(user.getPassword()));
-
+        
         if (res == 0) {
             Global.user.register(user);
         }
