@@ -10,7 +10,16 @@ package nextteam.models;
  */
 public class Success {
     public String message;
+    public String avatarURL;
+
+    public Success() {
+    }
+    
     public Success(String mess) {
         this.message = mess;
+    }
+    public Success(String mess, String avatar) {
+        this.message = mess;
+        this.avatarURL = avatar;
     }
 }

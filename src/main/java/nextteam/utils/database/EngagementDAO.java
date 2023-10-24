@@ -201,7 +201,13 @@ public class EngagementDAO extends SQLDatabase {
         }
         return "{}";
     }
-
+    
+    public int updateUserStatus(String clubId, String userId, int status) {
+        int result = 0;
+        result = executeUpdatePreparedStatement("UPDATE engagements SET status = ? WHERE userId = ? AND clubId = ?", status, userId, clubId);
+        return result;
+    }
+    
     public String[] getRoleByUserIdAndClubId(int userId, int clubId) {
         try {
             ResultSet rs = executeQueryPreparedStatement(

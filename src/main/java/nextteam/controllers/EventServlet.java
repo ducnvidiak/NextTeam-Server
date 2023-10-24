@@ -48,6 +48,8 @@ public class EventServlet extends HttpServlet {
             response.getWriter().write(eventsJsonString);
 //            out.print(events.toString());
             out.flush();
+        } else {
+            
         }
 
     }

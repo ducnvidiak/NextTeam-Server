@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
 import java.util.List;
@@ -35,7 +36,7 @@ public class EventAdminServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
-        System.out.println(command);
+        System.out.println(command + "zys");
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
             List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
@@ -43,7 +44,7 @@ public class EventAdminServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
-            response.getWriter().write(events.toString());
+            response.getWriter().write(eventsJsonString);
 //            out.print(events.toString());
             out.flush();
         }
@@ -121,6 +122,7 @@ public class EventAdminServlet extends HttpServlet {
                     e.printStackTrace(); // Ghi log ngoại lệ
                 }
             }
+
             case "delete" -> {
                 int rs = Global.eventDao.deleteEventByEventId(eventId);
                 List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
@@ -139,6 +141,19 @@ public class EventAdminServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String eventId = request.getParameter("id");
+        String status = request.getParameter("status");
+        int result = eventDAO.updateEventStatus(eventId, status);
+        System.out.println("Received update status request: " + status + "  " + eventId);
+        
+         JsonObject jsonRes = new JsonObject();
+        jsonRes.addProperty("status", (result == 1 ? "success" : "failure"));
+        
+        String resJsonString = this.gson.toJson(jsonRes);
+        PrintWriter out = response.getWriter();
+        out.print(resJsonString);
+        out.flush();
 
     }
 

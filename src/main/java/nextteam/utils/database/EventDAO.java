@@ -40,7 +40,7 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("type"),
                         rs.getString("planUrl"),
                         rs.getString("bannerUrl"),
-                        rs.getBoolean("isApprove"),
+                        rs.getString("isApprove"),
                         rs.getString("response"),
                         rs.getInt("clubId"),
                         rs.getTimestamp("createdAt"),
@@ -134,6 +134,11 @@ public class EventDAO extends SQLDatabase {
         //2023-10-13 01:00:00
         //2023-10-10 12:00:00.0
         //2023-10-13 01:00:00.0
+    }
+
+    public int updateEventStatus(String eventId, String status) {
+        int result = executeUpdatePreparedStatement("UPDATE events SET isApproved = ? WHERE events.id = ?", status, eventId);
+        return result;
     }
 
     public List<EventResponse> getAllEventsDetail(String userId) {
@@ -268,7 +273,7 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("bannerUrl"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
-                        rs.getBoolean("isApproved"),
+                        rs.getString("isApproved"),
                         rs.getString("planUrl"),
                         rs.getString("locationName"),
                         rs.getString("clubSubname"),
@@ -299,9 +304,9 @@ public class EventDAO extends SQLDatabase {
                 + "  c.avatarUrl AS clubAvatarUrl\n"
                 + "FROM events e\n"
                 + "INNER JOIN locations l ON l.id = e.locationId\n"
-                + "LEFT JOIN clubs c ON c.id = e.clubId\n"
-                + "WHERE e.clubId IS NULL\n"
-                + "ORDER BY e.startTime DESC");
+                + "LEFT JOIN clubs c ON c.id = e.clubId\n");
+//                + "WHERE e.clubId IS NULL\n"
+//                + "ORDER BY e.startTime DESC");
 
         try {
             while (rs.next()) {
@@ -313,7 +318,7 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("bannerUrl"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
-                        rs.getBoolean("isApproved"),
+                        rs.getString("isApproved"),
                         rs.getString("locationName"),
                         rs.getString("clubSubname"),
                         rs.getString("clubAvatarUrl")
