@@ -130,8 +130,8 @@ public class EventDAO extends SQLDatabase {
         return rs;
     }
 
-    public int updateEventStatus(String eventId, String status) {
-        int result = executeUpdatePreparedStatement("UPDATE events SET isApproved = ? WHERE events.id = ?", status, eventId);
+    public int updateEventStatus(String eventId, String status, String feedback) {
+        int result = executeUpdatePreparedStatement("UPDATE events SET isApproved = ?, response = ? WHERE events.id = ?", status, feedback, eventId);
         return result;
     }
 

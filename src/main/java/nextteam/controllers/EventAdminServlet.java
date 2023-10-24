@@ -12,12 +12,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
 import java.util.List;
+import javax.servlet.annotation.MultipartConfig;
 import nextteam.Global;
 import nextteam.models.Event;
 import nextteam.models.response.EventResponse;
 import nextteam.utils.database.EventDAO;
 
 @WebServlet(name = "EventAdminServlet", urlPatterns = {"/admin-events"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 50
+)
 public class EventAdminServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
@@ -143,14 +149,22 @@ public class EventAdminServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+       response.setContentType("application/json");
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         String eventId = request.getParameter("id");
         String status = request.getParameter("status");
-        int result = eventDAO.updateEventStatus(eventId, status);
+        String feedback = request.getParameter("feedback");
+
+        System.out.println("feedback: " + feedback + "  " + status);
+
+        int result = eventDAO.updateEventStatus(eventId, status, feedback);
         System.out.println("Received update status request: " + status + "  " + eventId);
-        
-         JsonObject jsonRes = new JsonObject();
+
+        JsonObject jsonRes = new JsonObject();
         jsonRes.addProperty("status", (result == 1 ? "success" : "failure"));
-        
+
         String resJsonString = this.gson.toJson(jsonRes);
         PrintWriter out = response.getWriter();
         out.print(resJsonString);

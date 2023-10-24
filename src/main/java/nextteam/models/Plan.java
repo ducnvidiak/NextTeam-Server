@@ -37,7 +37,15 @@ public class Plan {
         this.isApproved = isApproved;
         this.updatedAt = updatedAt;
     }
-
+    
+    public Plan(int id, String title, String content,String isApproved, Date updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.isApproved = isApproved;
+        this.updatedAt = updatedAt;
+    }
+    
     public Plan(int id, int clubId, String title, String content, String response, String isApproved, Date createdAt, Date updatedAt) {
         this.clubId = clubId;
         this.title = title;

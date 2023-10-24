@@ -36,6 +36,8 @@ public class PlanFileServlet extends HttpServlet {
         List<PlanFileRecord> fileList;
         if (type.equals("one")) {
             fileList = new PlanFileStorageDAO(Global.generateConnection()).getListFileRecordByPlanId(id);
+        } else if (type.equals("all")) {
+            fileList = new PlanFileStorageDAO(Global.generateConnection()).getListAllFileRecords();
         } else {
             fileList = new PlanFileStorageDAO(Global.generateConnection()).getAllFileRecordByClubId(id);
         }
