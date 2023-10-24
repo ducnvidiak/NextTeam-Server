@@ -52,6 +52,18 @@
         <servlet-class>nextteam.controllers.DepartmentServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ajaxServlet</servlet-name>
+        <servlet-class>nextteam.controllers.vnpay.ajaxServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayQuery</servlet-name>
+        <servlet-class>nextteam.controllers.vnpay.vnpayQuery</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayRefund</servlet-name>
+        <servlet-class>nextteam.controllers.vnpay.vnpayRefund</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>EngagementServlet</servlet-name>
         <servlet-class>nextteam.controllers.EngagementServlet</servlet-class>
         <multipart-config>
@@ -64,8 +76,24 @@
         </multipart-config>
     </servlet>
     <servlet>
+        <servlet-name>ProposalServlet</servlet-name>
+        <servlet-class>nextteam.controllers.ProposalServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProposalFiileServlet</servlet-name>
+        <servlet-class>nextteam.controllers.ProposalFiileServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ClubUserServlet</servlet-name>
         <servlet-class>nextteam.controllers.ClubUserServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PlanServlet</servlet-name>
+        <servlet-class>nextteam.controllers.PlanServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PlanFileServlet</servlet-name>
+        <servlet-class>nextteam.controllers.PlanFileServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
@@ -104,8 +132,36 @@
         <url-pattern>/engagement</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ProposalServlet</servlet-name>
+        <url-pattern>/api/proposal</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProposalFiileServlet</servlet-name>
+        <url-pattern>/api/proposal_files</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ClubUserServlet</servlet-name>
         <url-pattern>/club-user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlanServlet</servlet-name>
+        <url-pattern>/api/plans</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlanFileServlet</servlet-name>
+        <url-pattern>/api/plan_files</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ajaxServlet</servlet-name>
+        <url-pattern>/vnpayajax/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>vnpayQuery</servlet-name>
+        <url-pattern>/vnpayquery/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>vnpayRefund</servlet-name>
+        <url-pattern>/vnpayrefund/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

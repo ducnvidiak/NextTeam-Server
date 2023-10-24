@@ -54,13 +54,33 @@ public class UserDAO extends SQLDatabase {
         return list;
     }
 
-    public ArrayList<UserCard> getUsersCardList() {
+    public ArrayList<UserCard> getUsersCardList(String clubId) {
         ArrayList<UserCard> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT id, avatarUrl, firstname, lastname, username FROM users");
+        ResultSet rs = executeQueryPreparedStatement("SELECT u.id, u.avatarUrl, u.firstname, u.lastname, u.username, u.gender FROM users AS u JOIN engagements AS e ON u.id = e.userId WHERE e.clubId = ? AND e.status != 0", clubId);
         try {
             while (rs.next()) {
                 list.add(new UserCard(rs.getInt(1), rs.getString(2), rs.getNString(3) + " " + rs.getNString(4),
-                        rs.getString(5)));
+                        rs.getString(5), rs.getString(6)));
+            }
+        } catch (Exception e) {
+
+        }
+        return list;
+    }
+    
+    public ArrayList<UserCard> getUsersCardListForManage(String clubId) {
+        ArrayList<UserCard> list = new ArrayList<>();
+        String status;
+        ResultSet rs = executeQueryPreparedStatement("SELECT u.id, u.avatarUrl, u.firstname, u.lastname, u.username, u.gender, d.id, e.status  FROM users as u JOIN engagements as e ON u.id = e.userId JOIN departments as d ON e.departmentId = d.id WHERE e.clubId = ? ", clubId);
+        try {
+            while (rs.next()) {
+                if (rs.getInt("status") == 0) {
+                    status = "inactive";
+                } else {
+                    status = "active";
+                }
+                list.add(new UserCard(rs.getInt(1), rs.getString(2), rs.getNString(3) + " " + rs.getNString(4),
+                        rs.getString(5), rs.getString(6), rs.getInt(7), status));
             }
         } catch (Exception e) {
 

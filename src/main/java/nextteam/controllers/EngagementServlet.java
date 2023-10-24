@@ -64,10 +64,14 @@ public class EngagementServlet extends HttpServlet {
             approveApplication(request, response);
         } else if (action.equals("reject-application")) {
             rejectApplication(request, response);
+        } else if (action.equals("drop-out-application")) {
+            dropOutApplication(request, response);
         } else if (action.equals("set-interview")) {
             setInterview(request, response);
         } else if (action.equals("interview")) {
             interview(request, response);
+        } else if (action.equals("application-list-of-club")) {
+            applicationListOfClub(request, response);
         }
     }
 
@@ -112,19 +116,19 @@ public class EngagementServlet extends HttpServlet {
         // Nhận file từ yêu cầu
         //xử lý upload file
         String folderName = "/cv";
-        String uploadPath = "/Users/mac/Documents/SWP301/NextTeam-Server/src/main/webapp/cv";//for netbeans use this code
+        String uploadPath = "E:\\Fall23\\project\\NextTeam-Server\\src\\main\\webapp\\cv";//for netbeans use this code
         File dir = new File(uploadPath);
         if (!dir.exists()) {
             dir.mkdirs();
         }
         Part filePart = request.getPart("cvUrl");
         String fileName = "ApplicationRegister-" + System.currentTimeMillis() + "-UserId" + userId + "-" + filePart.getSubmittedFileName().replaceAll(" ", "");
+
         String path = folderName + File.separator + fileName;
         System.out.println("Path: " + uploadPath);
         InputStream is = filePart.getInputStream();
         Files.copy(is, Paths.get(uploadPath + File.separator + fileName), StandardCopyOption.REPLACE_EXISTING);        //Add 
 
-        System.out.println("test4");
         Engagement pn = new Engagement(userId, departmentId, clubId, path);
         response.setContentType("application/json");
         System.out.println("Yêu cầu tham gia CLB");
@@ -148,8 +152,28 @@ public class EngagementServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         String userId = request.getParameter("userId");
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Engagement> engagements = Global.engagement.getListOfMe(userId);
+        List<EngagementDAO.EngagementModelInfo> emis = Global.engagement.getEngagementModelList(engagements);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(emis);
+        System.out.println(json);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+
+    }
+
+    protected void applicationListOfClub(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter out = response.getWriter();
+        String clubId = request.getParameter("clubId");
+
+        List<Engagement> engagements = Global.engagement.getListOfClub(clubId);
         List<EngagementDAO.EngagementModelInfo> emis = Global.engagement.getEngagementModelList(engagements);
 
         // Chuyển danh sách thành dạng JSON
@@ -170,7 +194,6 @@ public class EngagementServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         int status = Global.engagement.ApproveApplication(id);
 
         // Chuyển danh sách thành dạng JSON
@@ -189,11 +212,28 @@ public class EngagementServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         int status = Global.engagement.RejectApplication(id);
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson("Đã cập nhật từ chối đơn đăng ký");
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+    }
+
+    protected void dropOutApplication(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
+
+        PrintWriter out = response.getWriter();
+
+        int status = Global.engagement.DropoutApplication(id);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson("Đã cập nhật đơn đăng ký xin ra khỏi CLB");
 
         // Gửi JSON response về client
         out.print(json);
@@ -269,7 +309,6 @@ public class EngagementServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         BufferedReader reader = request.getReader();
         EntranceInterview pn = this.gson.fromJson(reader, EntranceInterview.class);
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         int update = Global.entranceInterview.Update(pn);
 
         // Chuyển danh sách thành dạng JSON
@@ -284,6 +323,27 @@ public class EngagementServlet extends HttpServlet {
         out.print(json);
         out.flush();
 
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String clubId = request.getParameter("clubId");
+        String userId = request.getParameter("userId");
+        int status = Integer.parseInt(request.getParameter("status"));
+        System.out.println("Received request change user status: " + clubId + " " + userId + " " + status);
+        int result = 0;
+        
+        result = Global.engagement.updateUserStatus(clubId, userId, status);
+        
+        JsonObject jsonRes = new JsonObject();
+        jsonRes.addProperty("status", (result == 1 ? "success" : "failure"));
+
+        PrintWriter out = response.getWriter();
+        String resJsonString = this.gson.toJson(jsonRes);
+        out.print(resJsonString);
+        out.flush();
     }
 
     /**

@@ -43,18 +43,26 @@ public class PaymentServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action.equals("add-category")) {
             addCategory(request, response);
-        }else if (action.equals("add-expense")) {
+        } else if (action.equals("add-expense")) {
             addExpense(request, response);
-        }else if (action.equals("list-payments")) {
+        } else if (action.equals("list-payments")) {
             listPayments(request, response);
-        }else if (action.equals("sum-balance")) {
+        } else if (action.equals("sum-balance")) {
             sumBalance(request, response);
-        }else if (action.equals("list-of-me")) {
+        } else if (action.equals("list-of-me")) {
             listOfMe(request, response);
-        }else if (action.equals("pay-by-cash")) {
+        } else if (action.equals("pay-by-cash")) {
             payByCash(request, response);
+        } else if (action.equals("pay-by-online")) {
+            payByOnline(request, response);
+        } else if (action.equals("list-payments-by-category")) {
+            listPaymentsByCategory(request, response);
+        } else if (action.equals("list-payments-in-category")) {
+            listPaymentsInCategory(request, response);
+        } else if (action.equals("update-balance")) {
+            updateBalance(request, response);
         }
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -100,7 +108,7 @@ public class PaymentServlet extends HttpServlet {
         out.flush();
 
     }
-    
+
     protected void addExpense(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BufferedReader reader = request.getReader();
@@ -115,8 +123,8 @@ public class PaymentServlet extends HttpServlet {
         out.flush();
 
     }
-    
-     protected void listPayments(HttpServletRequest request, HttpServletResponse response)
+
+    protected void listPayments(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -124,7 +132,6 @@ public class PaymentServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Payment> payments = Global.payment.getAllPayment(clubId);
 
         // Chuyển danh sách thành dạng JSON
@@ -134,9 +141,9 @@ public class PaymentServlet extends HttpServlet {
         out.print(json);
         out.flush();
 
-     }
-     
-     protected void sumBalance(HttpServletRequest request, HttpServletResponse response)
+    }
+
+    protected void listPaymentsByCategory(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -144,7 +151,44 @@ public class PaymentServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
+        List<Payment> payments = Global.payment.getAllPaymentByCategory(clubId);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(payments);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+
+    }
+
+    protected void listPaymentsInCategory(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String categoryId = request.getParameter("categoryId");
+
+        PrintWriter out = response.getWriter();
+
+        List<Payment> payments = Global.payment.getAllPaymentInCategory(categoryId);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson(payments);
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+
+    }
+
+    protected void sumBalance(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String clubId = request.getParameter("clubId");
+
+        PrintWriter out = response.getWriter();
+
         PaymentDAO.Balance balances = Global.payment.SumBalance(clubId);
 
         // Chuyển danh sách thành dạng JSON
@@ -154,9 +198,9 @@ public class PaymentServlet extends HttpServlet {
         out.print(json);
         out.flush();
 
-     }
-     
-      protected void listOfMe(HttpServletRequest request, HttpServletResponse response)
+    }
+
+    protected void listOfMe(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -164,7 +208,6 @@ public class PaymentServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         List<Payment> payments = Global.payment.getAllPaymentOfMe(userId);
 
         // Chuyển danh sách thành dạng JSON
@@ -174,9 +217,9 @@ public class PaymentServlet extends HttpServlet {
         out.print(json);
         out.flush();
 
-     }
-      
-        protected void payByCash(HttpServletRequest request, HttpServletResponse response)
+    }
+
+    protected void payByCash(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -184,11 +227,51 @@ public class PaymentServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Gọi publicNotificationsDAO để lấy danh sách publicNotifications
         int status = Global.payment.payByCash(id);
 
         // Chuyển danh sách thành dạng JSON
         String json = gson.toJson("Đã cập nhật thanh toán bằng tiền mặt");
+
+        // Gửi JSON response về client
+        out.print(json);
+        out.flush();
+    }
+
+    protected void updateBalance(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String clubId = request.getParameter("clubId");
+        String balance = request.getParameter("balance");
+
+        PrintWriter out = response.getWriter();
+
+        int status = Global.payment.updateBalance(balance, clubId);
+
+        // Chuyển danh sách thành dạng JSON
+        System.out.println("Cập nhật số dư thành công");
+        System.out.println(clubId);
+        System.out.println(balance);
+    }
+
+    protected void payByOnline(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
+        String statusPay = request.getParameter("status");
+        String statusFormat = "";
+        PrintWriter out = response.getWriter();
+        if (statusPay.equals("00")) {
+            statusFormat = "1";
+        } else {
+            statusFormat = "0";
+        }
+
+        int status = Global.payment.payByOnline(id, statusFormat);
+
+        // Chuyển danh sách thành dạng JSON
+        String json = gson.toJson("Đã thanh toán thành công");
 
         // Gửi JSON response về client
         out.print(json);

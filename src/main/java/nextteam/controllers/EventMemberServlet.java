@@ -36,15 +36,13 @@ public class EventMemberServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         System.out.println(command);
-        // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
-            System.out.println(command + clubId + userId);
             List<EventResponse> events = eventDAO.getAllEventsDetailForMember(clubId, userId);
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
-            response.getWriter().write(events.toString());
+            response.getWriter().write(eventsJsonString);
 //            out.print(events.toString());
             out.flush();
         }

@@ -16,17 +16,32 @@ public class Plan {
     private int clubId;
     private String title;
     private String content;
-    private String attachmentUrl;
     private String response;
-    private boolean isApproved;
+    private String isApproved;
     private Date createdAt;
     private Date updatedAt;
 
-    public Plan(int id, int clubId, String title, String content, String attachmentUrl, String response, boolean isApproved, Date createdAt, Date updatedAt) {
+    public Plan() {
+    }
+
+    public Plan(int clubId, String title, String content) {
         this.clubId = clubId;
         this.title = title;
         this.content = content;
-        this.attachmentUrl = attachmentUrl;
+    }
+
+    public Plan(String title, String content, String response, String isApproved, Date updatedAt) {
+        this.title = title;
+        this.content = content;
+        this.response = response;
+        this.isApproved = isApproved;
+        this.updatedAt = updatedAt;
+    }
+
+    public Plan(int id, int clubId, String title, String content, String response, String isApproved, Date createdAt, Date updatedAt) {
+        this.clubId = clubId;
+        this.title = title;
+        this.content = content;
         this.response = response;
         this.isApproved = isApproved;
         this.createdAt = createdAt;
@@ -66,14 +81,6 @@ public class Plan {
         this.content = content;
     }
 
-    public String getAttachmentUrl() {
-        return attachmentUrl;
-    }
-
-    public void setAttachmentUrl(String attachmentUrl) {
-        this.attachmentUrl = attachmentUrl;
-    }
-
     public String getResponse() {
         return response;
     }
@@ -82,11 +89,11 @@ public class Plan {
         this.response = response;
     }
 
-    public boolean isIsApproved() {
+    public String getIsApproved() {
         return isApproved;
     }
 
-    public void setIsApproved(boolean isApproved) {
+    public void setIsApproved(String isApproved) {
         this.isApproved = isApproved;
     }
 
