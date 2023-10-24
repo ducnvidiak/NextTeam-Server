@@ -59,6 +59,46 @@ public class Event {
         this.isApproved = isApproved;
         this.type = type;
     }
+    
+    public Event(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String planUrl) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.bannerUrl = bannerUrl;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isApproved = isApproved;
+        this.type = type;
+        this.planUrl = planUrl;
+    }
+    
+    public Event(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.bannerUrl = bannerUrl;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+    
+    public Event(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.bannerUrl = bannerUrl;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.type = type;
+    }
+//    public Event(int id, String name, String type String description, String bannerUrl, Timestamp startTime, Timestamp endTime) {
+//        this.id = id;
+//        this.name = name;
+//        this.type = type;
+//        this.description = description;
+//        this.bannerUrl = bannerUrl;
+//        this.startTime = startTime;
+//        this.endTime = endTime;
+//    }
 
     public int getId() {
         return id;

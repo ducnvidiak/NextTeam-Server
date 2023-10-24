@@ -30,6 +30,7 @@ import nextteam.utils.database.EventDAO;
  *
  * @author baopg
  */
+@WebServlet(name = "EventRegistrationServlet", urlPatterns = {"/event-registration"})
 public class EventRegistrationServlet extends HttpServlet {
 
     private final Gson gson = new Gson();

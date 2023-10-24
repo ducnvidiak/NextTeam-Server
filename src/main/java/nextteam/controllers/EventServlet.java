@@ -34,10 +34,13 @@ public class EventServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
-        System.out.println(command);
-        // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
-            List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+            List<EventResponse> events;
+            if (!userId.equals("undefined")) {
+                events = eventDAO.getAllEventsDetail(userId);
+            } else {
+                events = eventDAO.getAllEventsDetailForGuest();
+            }
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -86,19 +89,23 @@ public class EventServlet extends HttpServlet {
                     response.getWriter().write("Internal Server Error");
                     e.printStackTrace(); // Ghi log ngoại lệ
                 }
+                return;
             }
             case "update" -> {
                 try {
-                    // Đọc dữ liệu JSON từ request
+                    System.out.println("update");
                     BufferedReader reader = request.getReader();
                     StringBuilder jsonInput = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
                         jsonInput.append(line);
                     }
+
                     Event event = gson.fromJson(jsonInput.toString(), Event.class);
+                    System.out.println("update2");
+
                     int rs = Global.eventDao.updateEventByEventId(eventId, event);
-                    List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
+                    List<EventResponse> events = eventDAO.getAllEventsDetailForManager(userId);
                     String eventsJsonString = gson.toJson(events);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
@@ -116,16 +123,28 @@ public class EventServlet extends HttpServlet {
                     response.getWriter().write("Internal Server Error");
                     e.printStackTrace(); // Ghi log ngoại lệ
                 }
+                return;
             }
             case "delete" -> {
-                System.out.println("delete!!!!!");
-                int rs = Global.eventDao.deleteEventByEventId(eventId);
-                List<EventResponse> events = eventDAO.getAllEventsDetail(userId);
-                String eventsJsonString = gson.toJson(events);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                PrintWriter out = response.getWriter();
-                response.getWriter().write(events.toString());
+                try {
+                    System.out.println("delete!!!!!");
+                    int rs = Global.eventDao.deleteEventByEventId(eventId);
+                    System.out.println("delete!1");
+
+                    List<EventResponse> events = eventDAO.getAllEventsDetailForManager(userId);
+                    System.out.println("delete!2");
+
+                    String eventsJsonString = gson.toJson(events);
+                    System.out.println("delete!3");
+
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(eventsJsonString);
+                } catch (Exception e) {
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    response.getWriter().write("Internal Server Error");
+                    e.printStackTrace(); // Ghi log ngoại lệ
+                }
             }
             default -> {
             }
