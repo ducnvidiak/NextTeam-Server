@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
-import nextteam.Global;
 import nextteam.models.Club;
 import nextteam.models.response.ClubResponse;
 
@@ -58,9 +57,10 @@ public class ClubServlet extends HttpServlet {
             String avatarUrl = request.getParameter("avatarUrl");
             String bannerUrl = request.getParameter("bannerUrl");
             String isActive_Raw = request.getParameter("isActive");
+            System.out.println("test");
             System.out.println(isActive_Raw);
             boolean isActive = Boolean.parseBoolean(isActive_Raw);
-            System.out.println(isActive);
+           
             int movementPoint;
             double balance;
             try {
@@ -81,7 +81,7 @@ public class ClubServlet extends HttpServlet {
 
             Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,
                     isActive);
-            System.out.println(c.isIsActive());
+            System.out.println(c);
             int added = Global.clubDAO.addClub(c);
             String json = "";
             if (added == 1) {

@@ -73,7 +73,6 @@ public class EventDAO extends SQLDatabase {
     }
 
     public int createEventForAdmin(Event e) {
-        System.out.println("!!!!" + e.getClubId());
         int rs = 0;
         rs = executeUpdatePreparedStatement(
                 "INSERT INTO events (name, description, registeredBy, bannerUrl, startTime, endTime, locationId, type, planUrl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -129,11 +128,6 @@ public class EventDAO extends SQLDatabase {
                 eventId
         );
         return rs;
-        //2023-10-10 10:00:00
-        //2023-10-11 02:00:00
-        //2023-10-13 01:00:00
-        //2023-10-10 12:00:00.0
-        //2023-10-13 01:00:00.0
     }
 
     public int updateEventStatus(String eventId, String status, String feedback) {
@@ -160,11 +154,11 @@ public class EventDAO extends SQLDatabase {
                 + "           WHERE eventId = e.id) AS DECIMAL(10, 1)), 1) AS avgRating\n"
                 + "FROM events e \n"
                 + "JOIN locations l ON e.locationId = l.id\n"
-                + "JOIN clubs c ON e.clubId = c.id\n"
+                + "LEFT OUTER JOIN clubs c ON e.clubId = c.id\n"
                 + "LEFT JOIN eventRegistrations er ON e.id = er.event AND er.registeredBy = ?\n"
                 + "LEFT JOIN feedbacks f ON e.id = f.eventId AND f.userId = ?\n"
                 + "WHERE e.type = 'public'\n"
-                + "AND e.isApproved = 1 ORDER BY e.startTime DESC;", userId, userId);
+                + "AND e.isApproved = 'accepted' ORDER BY e.startTime DESC;", userId, userId);
 
         try {
             while (rs.next()) {
@@ -211,11 +205,11 @@ public class EventDAO extends SQLDatabase {
                 + "           WHERE eventId = e.id) AS DECIMAL(10, 1)), 1) AS avgRating\n"
                 + "FROM events e \n"
                 + "JOIN locations l ON e.locationId = l.id\n"
-                + "JOIN clubs c ON e.clubId = c.id\n"
+                + "LEFT OUTER JOIN clubs c ON e.clubId = c.id\n"
                 + "LEFT JOIN eventRegistrations er ON e.id = er.event AND er.registeredBy = null\n"
                 + "LEFT JOIN feedbacks f ON e.id = f.eventId AND f.userId = null\n"
                 + "WHERE e.type = 'public'\n"
-                + "AND e.isApproved = 1 ORDER BY e.startTime DESC;");
+                + "AND e.isApproved = 'accepted' ORDER BY e.startTime DESC;");
 
         try {
             while (rs.next()) {
@@ -293,20 +287,17 @@ public class EventDAO extends SQLDatabase {
                 + "  e.id,\n"
                 + "  e.name,\n"
                 + "  e.type,\n"
-                + "  e.clubId,\n"
-                + "  e.description,\n"
+                + "  e.description, \n"
                 + "  e.bannerUrl,\n"
-                + "  e.startTime, \n"
+                + "  e.startTime,\n"
                 + "  e.endTime,\n"
                 + "  e.isApproved,\n"
-                + "  l.name AS locationName,\n"
-                + "  c.subname AS clubSubname,\n"
-                + "  c.avatarUrl AS clubAvatarUrl\n"
+                + "  e.planUrl,\n"
+                + "  l.name AS locationName\n"
                 + "FROM events e\n"
-                + "INNER JOIN locations l ON l.id = e.locationId\n"
-                + "LEFT JOIN clubs c ON c.id = e.clubId\n");
-//                + "WHERE e.clubId IS NULL\n"
-//                + "ORDER BY e.startTime DESC");
+                + "INNER JOIN locations l ON l.id = e.locationId \n"
+                + "WHERE e.clubId IS NULL\n"
+                + "ORDER BY e.startTime DESC;");
 
         try {
             while (rs.next()) {
@@ -318,10 +309,7 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("bannerUrl"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
-                        rs.getString("isApproved"),
-                        rs.getString("locationName"),
-                        rs.getString("clubSubname"),
-                        rs.getString("clubAvatarUrl")
+                        rs.getString("locationName")
                 );
                 System.out.println("event");
 //                System.out.println(event.);
@@ -357,7 +345,7 @@ public class EventDAO extends SQLDatabase {
                 + "LEFT JOIN eventRegistrations er ON e.id = er.event AND er.registeredBy = ?\n"
                 + "LEFT JOIN feedbacks f ON e.id = f.eventId AND f.userId = ?\n"
                 + "WHERE e.clubId = ?\n"
-                + "AND e.isApproved = 1 ORDER BY e.startTime DESC;", userId, userId, clubId);
+                + "AND e.isApproved = 'accepted' ORDER BY e.startTime DESC;", userId, userId, clubId);
 
         try {
             while (rs.next()) {

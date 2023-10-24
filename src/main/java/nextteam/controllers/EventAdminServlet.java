@@ -46,6 +46,7 @@ public class EventAdminServlet extends HttpServlet {
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
             List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
+            
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

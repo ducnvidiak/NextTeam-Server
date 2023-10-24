@@ -35,6 +35,7 @@ public class EventServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
         if (command.equals("list")) {
+            System.out.println("userId"+ userId);
             List<EventResponse> events;
             if (!userId.equals("undefined")) {
                 events = eventDAO.getAllEventsDetail(userId);
