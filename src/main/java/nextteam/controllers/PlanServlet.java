@@ -44,6 +44,14 @@ import nextteam.utils.database.PlanDAO;
  *
  * @author admin
  */
+
+
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 50
+)
+public class PlanServlet extends HttpServlet {
 class CloudFileInfo {
 
     public String fileId;
@@ -59,6 +67,7 @@ class CloudFileInfo {
         this.viewLink = viewLink;
     }
 }
+
 class GoogleDriveUploader {
 
     private static final String APPLICATION_NAME = "Google Drive API";
@@ -132,14 +141,6 @@ class GoogleDriveUploader {
         return 1;
     }
 }
-
-@MultipartConfig(
-        fileSizeThreshold = 1024 * 1024,
-        maxFileSize = 1024 * 1024 * 10,
-        maxRequestSize = 1024 * 1024 * 50
-)
-public class PlanServlet extends HttpServlet {
-
     private final Gson gson = new Gson();
 
     @Override
