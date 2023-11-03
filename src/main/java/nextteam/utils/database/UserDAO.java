@@ -88,7 +88,7 @@ public class UserDAO extends SQLDatabase {
         return list;
     }
 
-    public User getListUserById(User t) {
+    public User getUserInfoById(User t) {
         User ketQua = null;
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE id=?", t.getId());
