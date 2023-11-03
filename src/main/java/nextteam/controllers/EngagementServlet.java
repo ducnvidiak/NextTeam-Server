@@ -116,7 +116,7 @@ public class EngagementServlet extends HttpServlet {
         // Nhận file từ yêu cầu
         //xử lý upload file
         String folderName = "/cv";
-        String uploadPath = "E:\\Fall23\\project\\NextTeam-Server\\src\\main\\webapp\\cv";//for netbeans use this code
+        String uploadPath = "/Users/mac/Documents/SWP301/NextTeam-Server/src/main/webapp/cv";//for netbeans use this code
         File dir = new File(uploadPath);
         if (!dir.exists()) {
             dir.mkdirs();
