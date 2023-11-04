@@ -25,6 +25,29 @@ public class ClubResponse extends Club{
         this.isJoined = isJoined;
     }
     
+    // id, name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, createdAt
+    public ClubResponse(int id, String name, String subname,String avatarUrl, String bannerUrl, int categoryId, int numberOfMembers, String description,Date createdAt, boolean isJoined) {
+        super(id, name, subname, avatarUrl, bannerUrl, categoryId, description, createdAt);
+        this.numberOfMembers = numberOfMembers;
+ 
+    }
+    
+    
+    
+    /*
+    public Club(int aInt, String string, String string0, String string1, String string2, int aInt0, int numberOfMembers, String string3, Timestamp timestamp, boolean aBoolean) {
+        this.id = aInt;
+        this.name = string;
+        this.subname = string0;
+        this.avatarUrl = string1;
+        this.bannerUrl = string2;
+        this.categoryId = aInt0;
+//        this.numberOfMembers = numberOfMembers;
+        this.description = string3;
+        this.createdAt = timestamp;
+    }
+    */
+    
 //    public ClubResponse(int id, String name, String subname, String avatarUrl, int movementPoint) {
 ////        super(id, name, subname, avatarUrl);
 //        this.movementPoint = movementPoint;
@@ -85,6 +108,11 @@ public class ClubResponse extends Club{
 //    public void setIsJoined(boolean isJoined) {
 //        this.isJoined = isJoined;
 //    }
+
+    @Override
+    public String toString() {
+        return "ClubResponse{" + "numberOfMembers=" + numberOfMembers + ", isJoined=" + isJoined + '}';
+    }
 
     
 

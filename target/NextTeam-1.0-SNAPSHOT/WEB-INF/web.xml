@@ -20,7 +20,6 @@
         <servlet-class>nextteam.controllers.UserServlet</servlet-class>
     </servlet>
     <servlet>
-
         <servlet-name>UserInfoServlet</servlet-name>
         <servlet-class>nextteam.controllers.UserInfoServlet</servlet-class>
     </servlet>
@@ -96,10 +95,17 @@
         <servlet-name>PlanFileServlet</servlet-name>
         <servlet-class>nextteam.controllers.PlanFileServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ClubDetailServlet</servlet-name>
+        <servlet-class>nextteam.controllers.ClubDetailServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserInfoServlet</servlet-name>
         <url-pattern>/api/user</url-pattern>
     </servlet-mapping>
+    
+  
+    
     <servlet-mapping>
         <servlet-name>ClubServlet</servlet-name>
         <url-pattern>/api/club</url-pattern>
@@ -163,6 +169,10 @@
     <servlet-mapping>
         <servlet-name>vnpayRefund</servlet-name>
         <url-pattern>/vnpayrefund/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClubDetailServlet</servlet-name>
+         <url-pattern>/club-detail/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

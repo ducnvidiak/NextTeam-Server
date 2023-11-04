@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import nextteam.models.Proposal;
+import nextteam.models.ProposalDetail;
 import nextteam.utils.SQLDatabase;
 
 public class ProposalDAO extends SQLDatabase {
@@ -54,13 +55,13 @@ public class ProposalDAO extends SQLDatabase {
         return result;
     }
 
-    public List<Proposal> getListProposalByUserId(String userId) {
-        List<Proposal> proposals = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM proposals WHERE sendBy=?", userId);
+    public List<ProposalDetail> getListProposalByUserId(String userId) {
+        List<ProposalDetail> proposals = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT p.*, c.subname FROM proposals AS p JOIN clubs AS c ON p.clubId = c.id WHERE sendBy=?", userId);
         try {
             while (rs.next()) {
                 proposals.add(
-                        new Proposal(
+                        new ProposalDetail(
                                 rs.getInt("id"),
                                 rs.getInt("clubId"),
                                 rs.getString("title"),
@@ -68,7 +69,8 @@ public class ProposalDAO extends SQLDatabase {
                                 rs.getInt("sendBy"),
                                 rs.getString("isApproved"),
                                 rs.getDate("createdAt"),
-                                rs.getDate("updatedAt")
+                                rs.getDate("updatedAt"),
+                                rs.getString("subname")
                         )
                 );
             }
@@ -77,13 +79,13 @@ public class ProposalDAO extends SQLDatabase {
         }
         return proposals;
     }
-    public List<Proposal> getListProposalByClubId(String clubId) {
-        List<Proposal> proposals = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT * FROM proposals WHERE clubId=?", clubId);
+    public List<ProposalDetail> getListProposalByClubId(String clubId) {
+        List<ProposalDetail> proposals = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT p.*, u.username, u.firstname, u.lastname, c.subname FROM proposals AS p JOIN users AS u ON p.sendBy = u.id JOIN clubs AS c ON p.clubId = c.id  WHERE clubId=?", clubId);
         try {
             while (rs.next()) {
                 proposals.add(
-                        new Proposal(
+                        new ProposalDetail(
                                 rs.getInt("id"),
                                 rs.getInt("clubId"),
                                 rs.getString("title"),
@@ -91,7 +93,11 @@ public class ProposalDAO extends SQLDatabase {
                                 rs.getInt("sendBy"),
                                 rs.getString("isApproved"),
                                 rs.getDate("createdAt"),
-                                rs.getDate("updatedAt")
+                                rs.getDate("updatedAt"),
+                                rs.getString("username"),
+                                rs.getString("firstname"),
+                                rs.getString("lastname"),
+                                rs.getString("subname")
                         )
                 );
             }

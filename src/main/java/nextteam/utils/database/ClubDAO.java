@@ -32,6 +32,10 @@ public class ClubDAO extends SQLDatabase {
             this.clb = clb;
         }
 
+        public ClubRanking() {
+
+        }
+
         @Override
         public String toString() {
             return "{"
@@ -56,11 +60,13 @@ public class ClubDAO extends SQLDatabase {
 
             while (rs.next()) {
                 //     public Club(int id, String name, String subname, int categoryId, String description, String avatarUrl, String bannerUrl, int movementPoint, double balance, Date createdAt, Date updatedAt) {
-byte bitValue = rs.getByte(12);
-            boolean booleanValue = (bitValue != 0);
-                System.out.println(booleanValue);
-                Club newClub = new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getDate(10), rs.getDate(11), booleanValue);
+                byte bitValue = rs.getByte(12);
+                boolean booleanValue = (bitValue != 0);
+
+                Club newClub = new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), 0, rs.getDouble(9), rs.getDate(10), rs.getDate(11), booleanValue);
                 newClub.setIsActive(booleanValue);
+                int m = getPointClubById("" + newClub.getId());
+                newClub.setMovementPoint(m);
                 list.add(newClub);
             }
 
@@ -70,28 +76,55 @@ byte bitValue = rs.getByte(12);
         return list;
     }
 
-    public ArrayList<ClubResponse> getListClubs(String userId) {
-        ArrayList<ClubResponse> list = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT\n"
-                + "    c.*,\n"
-                + "    (SELECT COUNT(*) FROM engagements e WHERE e.clubId = c.id) AS numberOfMembers,\n"
-                + "    CASE\n"
-                + "        WHEN e.id IS NOT NULL THEN 'true'\n"
-                + "        ELSE 'false'\n"
-                + "    END AS isJoined\n"
-                + "FROM clubs c\n"
-                + "LEFT JOIN engagements e ON e.clubId = c.id AND e.userId = ?;", userId);
+    public int getPointClubById(String clubId) {
+
+        ResultSet rs = executeQueryPreparedStatement("SELECT SUM(ph.amount) AS total_amount\n" +
+"FROM pointsHistories ph\n" +
+"JOIN users u ON ph.receivedBy = u.id\n" +
+"WHERE ph.clubId = '" +clubId+"'");
+        
         try {
             while (rs.next()) {
-                list.add(new ClubResponse(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getTimestamp(10), rs.getDate(11), rs.getBoolean(12), rs.getInt("numberOfMembers"), rs.getBoolean("isJoined")));
+                return rs.getInt(1);
             }
         } catch (Exception e) {
-//            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+
+        }
+        return 0;
+    }
+
+    public ArrayList<ClubResponse> getListClubs(String userId) {
+        ArrayList<ClubResponse> list = new ArrayList<>();
+        ResultSet rs = executeQueryPreparedStatement("SELECT  \n"
+                + "    c.*, \n"
+                + "    e.numberOfEngagements,\n"
+                + "    CASE WHEN EXISTS (\n"
+                + "        SELECT 1\n"
+                + "        FROM dbo.engagements e2 \n"
+                + "        WHERE e2.clubId = c.id AND e2.userId = ? AND e2.status = 1\n"
+                + "    ) THEN 'true' ELSE 'false' END AS isJoined\n"
+                + "FROM dbo.clubs c\n"
+                + "LEFT JOIN (\n"
+                + "    SELECT clubId, COUNT(id) AS numberOfEngagements\n"
+                + "    FROM dbo.engagements\n"
+                + "    GROUP BY clubId\n"
+                + ") e ON c.id = e.clubId;", userId);
+        try {
+            while (rs.next()) {
+                ClubResponse cr = new ClubResponse(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), rs.getDouble(9), rs.getTimestamp(10), rs.getDate(11), rs.getBoolean(12), rs.getInt("numberOfEngagements"), rs.getBoolean("isJoined"));
+                int m = getPointClubById("" + cr.getId());
+                cr.setMovementPoint(m);
+                list.add(cr);
+            }
+        } catch (Exception e) {
         }
         return list;
     }
 
     public ArrayList<Club> getListClubsOfMe(String userId) {
+        if (userId == null) {
+            userId = "";
+        }
         ArrayList<Club> list = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT clubs.id, clubs.name, clubs.subname FROM engagements INNER JOIN clubs ON engagements.clubId = clubs.id WHERE engagements.userId =? AND engagements.status=1", userId);
         try {
@@ -121,12 +154,27 @@ byte bitValue = rs.getByte(12);
         return list;
     }
 
-    public Club getClubDetailBySubname(String userId, String subname) {
-        Club ketQua = null;
+    public ClubResponse getClubDetailBySubname(String userId, String subname) {
+        ClubResponse ketQua = new ClubResponse();
+
         try {
-            ResultSet rs = executeQueryPreparedStatement("SELECT c.id, c.name, c.subname, c.avatarUrl, c.bannerUrl, c.categoryId, (SELECT COUNT(*) FROM engagements e WHERE e.clubId = c.id) AS numberOfMembers, c.description, c.createdAt, CASE WHEN e.id IS NULL THEN 'false' ELSE 'true' END AS isJoined FROM clubs c LEFT JOIN engagements e ON e.clubId = c.id AND e.userId = ? WHERE c.subname = ?", userId, subname);
+            ResultSet rs = executeQueryPreparedStatement("SELECT  \n"
+                    + "    c.*,  \n"
+                    + "    e.numberOfEngagements,\n"
+                    + "    CASE WHEN EXISTS (\n"
+                    + "        SELECT 1\n"
+                    + "        FROM dbo.engagements e2 \n"
+                    + "        WHERE e2.clubId = c.id AND e2.userId = ? AND e2.status = 1\n"
+                    + "    ) THEN 'true' ELSE 'false' END AS isJoined\n"
+                    + "FROM dbo.clubs c\n"
+                    + "LEFT JOIN (\n"
+                    + "    SELECT clubId, COUNT(id) AS numberOfEngagements\n"
+                    + "    FROM dbo.engagements\n"
+                    + "    GROUP BY clubId\n"
+                    + ") e ON c.id = e.clubId\n"
+                    + "WHERE c.subname = ?;", userId, subname);
             if (rs.next()) {
-                ketQua = new Club(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getString(8), rs.getTimestamp(9), rs.getBoolean(10));
+                return new ClubResponse(rs.getInt("id"), rs.getString("name"), rs.getString("subname"), rs.getInt("categoryId"), rs.getString("description"), rs.getString("avatarUrl"), rs.getString("bannerUrl"), rs.getInt("movementPoint"), rs.getDouble("balance"), rs.getDate("createdAt"), rs.getDate("updatedAt"), rs.getBoolean("isActive"), rs.getInt("numberOfEngagements"), rs.getBoolean("isJoined"));
             }
         } catch (Exception e) {
         }
@@ -145,7 +193,7 @@ byte bitValue = rs.getByte(12);
                 c.getBannerUrl(),
                 c.getMovementPoint(),
                 c.getBalance(),
-                c.getCreatedAt()
+                (c.isIsActive() ? 1 : 0)
         );
         return rs;
     }
@@ -161,7 +209,7 @@ byte bitValue = rs.getByte(12);
                 c.getBannerUrl(),
                 c.getMovementPoint(),
                 c.getBalance(),
-                (c.isIsActive()?1:0),
+                (c.isIsActive() ? 1 : 0),
                 id);
         return rs;
     }
@@ -237,14 +285,10 @@ byte bitValue = rs.getByte(12);
 
         return users;
     }
-    
-    
-    
 
     // test connection 
     public static void main(String... args) {
-        Club club = new ClubDAO(Global.generateConnection()).getClubById("1");
-        System.out.println(club);
+        System.out.println(new ClubDAO(Global.generateConnection()).getClubDetailBySubname(null, "FU-DEVER"));
 
     }
 
