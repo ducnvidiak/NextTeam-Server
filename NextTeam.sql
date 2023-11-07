@@ -208,7 +208,7 @@ GO
 		clubId      INT NOT NULL,
 		title       NVARCHAR(255),
 		content     NTEXT,
-		response    NTEXT,
+				response    NTEXT,
 		isApproved  VARCHAR(15) DEFAULT('pending'), /* is approve by Admin */
 		createdAt   DATETIME DEFAULT(GETDATE()),
 		updatedAt   DATETIME DEFAULT(GETDATE()),
@@ -282,7 +282,7 @@ GO
 		FOREIGN KEY (publicNotificationId)     REFERENCES  publicNotifications(id),
 		FOREIGN KEY (hasSeenBy)                REFERENCES  users(id),
 	);
-
+	/*
 	CREATE TABLE posts ( /* Đổi tên từ newsPosts */
 		id        INT NOT NULL IDENTITY(1, 1),
 		clubId    INT NOT NULL,
@@ -307,7 +307,7 @@ GO
 		PRIMARY KEY (id),
 		FOREIGN KEY (postId) REFERENCES posts(id),
 		FOREIGN KEY (refPostCommentId) REFERENCES postComments(id)
-	);
+	);*/
 
 	CREATE TABLE proposals (
 		id         INT NOT NULL IDENTITY(1, 1),
@@ -586,8 +586,9 @@ GO
 		FROM publicNotifications
 		INNER JOIN inserted ON publicNotifications.id = inserted.id;
 	END;
+	/*
 	GO
-	IF OBJECT_ID('TR_UpdatePost', 'TR') IS NOT NULL /* for posts */
+	IF OBJECT_ID('TR_UpdatePost', 'TR') IS NOT NULL
 		DROP TRIGGER TR_UpdatePost
 	GO
 	CREATE TRIGGER TR_UpdatePost
@@ -601,7 +602,7 @@ GO
 		INNER JOIN inserted ON posts.id = inserted.id;
 	END;
 	GO
-	IF OBJECT_ID('TR_UpdatePostComment', 'TR') IS NOT NULL /* for postComments */
+	IF OBJECT_ID('TR_UpdatePostComment', 'TR') IS NOT NULL 
 		DROP TRIGGER TR_UpdatePostComment
 	GO
 	CREATE TRIGGER TR_UpdatePostComment
@@ -614,7 +615,8 @@ GO
 		FROM postComments
 		INNER JOIN inserted ON postComments.id = inserted.id;
 	END;
-	GO
+	*/
+	GO 
 	IF OBJECT_ID('TR_UpdateProposal', 'TR') IS NOT NULL /* for proposals */
 		DROP TRIGGER TR_UpdateProposal
 	GO
@@ -893,15 +895,27 @@ GO
 		1,
 		10,
 		NULL,
-		'2023-10-13T02:00:00',
-		'2023-10-13T02:00:00',
+		'2023-11-03T02:00:00',
+		'2023-11-03T02:00:00',
 		'public',
 		'',
 		'https://i.ibb.co/4WFLt6V/mobifone-chinh-thuc-trien-khai-thi-diem-mobile-money-crop-1637327805883.webp',
 		1,
 		NULL,
-		'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,quality=75,width=960,height=480/event-covers/w9/21154ed7-dc92-4c28-b582-9a5adb206fa7',
+		3
+	),
+	(
+		N'Thủ tướng phê duyệt Chiến lược phát triển Chính phủ điện tử hướng tới Chính phủ số',
+		N'Ngày 15/6/2021, Thủ tướng đã phê duyệt Chiến lược phát triển Chính phủ điện tử hướng tới Chính phủ số giai đoạn 2021-2025. Bản chiến lược này có vai trò quan trọng, mở ra một bước ngoặt mới cho công cuộc chuyển đổi số nói chung và phát triển Chính phủ số nói riêng của Việt Nam.',
+		1,
+		10,
 		NULL,
+		'2023-11-03T02:00:00',
+		'2023-11-03T23:00:00',
+		'public',
+		'',
+		'https://i.ibb.co/0MTN3G7/chinh-phu-dien-tu-crop-1640842349152-2.webp',
+		1,
 		NULL,
 		1
 	),
@@ -911,8 +925,8 @@ GO
 		1,
 		14,
 		NULL,
-		'2023-10-24T08:00:00',
-		'2023-10-24T23:59:59',
+		'2023-11-04T08:00:00',
+		'2023-11-05T23:59:59',
 		'public',
 		'',
 		'https://i.ibb.co/Wytq69g/IMG-3386.jpg',
@@ -942,8 +956,6 @@ GO
 		NULL
 	);
 
-	select * from events
-
 	INSERT INTO departments
 	VALUES (1, N'Ban Nhân sự'),
 		   (2, N'Ban Học thuật');
@@ -958,28 +970,19 @@ GO
 	       (3, 2, 1, 1, '', 1);
 
 	INSERT INTO pointsHistories(createdBy, receivedBy, clubId, amount, reason)
-	VALUES (1, 2, 1, -5, N'Vắng mặt trong sự kiện #0'),(1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
-
+	VALUES (1, 2, 1, 10, N'Tham gia sự kiện #0');
+	INSERT INTO pointsHistories(createdBy, receivedBy, clubId, amount, reason)
+	VALUES (1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
 
 	INSERT INTO plans (clubId, title, content) 
 	VALUES
 		(2, N'Bản kế hoạch 1', N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.'),
 		(2, N'Bản kế hoạch 2', N'Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.')
 
-	select * from plans 
 
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>> END: DỮ LIỆU MẪU >>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 */
-
-select * from clubs
-select * from proposals
-select * from engagements
-select * from users
-
-select * from plans
-select * from events
-
-UPDATE engagements SET status = 0 WHERE userId = 4 AND clubId = 2
+GO
