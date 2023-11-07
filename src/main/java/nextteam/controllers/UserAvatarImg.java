@@ -35,13 +35,17 @@ import nextteam.utils.database.UserDAO;
         maxRequestSize = 1024 * 1024 * 50 // Kích thước tối đa cho một yêu cầu (50MB)
 )
 public class UserAvatarImg extends HttpServlet {
-    String projectLocation= "E:/Fall23/project/";
+    String projectLocation= "";
+//    "E:/Fall23/project/";
     private final Gson gson = new Gson();
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
+        projectLocation = getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
+        
+        System.out.println("project location: " + projectLocation);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -56,7 +60,10 @@ public class UserAvatarImg extends HttpServlet {
         byte[] decodeBytes = Base64.getDecoder().decode(imageBytes);
         String savePath = projectLocation + "NextTeam-Server/src/main/webapp/images/avatars";
         
-        String imgPath = "http://localhost:8080/images/avatars/" + fileName;
+        String imgPath = "https://nextteam.azurewebsites.net/images/avatars/" + fileName;
+        
+//        String imgPath = "http://localhost:8080/images/avatars/" + fileName;
+
         String filePath = savePath + File.separator + fileName;
         
         try ( OutputStream outputStream = new FileOutputStream(filePath)) {
@@ -67,14 +74,11 @@ public class UserAvatarImg extends HttpServlet {
         }
         
         User user = new User(userId, imgPath);
-        System.out.println("new avatar: " + user.getId() + user.getAvatarURL());
-        
         
         int status = new UserDAO(Global.generateConnection()).updateAvatar(user);
       
         user = new UserDAO(Global.generateConnection()).getListUserByIdString(user.getId()+"");
         System.out.println("data: " + user.getAvatarURL());
-        System.out.println("context path: " + getServletContext().getContextPath());
         
         String resJsonString = this.gson.toJson(status == 1? new Success("success",imgPath): new Success("failure"));
         PrintWriter out = response.getWriter();

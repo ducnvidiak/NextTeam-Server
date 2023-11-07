@@ -45,6 +45,8 @@ public class PlanServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
     String PARENT_FOLDER_ID = "1zyAwqcpX-niyS2ULWCryelF_CCJaN9Sv";
+    String projectLocation= "";
+//    "E:/Fall23/project/"
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -80,6 +82,8 @@ public class PlanServlet extends HttpServlet {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
 
         System.out.println("received request create plan !");
         int clubId = Integer.parseInt(request.getParameter("id"));
@@ -106,7 +110,7 @@ public class PlanServlet extends HttpServlet {
 
         if (numOfFile > 0) {
             // Đẩy files lên cloud
-            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
             result = 0;
 
             for (int i = 0; i < numOfFile; i++) {
@@ -148,6 +152,8 @@ public class PlanServlet extends HttpServlet {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
 
         String type = request.getParameter("type");
         JsonObject jsonRes = new JsonObject();
@@ -194,7 +200,7 @@ public class PlanServlet extends HttpServlet {
 
             if (numOfFile > 0) {
                 // Đẩy files lên cloud
-                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
                 result = 0;
 
                 for (int i = 0; i < numOfFile; i++) {
@@ -217,7 +223,7 @@ public class PlanServlet extends HttpServlet {
             }
 
             if (numOfDeleteFile > 0) {
-                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
 
                 for (int i = 0; i < numOfDeleteFile; i++) {
                     try {
@@ -253,9 +259,11 @@ public class PlanServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+        
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
 
         // xóa các file trên cloud
-        GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+        GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
         List<String> fileIds = new PlanFileStorageDAO(Global.generateConnection()).getAllFileIdByPlanId(id);
         if (!fileIds.isEmpty()) {
             for (int i = 0; i < fileIds.size(); i++) {
