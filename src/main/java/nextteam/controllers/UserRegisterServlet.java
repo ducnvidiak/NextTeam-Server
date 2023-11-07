@@ -22,7 +22,6 @@ import nextteam.models.Student;
 import nextteam.models.User;
 import nextteam.utils.Gmail;
 import nextteam.utils.database.UserDAO;
-import nextteam.utils.encryption.BCrypt;
 
 /**
  *
@@ -176,8 +175,8 @@ public class UserRegisterServlet extends HttpServlet {
 //        String username = request.getParameter("studentCode").toUpperCase();
 //        String phoneNumber = request.getParameter("phoneNumber");
 //        String gender = request.getParameter("gender");
-        user.setFirstname(user.getFirstname().trim().replaceAll("\\s+", " "));
-        user.setLastname(user.getLastname().trim().replaceAll("\\s+", " "));
+        user.setFirstname(standardizeName(user.getFirstname()));
+        user.setLastname(standardizeName(user.getLastname()));
         System.out.println("email: " + user.getEmail());
         System.out.println("password: " + user.getPassword());
         System.out.println("firstname: " + standardizeName(user.getFirstname()));
@@ -199,6 +198,7 @@ public class UserRegisterServlet extends HttpServlet {
 
         if (res == 0) {
             Global.user.register(user);
+            Global.student.register(user.getUsername());
         }
         out.print("{\"code\": \"" + res + "\", \"msg\": \"" + MESSAGE[res] + "\"}");
         out.flush();
