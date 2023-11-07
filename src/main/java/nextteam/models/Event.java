@@ -90,6 +90,38 @@ public class Event {
         this.endTime = endTime;
         this.type = type;
     }
+
+    public Event(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String planUrl) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.planUrl = planUrl;
+        this.bannerUrl = bannerUrl;
+    }
+    public Event(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String planUrl) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.planUrl = planUrl;
+        this.isApproved = isApproved;
+        this.bannerUrl = bannerUrl;
+    }
+    
+    public Event(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, boolean a) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isApproved = isApproved;
+        this.bannerUrl = bannerUrl;
+    }
+    
+    
 //    public Event(int id, String name, String type String description, String bannerUrl, Timestamp startTime, Timestamp endTime) {
 //        this.id = id;
 //        this.name = name;

@@ -63,6 +63,26 @@ public class EventResponse extends Event {
         this.isFeedback = isFeedback;
     }
 
+    public EventResponse(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered, boolean isFeedback, float avgRating) {
+        super(id, name, description, bannerUrl, startTime, endTime, isApproved, true);
+        this.locationName = locationName;
+        this.clubSubname = clubSubname;
+        this.clubAvatarUrl = clubAvatarUrl;
+        this.isRegistered = isRegistered;
+        this.avgRating = avgRating;
+        this.isFeedback = isFeedback;
+    }
+
+    public EventResponse(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String planUrl, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered, boolean isFeedback, float avgRating) {
+        super(id, name, description, bannerUrl, startTime, endTime, isApproved, planUrl);
+        this.locationName = locationName;
+        this.clubSubname = clubSubname;
+        this.clubAvatarUrl = clubAvatarUrl;
+        this.isRegistered = isRegistered;
+        this.avgRating = avgRating;
+        this.isFeedback = isFeedback;
+    }
+
     public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered, boolean isFeedback, float avgRating) {
         super(id, name, type, description, bannerUrl, startTime, endTime);
         this.locationName = locationName;
@@ -78,9 +98,14 @@ public class EventResponse extends Event {
         this.locationName = locationName;
 
     }
-    
+
     public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName) {
         super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
+        this.locationName = locationName;
+    }
+
+    public EventResponse(int id, String name, String description, String bannerUrl, String locationName, Timestamp startTime, Timestamp endTime, String isApproved, String planUrl, boolean a) {
+        super(id, name, description, bannerUrl, startTime, endTime, isApproved, planUrl);
         this.locationName = locationName;
     }
 
@@ -107,7 +132,7 @@ public class EventResponse extends Event {
     public void setIsFeedback(boolean isFeedback) {
         this.isFeedback = isFeedback;
     }
-    
+
     public String getClubSubname() {
         return clubSubname;
     }
