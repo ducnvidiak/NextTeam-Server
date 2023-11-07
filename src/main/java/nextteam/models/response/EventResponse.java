@@ -21,7 +21,7 @@ public class EventResponse extends Event {
     private float avgRating;
     private boolean isFeedback;
 
-    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered) {
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered) {  // 12 params
         super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
         this.locationName = locationName;
         this.clubSubname = clubSubname;
@@ -29,21 +29,21 @@ public class EventResponse extends Event {
         this.isRegistered = isRegistered;
     }
 
-    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String clubSubname, String clubAvatarUrl) {
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String clubSubname, String clubAvatarUrl) {   // 11 params
         super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
         this.locationName = locationName;
         this.clubSubname = clubSubname;
         this.clubAvatarUrl = clubAvatarUrl;
     }
 
-    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String planUrl, String locationName, String clubSubname, String clubAvatarUrl) {
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String planUrl, String locationName, String clubSubname, String clubAvatarUrl) { // 12 params
         super(id, name, type, description, bannerUrl, startTime, endTime, isApproved, planUrl);
         this.locationName = locationName;
         this.clubSubname = clubSubname;
         this.clubAvatarUrl = clubAvatarUrl;
     }
 
-    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered, float avgRating, boolean isFeedback) {
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered, float avgRating, boolean isFeedback) {  //14 params
         super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
         this.locationName = locationName;
         this.clubSubname = clubSubname;
@@ -53,7 +53,7 @@ public class EventResponse extends Event {
         this.isFeedback = isFeedback;
     }
 
-    public EventResponse(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered, boolean isFeedback, float avgRating) {
+    public EventResponse(int id, String name, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered, boolean isFeedback, float avgRating) { // 12 params
         super(id, name, description, bannerUrl, startTime, endTime);
         this.locationName = locationName;
         this.clubSubname = clubSubname;
@@ -93,13 +93,19 @@ public class EventResponse extends Event {
         this.isFeedback = isFeedback;
     }
 
-    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String locationName) {
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String locationName) {  // 8 params
         super(id, name, type, description, bannerUrl, startTime, endTime);
         this.locationName = locationName;
 
     }
-
-    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName) {
+    
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String subname) { // 10 params
+        super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
+        this.locationName = locationName;
+        this.clubSubname = subname;
+    }
+    
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName) { // 9 params
         super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);
         this.locationName = locationName;
     }

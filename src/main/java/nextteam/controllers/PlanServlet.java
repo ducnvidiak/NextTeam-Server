@@ -45,6 +45,8 @@ public class PlanServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
     String PARENT_FOLDER_ID = "1zyAwqcpX-niyS2ULWCryelF_CCJaN9Sv";
+    String projectLocation= "";
+//    "E:/Fall23/project/"
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -66,6 +68,7 @@ public class PlanServlet extends HttpServlet {
         } else {
             List<Plan> p = new PlanDAO(Global.generateConnection()).getListPlanByClubId(request.getParameter("id"));
             resJsonString = this.gson.toJson(p);
+            System.out.println("log plan servlet get plan : " + id);
         }
 
         PrintWriter out = response.getWriter();
@@ -79,23 +82,25 @@ public class PlanServlet extends HttpServlet {
 
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
-        System.out.println("received request create plan !");
+//        response.setCharacterEncoding("UTF-8");
+        
+//        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
+        
         int clubId = Integer.parseInt(request.getParameter("id"));
+//        System.out.println("received request create plan ! " + projectLocation + " club id: " + clubId);
 
         String title = request.getParameter("title");
         String content = request.getParameter("content");
 
         int numOfFile = Integer.parseInt(request.getParameter("numOfFile"));
 
-        List<String> filesName = new ArrayList<>();
-        List<String> filesType = new ArrayList<>();
-
-        for (int i = 0; i < numOfFile; i++) {
-            filesName.add(request.getParameter("filesname[" + i + "]"));
-            filesType.add(request.getParameter("filesType[" + i + "]"));
-        }
+//        List<String> filesName = new ArrayList<>();
+//        List<String> filesType = new ArrayList<>();
+//
+//        for (int i = 0; i < numOfFile; i++) {
+//            filesName.add(request.getParameter("filesname[" + i + "]"));
+//            filesType.add(request.getParameter("filesType[" + i + "]"));
+//        }
 
         // Tạo record proposal
         int result = new PlanDAO(Global.generateConnection()).createPlan(new Plan(clubId, title, content));
@@ -104,29 +109,29 @@ public class PlanServlet extends HttpServlet {
             planId = new PlanDAO(Global.generateConnection()).getIdLatestPlan();
         }
 
-        if (numOfFile > 0) {
-            // Đẩy files lên cloud
-            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
-            result = 0;
-
-            for (int i = 0; i < numOfFile; i++) {
-                Part filePart = request.getPart("filescontent[" + i + "]");
-                InputStream fileInputStream = filePart.getInputStream();
-                byte[] fileBytes = fileInputStream.readAllBytes();
-
-                byte[] decodedBytes = Base64.getDecoder().decode(fileBytes);
-                try {
-                    CloudFileInfo cloudFile = googleService.uploadFile(filesName.get(i), filesType.get(i), decodedBytes);
-
-                    PlanFileRecord fileRecord = new PlanFileRecord(cloudFile.fileId, Integer.toString(planId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
-
-                    result = new PlanFileStorageDAO(Global.generateConnection()).createPlanFileRecord(fileRecord);
-                } catch (GeneralSecurityException ex) {
-                    Logger.getLogger(PlanServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-        }
+//        if (numOfFile > 0) {
+//            // Đẩy files lên cloud
+//            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
+//            result = 0;
+//
+//            for (int i = 0; i < numOfFile; i++) {
+//                Part filePart = request.getPart("filescontent[" + i + "]");
+//                InputStream fileInputStream = filePart.getInputStream();
+//                byte[] fileBytes = fileInputStream.readAllBytes();
+//
+//                byte[] decodedBytes = Base64.getDecoder().decode(fileBytes);
+//                try {
+//                    CloudFileInfo cloudFile = googleService.uploadFile(filesName.get(i), filesType.get(i), decodedBytes);
+//
+//                    PlanFileRecord fileRecord = new PlanFileRecord(cloudFile.fileId, Integer.toString(planId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
+//
+//                    result = new PlanFileStorageDAO(Global.generateConnection()).createPlanFileRecord(fileRecord);
+//                } catch (GeneralSecurityException ex) {
+//                    Logger.getLogger(PlanServlet.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//            }
+//        }
         // Gửi file lên cloud
         // Tạo bản ghi lưu trữ file
         // Xác nhận mọi thứ đều ổn
@@ -148,6 +153,8 @@ public class PlanServlet extends HttpServlet {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
 
         String type = request.getParameter("type");
         JsonObject jsonRes = new JsonObject();
@@ -166,13 +173,20 @@ public class PlanServlet extends HttpServlet {
             }
         } else {
 
-            System.out.println("received request update plan !");
             String title = request.getParameter("title");
             String content = request.getParameter("content");
 //            String planResponse = request.getParameter("response");
 
             int numOfFile = Integer.parseInt(request.getParameter("numOfFile"));
             int numOfDeleteFile = Integer.parseInt(request.getParameter("numOfDeleteFile"));
+            
+//            System.out.println("received request update plan ! "  + planId);
+//            System.out.println("title " + title);
+//            System.out.println("content " + content);
+//            System.out.println("numOfFile " + numOfFile);
+//            System.out.println("numOfDeleteFile " + numOfDeleteFile);
+            
+            
 
             List<String> filesName = new ArrayList<>();
             List<String> filesType = new ArrayList<>();
@@ -194,7 +208,7 @@ public class PlanServlet extends HttpServlet {
 
             if (numOfFile > 0) {
                 // Đẩy files lên cloud
-                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
                 result = 0;
 
                 for (int i = 0; i < numOfFile; i++) {
@@ -217,7 +231,7 @@ public class PlanServlet extends HttpServlet {
             }
 
             if (numOfDeleteFile > 0) {
-                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
 
                 for (int i = 0; i < numOfDeleteFile; i++) {
                     try {
@@ -253,9 +267,11 @@ public class PlanServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+        
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
 
         // xóa các file trên cloud
-        GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+        GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
         List<String> fileIds = new PlanFileStorageDAO(Global.generateConnection()).getAllFileIdByPlanId(id);
         if (!fileIds.isEmpty()) {
             for (int i = 0; i < fileIds.size(); i++) {

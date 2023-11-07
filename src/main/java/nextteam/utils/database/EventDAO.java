@@ -296,12 +296,23 @@ public class EventDAO extends SQLDatabase {
                 + "    e.startTime,\n"
                 + "    e.endTime,\n"
                 + "  e.isApproved,\n"
+//<<<<<<< HEAD
+//                + "  e.planUrl,\n"
+//                + "  l.name AS locationName,\n"
+//                + "  c.subname \n"
+//                + "FROM events e \n"
+//                + "INNER JOIN locations l ON l.id = e.locationId \n"
+//                + "INNER JOIN clubs c ON c.id = e.clubId\n"
+//        );
+//
+//=======
                 + "    e.planUrl,\n"
                 + "    e.createdAt\n"
                 + "FROM events e \n"
                 + "JOIN locations l ON e.locationId = l.id\n"
-                + "WHERE e.clubId is null\n"
+//                + "WHERE e.clubId is null\n"
                 + "ORDER BY e.startTime DESC;");
+//>>>>>>> 77b7d72c03974a0e9e10a10bd8555253361a2d70
         try {
             while (rs.next()) {
                 EventResponse event = new EventResponse(
@@ -313,9 +324,16 @@ public class EventDAO extends SQLDatabase {
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime"),
                         rs.getString("isApproved"),
+//<<<<<<< HEAD
+//                        rs.getString("locationName"),
+//                        rs.getString("subname")
+//                );
+//                
+//=======
                         rs.getString("planUrl"),
                         true
                 );
+//>>>>>>> 77b7d72c03974a0e9e10a10bd8555253361a2d70
                 events.add(event);
             }
         } catch (SQLException ex) {
