@@ -271,14 +271,14 @@ public class PaymentDAO extends SQLDatabase {
 
     public List<Payment> getAllPaymentByCategory(String clubId) {
         List<Payment> payments = new ArrayList<>();
-        ResultSet rs = executeQueryPreparedStatement("SELECT pc.id, pc.title, pc.description, pc.amount * (SELECT COUNT(*) FROM transactionHistories  WHERE clubId = ? AND status = 1) AS amount, 'in' AS type, pc.createdAt, pc.updatedAt ,pc.clubId\n"
+        ResultSet rs = executeQueryPreparedStatement("SELECT pc.id, pc.title, pc.description, pc.amount * (SELECT COUNT(*) FROM transactionHistories  WHERE categoryId = pc.id AND status = 1) AS amount, 'in' AS type, pc.createdAt, pc.updatedAt ,pc.clubId\n"
                 + "              FROM paymentCategories pc\n"
                 + "      UNION ALL\n"
                 + "       SELECT id,title,description,amount, 'out' AS type, createdAt,updatedAt, clubId\n"
                 + "        FROM paymentExpenses\n"
                 + "  WHERE clubId = ?\n"
                 + "     ORDER BY createdAt DESC",
-                clubId, clubId
+                 clubId
         );
         try {
             while (rs.next()) {

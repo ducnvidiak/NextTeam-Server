@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nextteam.Global;
 import nextteam.models.Event;
 import nextteam.models.response.EventAttendanceResponse;
 import nextteam.models.response.EventResponse;
