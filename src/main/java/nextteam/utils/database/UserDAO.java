@@ -321,7 +321,7 @@ public class UserDAO extends SQLDatabase {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE engagements\n" +
-"SET roleId = 1\n" +
+"SET roleId = 2\n" +
 "WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
         return ketQua;
     }
@@ -331,7 +331,7 @@ public class UserDAO extends SQLDatabase {
        int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE engagements\n" +
-"SET roleId = 2\n" +
+"SET roleId = 1\n" +
 "WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
         return ketQua;
     }
