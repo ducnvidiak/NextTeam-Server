@@ -113,34 +113,21 @@ public class EngagementServlet extends HttpServlet {
         int userId = Integer.parseInt(request.getParameter("userId"));
         int clubId = Integer.parseInt(request.getParameter("clubId"));
         int departmentId = Integer.parseInt(request.getParameter("departmentId"));
-        // Nhận file từ yêu cầu
-        //xử lý upload file
-        String folderName = "/cv";
-        String uploadPath = "/Users/mac/Documents/SWP301/NextTeam-Server/src/main/webapp/cv";//for netbeans use this code
-        File dir = new File(uploadPath);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        Part filePart = request.getPart("cvUrl");
-        String fileName = "ApplicationRegister-" + System.currentTimeMillis() + "-UserId" + userId + "-" + filePart.getSubmittedFileName().replaceAll(" ", "");
-
-        String path = folderName + File.separator + fileName;
-        System.out.println("Path: " + uploadPath);
-        InputStream is = filePart.getInputStream();
-        Files.copy(is, Paths.get(uploadPath + File.separator + fileName), StandardCopyOption.REPLACE_EXISTING);        //Add 
-
-        Engagement pn = new Engagement(userId, departmentId, clubId, path);
+       String cvUrl = request.getParameter("cvUrl");
+        Engagement pn = new Engagement(userId, departmentId, clubId, cvUrl);
         response.setContentType("application/json");
         System.out.println("Yêu cầu tham gia CLB");
         PrintWriter out = response.getWriter();
         int status = Global.engagement.addEngagement(pn);
-        System.out.println("Yêu cầu tham gia thành công");
+        if (status==1) {
+            System.out.println("Yêu cầu tham gia thành công");
+        }
+        
         String userJsonString = this.gson.toJson(pn);
         out.print(userJsonString);
         out.flush();
 
-        // Phản hồi với thông báo thành công (hoặc thông tin khác nếu cần)
-        response.getWriter().print("Upload successful: " + fileName);
+        
 
     }
 
