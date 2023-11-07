@@ -75,6 +75,9 @@ public class ClubDAO extends SQLDatabase {
         }
         return list;
     }
+    
+    
+    
 
     public int getPointClubById(String clubId) {
 
@@ -139,6 +142,19 @@ public class ClubDAO extends SQLDatabase {
             Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return list;
+    }
+    
+    public int getClubIdByClubName(String name){
+       
+        ResultSet rs = executeQueryPreparedStatement("select id from clubs where name=N'"+name+"'");
+        try {
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+//            Logger.getLogger(HomeTownDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
     }
 
     public ArrayList<ClubRanking> getRankingClubs() {
@@ -288,7 +304,7 @@ public class ClubDAO extends SQLDatabase {
 
     // test connection 
     public static void main(String... args) {
-        System.out.println(new ClubDAO(Global.generateConnection()).getClubDetailBySubname(null, "FU-DEVER"));
+        System.out.println(new ClubDAO(Global.generateConnection()).getClubIdByClubName("133"));
 
     }
 

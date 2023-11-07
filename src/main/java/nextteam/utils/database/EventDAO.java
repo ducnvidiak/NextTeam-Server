@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nextteam.Global;
 import nextteam.models.Event;
 import nextteam.models.response.EventAttendanceResponse;
 import nextteam.models.response.EventResponse;
@@ -403,5 +404,9 @@ public class EventDAO extends SQLDatabase {
             Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return events;
+    }
+    
+    public static void main(String[] args) {
+       System.out.println(new EventDAO(Global.generateConnection()).getAllEventsDetailForManager("1"));
     }
 }
