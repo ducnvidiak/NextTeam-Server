@@ -47,6 +47,9 @@ public class ProposalServlet extends HttpServlet {
 
     String PARENT_FOLDER_ID = "1-KNh7MIpZV-T0QpxmCLDrDGCtdwrag08";
     private final Gson gson = new Gson();
+    String projectLocation = "";
+//    E:/Fall23/project/";
+    
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -65,6 +68,7 @@ public class ProposalServlet extends HttpServlet {
         } else if (type.equals("byUserId")) {
             List<ProposalDetail> p = new ProposalDAO(Global.generateConnection()).getListProposalByUserId(request.getParameter("id"));
             resJsonString = this.gson.toJson(p);
+            System.out.println("get list of proposals!");
         } else if (type.equals("byClubId")) {
             System.out.println("clubid proposal");
             List<ProposalDetail> p = new ProposalDAO(Global.generateConnection()).getListProposalByClubId(request.getParameter("id"));
@@ -82,6 +86,8 @@ public class ProposalServlet extends HttpServlet {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
 
         System.out.println("received request create proposal !");
         int userId = Integer.parseInt(request.getParameter("id"));
@@ -109,9 +115,9 @@ public class ProposalServlet extends HttpServlet {
 
         if (numOfFile > 0) {
             // Đẩy files lên cloud
-            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
             result = 0;
-
+            System.out.println(googleService);
             for (int i = 0; i < numOfFile; i++) {
                 Part filePart = request.getPart("filescontent[" + i + "]");
                 InputStream fileInputStream = filePart.getInputStream();
@@ -127,7 +133,6 @@ public class ProposalServlet extends HttpServlet {
                 } catch (GeneralSecurityException ex) {
                     Logger.getLogger(ProposalServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             }
         }
         // Gửi file lên cloud
@@ -151,6 +156,8 @@ public class ProposalServlet extends HttpServlet {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
 
         System.out.println("received request update proposal !");
         String type = request.getParameter("type");
@@ -185,7 +192,7 @@ public class ProposalServlet extends HttpServlet {
 
             if (numOfFile > 0) {
                 // Đẩy files lên cloud
-                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
                 result = 0;
 
                 for (int i = 0; i < numOfFile; i++) {
@@ -208,7 +215,7 @@ public class ProposalServlet extends HttpServlet {
             }
 
             if (numOfDeleteFile > 0) {
-                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+                GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
 
                 for (int i = 0; i < numOfDeleteFile; i++) {
                     try {
@@ -250,9 +257,11 @@ public class ProposalServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+        
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
 
         // xóa các file trên cloud
-        GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID);
+        GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
         List<String> fileIds = new FileStorageDAO(Global.generateConnection()).getAllFileIdByPropId(id);
         if (!fileIds.isEmpty()) {
             for (int i = 0; i < fileIds.size(); i++) {
