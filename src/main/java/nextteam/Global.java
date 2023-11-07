@@ -40,7 +40,7 @@ public class Global {
     public static String server = "localhost";
     public static String database = "NextTeam";
     public static String username = "sa";
-    public static String password = "1";
+    public static String password = "Phanbao@123";
     private static Connection conn;
     public static String workingPath;
     public static ClubDAO clubDAO;

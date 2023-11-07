@@ -22,7 +22,7 @@ GO
 
 	CLOSE @Cursor DEALLOCATE @Cursor
 	GO
-	/**/
+	/* */
 	DECLARE @tableName NVARCHAR(MAX)
 	DECLARE tableCursor CURSOR FOR
 	SELECT name
