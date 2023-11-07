@@ -84,7 +84,7 @@ public class PlanServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 //        response.setCharacterEncoding("UTF-8");
         
-//        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
         
         int clubId = Integer.parseInt(request.getParameter("id"));
 //        System.out.println("received request create plan ! " + projectLocation + " club id: " + clubId);
@@ -94,13 +94,13 @@ public class PlanServlet extends HttpServlet {
 
         int numOfFile = Integer.parseInt(request.getParameter("numOfFile"));
 
-//        List<String> filesName = new ArrayList<>();
-//        List<String> filesType = new ArrayList<>();
-//
-//        for (int i = 0; i < numOfFile; i++) {
-//            filesName.add(request.getParameter("filesname[" + i + "]"));
-//            filesType.add(request.getParameter("filesType[" + i + "]"));
-//        }
+        List<String> filesName = new ArrayList<>();
+        List<String> filesType = new ArrayList<>();
+
+        for (int i = 0; i < numOfFile; i++) {
+            filesName.add(request.getParameter("filesname[" + i + "]"));
+            filesType.add(request.getParameter("filesType[" + i + "]"));
+        }
 
         // Tạo record proposal
         int result = new PlanDAO(Global.generateConnection()).createPlan(new Plan(clubId, title, content));
@@ -109,29 +109,29 @@ public class PlanServlet extends HttpServlet {
             planId = new PlanDAO(Global.generateConnection()).getIdLatestPlan();
         }
 
-//        if (numOfFile > 0) {
-//            // Đẩy files lên cloud
-//            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
-//            result = 0;
-//
-//            for (int i = 0; i < numOfFile; i++) {
-//                Part filePart = request.getPart("filescontent[" + i + "]");
-//                InputStream fileInputStream = filePart.getInputStream();
-//                byte[] fileBytes = fileInputStream.readAllBytes();
-//
-//                byte[] decodedBytes = Base64.getDecoder().decode(fileBytes);
-//                try {
-//                    CloudFileInfo cloudFile = googleService.uploadFile(filesName.get(i), filesType.get(i), decodedBytes);
-//
-//                    PlanFileRecord fileRecord = new PlanFileRecord(cloudFile.fileId, Integer.toString(planId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
-//
-//                    result = new PlanFileStorageDAO(Global.generateConnection()).createPlanFileRecord(fileRecord);
-//                } catch (GeneralSecurityException ex) {
-//                    Logger.getLogger(PlanServlet.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//
-//            }
-//        }
+        if (numOfFile > 0) {
+            // Đẩy files lên cloud
+            GoogleDriveUploader googleService = new GoogleDriveUploader(PARENT_FOLDER_ID, projectLocation);
+            result = 0;
+
+            for (int i = 0; i < numOfFile; i++) {
+                Part filePart = request.getPart("filescontent[" + i + "]");
+                InputStream fileInputStream = filePart.getInputStream();
+                byte[] fileBytes = fileInputStream.readAllBytes();
+
+                byte[] decodedBytes = Base64.getDecoder().decode(fileBytes);
+                try {
+                    CloudFileInfo cloudFile = googleService.uploadFile(filesName.get(i), filesType.get(i), decodedBytes);
+
+                    PlanFileRecord fileRecord = new PlanFileRecord(cloudFile.fileId, Integer.toString(planId), filesType.get(i), filesName.get(i), cloudFile.downloadLink, cloudFile.viewLink);
+
+                    result = new PlanFileStorageDAO(Global.generateConnection()).createPlanFileRecord(fileRecord);
+                } catch (GeneralSecurityException ex) {
+                    Logger.getLogger(PlanServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
         // Gửi file lên cloud
         // Tạo bản ghi lưu trữ file
         // Xác nhận mọi thứ đều ổn
