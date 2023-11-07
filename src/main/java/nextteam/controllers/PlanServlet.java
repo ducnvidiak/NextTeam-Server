@@ -82,7 +82,7 @@ public class PlanServlet extends HttpServlet {
 
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
+//        response.setCharacterEncoding("UTF-8");
         
 //        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
         
