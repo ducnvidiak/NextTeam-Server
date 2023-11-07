@@ -68,7 +68,7 @@ public class UserDAO extends SQLDatabase {
         }
         return list;
     }
-    
+
     public ArrayList<UserCard> getUsersCardListForManage(String clubId) {
         ArrayList<UserCard> list = new ArrayList<>();
         String status;
@@ -175,9 +175,7 @@ public class UserDAO extends SQLDatabase {
         int ketQua = 0;
         System.out.println("dob: " + t.getDob());
         ketQua = executeUpdatePreparedStatement(
-
                 "UPDATE users  SET  email=?, username=?, firstname=?, lastname=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
-
                 t.getEmail(),
                 t.getUsername(),
                 t.getFirstname(),
@@ -317,22 +315,22 @@ public class UserDAO extends SQLDatabase {
     }
 
     // dct manager
-    public int dct_manager(String clubId,String userId) {
+    public int dct_manager(String clubId, String userId) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "UPDATE engagements\n" +
-"SET roleId = 1\n" +
-"WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
+                "UPDATE engagements\n"
+                + "SET roleId = 1\n"
+                + "WHERE  clubId='" + clubId + "' and userId='" + userId + "'");
         return ketQua;
     }
 
     // dct member
-    public int dct_member(String clubId,String userId) {
-       int ketQua = 0;
+    public int dct_member(String clubId, String userId) {
+        int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "UPDATE engagements\n" +
-"SET roleId = 2\n" +
-"WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
+                "UPDATE engagements\n"
+                + "SET roleId = 2\n"
+                + "WHERE  clubId='" + clubId + "' and userId='" + userId + "'");
         return ketQua;
     }
 
@@ -357,10 +355,9 @@ public class UserDAO extends SQLDatabase {
 
         return null;
     }
-    
-    
-    public String getUserRoleById(String id,String clubId) {
-        ResultSet rs = executeQueryPreparedStatement("select r.name from engagements e    join    roles   r   on  e.roleId=r.id   where userId =  ?   and clubId=?", id,clubId);
+
+    public String getUserRoleById(String id, String clubId) {
+        ResultSet rs = executeQueryPreparedStatement("select r.name from engagements e    join    roles   r   on  e.roleId=r.id   where userId =  ?   and clubId=?", id, clubId);
         try {
             if (rs.next()) {
                 return rs.getString(1);
@@ -371,7 +368,6 @@ public class UserDAO extends SQLDatabase {
 
         return null;
     }
-    
 
     public static void main(String... args) {
         System.out.println(new UserDAO(Global.generateConnection()).getUserRoleById("1", "1"));

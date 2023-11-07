@@ -21,10 +21,6 @@ import nextteam.Global;
 import nextteam.models.User;
 import nextteam.utils.Gmail;
 
-/**
- *
- * @author vnitd
- */
 @WebServlet(name = "ForgotPassword", urlPatterns = {"/forgot-password"})
 public class ForgotPasswordServlet extends HttpServlet {
 
@@ -38,7 +34,7 @@ public class ForgotPasswordServlet extends HttpServlet {
                     .appendMacro("ID", id + "")
                     .appendMacro("WHEN", new SimpleDateFormat("HH:mm:ss 'ngày' dd 'tháng' MM 'năm' yyyy").format(new Date()))
                     .appendMacro("CODE", code)
-                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_code.jsp"));
+                    .sendTemplate(new URL("https://nextteam.azurewebsites.net/gmail_code.jsp"));
         } catch (MalformedURLException ex) {
             Logger.getLogger(ForgotPasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
         }

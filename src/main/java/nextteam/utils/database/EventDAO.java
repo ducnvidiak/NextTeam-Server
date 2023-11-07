@@ -385,14 +385,14 @@ public class EventDAO extends SQLDatabase {
                 + "  e.startTime,\n"
                 + "  e.endTime\n"
                 + "FROM events e\n"
-                + "WHERE e.clubId = ? AND e.isApproved = 1 AND e.startTime < GETDATE()\n"
-                + "ORDER BY e.startTime DESC", clubId);
+                + "WHERE e.clubId = ? AND e.isApproved = ? AND e.startTime < GETDATE()\n"
+                + "ORDER BY e.startTime DESC", clubId, "accepted");
 
         try {
             while (rs.next()) {
                 EventAttendanceResponse event = new EventAttendanceResponse(
                         rs.getInt("id"),
-                        rs.getString("name"),
+                        rs.getNString("name"),
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime")
                 );
@@ -405,6 +405,7 @@ public class EventDAO extends SQLDatabase {
         }
         return events;
     }
+
     public List<EventResponse> getAllEventsDetailForAdminReview() {
         List<EventResponse> events = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT\n"

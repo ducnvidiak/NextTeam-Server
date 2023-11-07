@@ -252,7 +252,7 @@ public class EngagementServlet extends HttpServlet {
                     .appendMacro("ENDTIME", endTime + "")
                     .appendMacro("LOCATION", location)
                     .appendMacro("NOTE", note)
-                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_interview.jsp"));
+                    .sendTemplate(new URL("https://nextteam.azurewebsites.net/gmail_interview.jsp"));
         } catch (MalformedURLException ex) {
             Logger.getLogger(NotificationServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
