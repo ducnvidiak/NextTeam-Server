@@ -54,9 +54,9 @@ public class StatisServlet extends HttpServlet {
         private List<ClubCounter> clubCounter;
         private int totalReports;
         private int manager_club_id;
-        
+        private String description;
 
-        public Statis(int total_mem, int total_mem_out, int total_mem_ban, int total_event, int[] total_event_months, int[] total_enga_months, int balance, int activity_point, int total_report, int total_post, String avartar_club, String banner_club, String name_club, int category_club, String create_date_club, String manager_club_name, String manager_club_ava, String manager_club_username,String subname, List<ClubCounter> clubCounter, int totalReports, int manager_club_id) {
+        public Statis(int total_mem, int total_mem_out, int total_mem_ban, int total_event, int[] total_event_months, int[] total_enga_months, int balance, int activity_point, int total_report, int total_post, String avartar_club, String banner_club, String name_club, int category_club, String create_date_club, String manager_club_name, String manager_club_ava, String manager_club_username,String subname, List<ClubCounter> clubCounter, int totalReports, int manager_club_id,String description) {
             this.total_mem = total_mem;
             this.total_mem_out = total_mem_out;
             this.total_mem_ban = total_mem_ban;
@@ -79,7 +79,7 @@ public class StatisServlet extends HttpServlet {
             this.clubCounter = clubCounter;
             this.totalReports = totalReports;
             this.manager_club_id = manager_club_id;
-            
+            this.description = description;
         }
 
         public Statis() {
@@ -101,8 +101,7 @@ public class StatisServlet extends HttpServlet {
         String clubID = request.getParameter("clubId");
 
         int total_mem = Global.statis.getNumberMemberInClub(clubID);
-        System.out.println(total_mem);
-        System.out.println(total_mem);
+       
         int total_mem_out = Global.statis.getNumberMemberOutClub(clubID);
         int total_mem_ban = Global.statis.getNumbeMemberBannedInClub(clubID);
         int total_event = Global.statis.getNumberEvent(clubID);
@@ -118,6 +117,7 @@ public class StatisServlet extends HttpServlet {
         String name_club = c.getName();
         int category_club = c.getCategoryId();
         String create_date_club = c.getCreatedAt().toString();
+        String description = c.getDescription();
 //        String manager_club_name = Global.statis.getManager(clubID).getFirstname() + " " + Global.statis.getManager(clubID).getLastname();
         String manager_club_name = Global.statis.getManager(clubID).getFirstname() + " " + Global.statis.getManager(clubID).getLastname();
 
@@ -127,7 +127,7 @@ public class StatisServlet extends HttpServlet {
         List<ClubCounter> club_counter = Global.statis.getClubData();
         int total_reports = Global.statis.getTotalReports();
         int manager_club_id = Global.statis.getManager(clubID).getId();
-        Statis s = new Statis(total_mem, total_mem_out, total_mem_ban, total_event, total_event_months, total_enga_months, balance, activity_point, total_report, total_post, avartar_club, banner_club, name_club, category_club, create_date_club, manager_club_name, manager_club_ava, manager_club_username,subname, club_counter, total_reports,manager_club_id);
+        Statis s = new Statis(total_mem, total_mem_out, total_mem_ban, total_event, total_event_months, total_enga_months, balance, activity_point, total_report, total_post, avartar_club, banner_club, name_club, category_club, create_date_club, manager_club_name, manager_club_ava, manager_club_username,subname, club_counter, total_reports,manager_club_id,description);
         out.print(s.toString());
         out.flush();
 

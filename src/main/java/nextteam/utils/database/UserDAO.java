@@ -316,21 +316,23 @@ public class UserDAO extends SQLDatabase {
 
     }
 
-    // dct user
-    public int dct_admin(String id) {
+    // dct manager
+    public int dct_manager(String clubId,String userId) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "UPDATE users  SET  isAdmin='true' WHERE id=?",
-                id);
+                "UPDATE engagements\n" +
+"SET roleId = 1\n" +
+"WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
         return ketQua;
     }
 
-    // dct user
-    public int dct_user(String id) {
-        int ketQua = 0;
+    // dct member
+    public int dct_member(String clubId,String userId) {
+       int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "UPDATE users  SET  isAdmin='false' WHERE id=?",
-                id);
+                "UPDATE engagements\n" +
+"SET roleId = 2\n" +
+"WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
         return ketQua;
     }
 
@@ -355,9 +357,24 @@ public class UserDAO extends SQLDatabase {
 
         return null;
     }
+    
+    
+    public String getUserRoleById(String id,String clubId) {
+        ResultSet rs = executeQueryPreparedStatement("select r.name from engagements e    join    roles   r   on  e.roleId=r.id   where userId =  ?   and clubId=?", id,clubId);
+        try {
+            if (rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+    
 
     public static void main(String... args) {
-        System.out.println(new UserDAO(Global.generateConnection()).getListUsers());
+        System.out.println(new UserDAO(Global.generateConnection()).getUserRoleById("1", "1"));
     }
 
 }

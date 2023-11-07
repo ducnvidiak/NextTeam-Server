@@ -41,7 +41,7 @@ public class EventServlet extends HttpServlet {
                 events = eventDAO.getAllEventsDetail(userId);
             } else {
                 events = eventDAO.getAllEventsDetailForGuest();
-            }
+            }            
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
