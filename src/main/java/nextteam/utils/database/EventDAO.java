@@ -300,7 +300,7 @@ public class EventDAO extends SQLDatabase {
                 + "    e.createdAt\n"
                 + "FROM events e \n"
                 + "JOIN locations l ON e.locationId = l.id\n"
-                + "WHERE e.clubId is null\n"
+//                + "WHERE e.clubId is null\n"
                 + "ORDER BY e.startTime DESC;");
         try {
             while (rs.next()) {
