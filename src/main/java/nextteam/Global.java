@@ -28,6 +28,7 @@ import nextteam.utils.database.PrivateNotificationDAO;
 import nextteam.utils.database.PublicNotificationDAO;
 import nextteam.utils.database.RoleDAO;
 import nextteam.utils.database.StatisDAO;
+import nextteam.utils.database.StudentDAO;
 import nextteam.utils.database.UserDAO;
 import nextteam.utils.encryption.BCrypt;
 
@@ -62,6 +63,7 @@ public class Global {
     public static ClubCategoriesDAO clubCategories;
     public static PaymentDAO payment;
     public static FeedbackDAO feedback;
+    public static StudentDAO student;
 
     public static final byte[] KEY = {
         46, -8, -9, 4, 61, -61, 8, 53, 112, 72, 24, -6, 23, -49, -97, 24, -45,
@@ -109,6 +111,7 @@ public class Global {
         clubCategories = new ClubCategoriesDAO(conn);
         payment = new PaymentDAO(conn);
         feedback = new FeedbackDAO(conn);
+        student = new StudentDAO(conn);
     }
 
     public static void closeDAOConnection() {

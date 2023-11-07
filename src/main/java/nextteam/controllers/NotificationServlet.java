@@ -124,7 +124,7 @@ public class NotificationServlet extends HttpServlet {
                     .initMacro()
                     .appendMacro("TITLE", title)
                     .appendMacro("CONTENT", content)
-                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_notification.jsp"));
+                    .sendTemplate(new URL("https://nextteam.azurewebsites.net/gmail_notification.jsp"));
         } catch (MalformedURLException ex) {
             Logger.getLogger(NotificationServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
