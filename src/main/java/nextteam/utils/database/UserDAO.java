@@ -255,6 +255,30 @@ public class UserDAO extends SQLDatabase {
 
         return null;
     }
+    
+    public boolean checkAvailableEmail(User u) {
+        try {
+            ResultSet rs =  executeQueryPreparedStatement("SELECT * FROM users WHERE email=? AND id != ?", u.getEmail(), u.getId());
+            if (rs.next()) {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+    
+    public boolean checkAvailableStuCode(User u) {
+        try {
+            ResultSet rs =  executeQueryPreparedStatement("SELECT * FROM users WHERE username=? AND id != ?", u.getUsername(), u.getId());
+            if (rs.next()) {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 
     public boolean StudentCodeCheck(String studentCode) {
         try {
