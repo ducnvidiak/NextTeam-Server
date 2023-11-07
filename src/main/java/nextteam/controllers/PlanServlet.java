@@ -84,7 +84,7 @@ public class PlanServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 //        response.setCharacterEncoding("UTF-8");
         
-//        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
+        projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
         
         int clubId = Integer.parseInt(request.getParameter("id"));
 //        System.out.println("received request create plan ! " + projectLocation + " club id: " + clubId);
@@ -94,13 +94,13 @@ public class PlanServlet extends HttpServlet {
 
         int numOfFile = Integer.parseInt(request.getParameter("numOfFile"));
 
-//        List<String> filesName = new ArrayList<>();
-//        List<String> filesType = new ArrayList<>();
-//
-//        for (int i = 0; i < numOfFile; i++) {
-//            filesName.add(request.getParameter("filesname[" + i + "]"));
-//            filesType.add(request.getParameter("filesType[" + i + "]"));
-//        }
+        List<String> filesName = new ArrayList<>();
+        List<String> filesType = new ArrayList<>();
+
+        for (int i = 0; i < numOfFile; i++) {
+            filesName.add(request.getParameter("filesname[" + i + "]"));
+            filesType.add(request.getParameter("filesType[" + i + "]"));
+        }
 
         // Tạo record proposal
         int result = new PlanDAO(Global.generateConnection()).createPlan(new Plan(clubId, title, content));
