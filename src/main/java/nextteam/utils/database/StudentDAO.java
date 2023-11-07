@@ -88,4 +88,7 @@ public class StudentDAO extends SQLDatabase {
         return executeUpdatePreparedStatement("DELETE FROM students WHERE id=?", id);
     }
 
+    public int register(String id) {
+        return executeUpdatePreparedStatement("UPDATE students SET isRegistered=? WHERE id=?", 1, id);
+    }
 }
