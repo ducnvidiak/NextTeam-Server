@@ -22,7 +22,25 @@ GO
 
 	CLOSE @Cursor DEALLOCATE @Cursor
 	GO
-	EXEC sp_MSforeachtable 'DROP TABLE ?'
+	/**/
+	DECLARE @tableName NVARCHAR(MAX)
+	DECLARE tableCursor CURSOR FOR
+	SELECT name
+	FROM sys.tables
+
+	OPEN tableCursor
+	FETCH NEXT FROM tableCursor INTO @tableName
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		DECLARE @sql NVARCHAR(MAX)
+		SET @sql = N'DROP TABLE ' + QUOTENAME(@tableName)
+		EXEC sp_executesql @sql
+		FETCH NEXT FROM tableCursor INTO @tableName
+	END
+
+	CLOSE tableCursor
+	DEALLOCATE tableCursor
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>> END: RESET DATABASE >>>>>>>>>>
@@ -43,19 +61,19 @@ GO
 
 	CREATE TABLE users (
 		id           INT NOT NULL IDENTITY(1, 1),
-		email        VARCHAR(255) NOT NULL,
+		email        VARCHAR(255),
 		username     VARCHAR(30) NOT NULL,
-		password     VARCHAR(60) NOT NULL,
+		password     VARCHAR(60),
 		avatarUrl    VARCHAR(MAX),
 		bannerUrl    VARCHAR(MAX),
-		firstname    NVARCHAR(50),
-		lastname     NVARCHAR(50),
+		firstname    NVARCHAR(50) NOT NULL,
+		lastname     NVARCHAR(50) NOT NULL,
 		/*studentCode  VARCHAR(20) NOT NULL,*/ /*remove 3*/
-		phoneNumber  VARCHAR(15) NOT NULL,
+		phoneNumber  VARCHAR(15),
 		major        INT,
 		academicYear INT,
 		gender       VARCHAR(10) NOT NULL,
-		dob          DATE,
+		dob          DATE NOT NULL,
 		homeTown     VARCHAR(10),
 		facebookUrl  VARCHAR(MAX),
 		linkedInUrl  VARCHAR(MAX),
