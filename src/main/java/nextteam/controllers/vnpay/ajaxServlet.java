@@ -68,7 +68,7 @@ public class ajaxServlet extends HttpServlet {
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        String vnp_CreateDate = formatter.format(cld.getTime());
+        String vnp_CreateDate = "20231110000000";
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
         
         cld.add(Calendar.MINUTE, 30);
