@@ -6,14 +6,12 @@ package nextteam.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
-import nextteam.models.User;
 
 /**
  *
@@ -38,13 +36,15 @@ public class UserServlet extends HttpServlet {
             out.flush();
         } else{
             String id = request.getParameter("id");
+            String clubId = request.getParameter("clubId");
             if (cmd.equals("block")) {
             
             int res = Global.user.blockUser(id);
             if (res == 1) {
                 json = "[{ \"status\": \"success\"}]";
             } else {
-                json = "[{ \"status\": \"failed\"}]";
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
+                response.getWriter().print("[{ \"status\": \"failed\"}]"); 
             }
             out.print(json);
             out.flush();
@@ -53,33 +53,40 @@ public class UserServlet extends HttpServlet {
             if (res == 1) {
                 json = "[{ \"status\": \"success\"}]";
             } else {
-                json = "[{ \"status\": \"failed\"}]";
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
+                response.getWriter().print("[{ \"status\": \"failed\"}]"); 
             }
             out.print(json);
             out.flush();
-        } else if(cmd.equals("dct_admin")){
-            
-            
-            int res = Global.user.dct_admin(id);
+        } else if(cmd.equals("dct_manager")){
+            int res = Global.user.dct_manager(clubId,id);
             if (res == 1) {
                 json = "[{ \"status\": \"success\"}]";
             } else {
-                json = "[{ \"status\": \"failed\"}]";
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
+                response.getWriter().print("[{ \"status\": \"failed\"}]"); 
             }
             out.print(json);
             out.flush();
-        }else if(cmd.equals("dct_user")){
+        }else if(cmd.equals("dct_member")){
            
             
-            int res = Global.user.dct_user(id);
+            int res = Global.user.dct_member(clubId,id);
             if (res == 1) {
                 json = "[{ \"status\": \"success\"}]";
             } else {
-                json = "[{ \"status\": \"failed\"}]";
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
+                response.getWriter().print("[{ \"status\": \"failed\"}]"); 
             }
+            out.print(json);
+            out.flush();
+        }else if(cmd.equals("user_role")){
+            String role = Global.user.getUserRoleById(id, clubId);
+            json = "[{ \"role\": \""+role+"\"}]";
             out.print(json);
             out.flush();
         }
+            
         }
         
     }

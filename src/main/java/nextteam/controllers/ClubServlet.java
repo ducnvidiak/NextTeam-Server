@@ -42,7 +42,6 @@ public class ClubServlet extends HttpServlet {
         } else if (command.equals("list-res")) {
             ArrayList<ClubResponse> res = Global.clubDAO.getListClubs(userId);
             String clubsJsonString = gson.toJson(res);
-            // Gửi danh sách sự kiện dưới dạng chuỗi JSON về client
             out.print(clubsJsonString);
             out.flush();
         } else if (command.equals("rank")) {
@@ -56,10 +55,8 @@ public class ClubServlet extends HttpServlet {
             String description = request.getParameter("description");
             String avatarUrl = request.getParameter("avatarUrl");
             String bannerUrl = request.getParameter("bannerUrl");
-            String isActive_Raw = request.getParameter("isActive");
-            System.out.println("test");
-            System.out.println(isActive_Raw);
-            boolean isActive = Boolean.parseBoolean(isActive_Raw);
+            
+            
            
             int movementPoint;
             double balance;
@@ -80,7 +77,7 @@ public class ClubServlet extends HttpServlet {
             }
 
             Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,
-                    isActive);
+                    true);
             System.out.println(c);
             int added = Global.clubDAO.addClub(c);
             String json = "";
@@ -88,7 +85,8 @@ public class ClubServlet extends HttpServlet {
                 json = "[{ \"status\": \"success\"}]";
             } else {
 
-                json = "[{ \"status\": \"failed\"}]";
+                 response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
+                response.getWriter().print("[{ \"status\": \"failed\"}]"); 
             }
             out.print(json);
             out.flush();
@@ -123,16 +121,15 @@ public class ClubServlet extends HttpServlet {
 
             Club c = new Club(name, subname, categoryId, description, avatarUrl, bannerUrl, movementPoint, balance,
                     isActive);
-            System.out.println(c);
+            
             int updated = Global.clubDAO.updateClub(c, id);
             String json = "";
             if (updated == 1) {
                 json = "[{ \"status\": \"success\"}]";
                 out.print(json);
             } else {
-                json = "[{ \"status\": \"failed\"}]";
-                
-                out.print(json);
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
+                response.getWriter().print("[{ \"status\": \"failed\"}]"); 
             }
             
         } else {
@@ -141,12 +138,13 @@ public class ClubServlet extends HttpServlet {
             int deleted = Global.clubDAO.deleteClub(id);
             String json = "";
             if (deleted == 1) {
-                json = "[{ \"status\": \"success\"}]";
+                response.setStatus(HttpServletResponse.SC_OK); 
+                response.getWriter().print("[{ \"status\": \"success\"}]"); 
             } else {
-                json = "[{ \"status\": \"failed\"}]";
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
+                response.getWriter().print("[{ \"status\": \"failed\"}]"); 
             }
-            out.print(json);
-            out.flush();
+            
         }
     }
 }

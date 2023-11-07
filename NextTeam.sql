@@ -22,7 +22,25 @@ GO
 
 	CLOSE @Cursor DEALLOCATE @Cursor
 	GO
-	EXEC sp_MSforeachtable 'DROP TABLE ?'
+	/* */
+	DECLARE @tableName NVARCHAR(MAX)
+	DECLARE tableCursor CURSOR FOR
+	SELECT name
+	FROM sys.tables
+
+	OPEN tableCursor
+	FETCH NEXT FROM tableCursor INTO @tableName
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		DECLARE @sql NVARCHAR(MAX)
+		SET @sql = N'DROP TABLE ' + QUOTENAME(@tableName)
+		EXEC sp_executesql @sql
+		FETCH NEXT FROM tableCursor INTO @tableName
+	END
+
+	CLOSE tableCursor
+	DEALLOCATE tableCursor
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>> END: RESET DATABASE >>>>>>>>>>
@@ -43,19 +61,19 @@ GO
 
 	CREATE TABLE users (
 		id           INT NOT NULL IDENTITY(1, 1),
-		email        VARCHAR(255) NOT NULL,
+		email        VARCHAR(255),
 		username     VARCHAR(30) NOT NULL,
-		password     VARCHAR(60) NOT NULL,
+		password     VARCHAR(60),
 		avatarUrl    VARCHAR(MAX),
 		bannerUrl    VARCHAR(MAX),
-		firstname    NVARCHAR(50),
-		lastname     NVARCHAR(50),
+		firstname    NVARCHAR(50) NOT NULL,
+		lastname     NVARCHAR(50) NOT NULL,
 		/*studentCode  VARCHAR(20) NOT NULL,*/ /*remove 3*/
-		phoneNumber  VARCHAR(15) NOT NULL,
+		phoneNumber  VARCHAR(15),
 		major        INT,
 		academicYear INT,
 		gender       VARCHAR(10) NOT NULL,
-		dob          DATE,
+		dob          DATE NOT NULL,
 		homeTown     VARCHAR(10),
 		facebookUrl  VARCHAR(MAX),
 		linkedInUrl  VARCHAR(MAX),
@@ -208,7 +226,7 @@ GO
 		clubId      INT NOT NULL,
 		title       NVARCHAR(255),
 		content     NTEXT,
-		response    NTEXT,
+				response    NTEXT,
 		isApproved  VARCHAR(15) DEFAULT('pending'), /* is approve by Admin */
 		createdAt   DATETIME DEFAULT(GETDATE()),
 		updatedAt   DATETIME DEFAULT(GETDATE()),
@@ -282,7 +300,7 @@ GO
 		FOREIGN KEY (publicNotificationId)     REFERENCES  publicNotifications(id),
 		FOREIGN KEY (hasSeenBy)                REFERENCES  users(id),
 	);
-
+	/*
 	CREATE TABLE posts ( /* Đổi tên từ newsPosts */
 		id        INT NOT NULL IDENTITY(1, 1),
 		clubId    INT NOT NULL,
@@ -307,7 +325,7 @@ GO
 		PRIMARY KEY (id),
 		FOREIGN KEY (postId) REFERENCES posts(id),
 		FOREIGN KEY (refPostCommentId) REFERENCES postComments(id)
-	);
+	);*/
 
 	CREATE TABLE proposals (
 		id         INT NOT NULL IDENTITY(1, 1),
@@ -586,8 +604,9 @@ GO
 		FROM publicNotifications
 		INNER JOIN inserted ON publicNotifications.id = inserted.id;
 	END;
+	/*
 	GO
-	IF OBJECT_ID('TR_UpdatePost', 'TR') IS NOT NULL /* for posts */
+	IF OBJECT_ID('TR_UpdatePost', 'TR') IS NOT NULL
 		DROP TRIGGER TR_UpdatePost
 	GO
 	CREATE TRIGGER TR_UpdatePost
@@ -601,7 +620,7 @@ GO
 		INNER JOIN inserted ON posts.id = inserted.id;
 	END;
 	GO
-	IF OBJECT_ID('TR_UpdatePostComment', 'TR') IS NOT NULL /* for postComments */
+	IF OBJECT_ID('TR_UpdatePostComment', 'TR') IS NOT NULL 
 		DROP TRIGGER TR_UpdatePostComment
 	GO
 	CREATE TRIGGER TR_UpdatePostComment
@@ -614,7 +633,8 @@ GO
 		FROM postComments
 		INNER JOIN inserted ON postComments.id = inserted.id;
 	END;
-	GO
+	*/
+	GO 
 	IF OBJECT_ID('TR_UpdateProposal', 'TR') IS NOT NULL /* for proposals */
 		DROP TRIGGER TR_UpdateProposal
 	GO
@@ -893,15 +913,27 @@ GO
 		1,
 		10,
 		NULL,
-		'2023-10-13T02:00:00',
-		'2023-10-13T02:00:00',
+		'2023-11-03T02:00:00',
+		'2023-11-03T02:00:00',
 		'public',
 		'',
 		'https://i.ibb.co/4WFLt6V/mobifone-chinh-thuc-trien-khai-thi-diem-mobile-money-crop-1637327805883.webp',
 		1,
 		NULL,
-		'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,quality=75,width=960,height=480/event-covers/w9/21154ed7-dc92-4c28-b582-9a5adb206fa7',
+		3
+	),
+	(
+		N'Thủ tướng phê duyệt Chiến lược phát triển Chính phủ điện tử hướng tới Chính phủ số',
+		N'Ngày 15/6/2021, Thủ tướng đã phê duyệt Chiến lược phát triển Chính phủ điện tử hướng tới Chính phủ số giai đoạn 2021-2025. Bản chiến lược này có vai trò quan trọng, mở ra một bước ngoặt mới cho công cuộc chuyển đổi số nói chung và phát triển Chính phủ số nói riêng của Việt Nam.',
+		1,
+		10,
 		NULL,
+		'2023-11-03T02:00:00',
+		'2023-11-03T23:00:00',
+		'public',
+		'',
+		'https://i.ibb.co/0MTN3G7/chinh-phu-dien-tu-crop-1640842349152-2.webp',
+		1,
 		NULL,
 		1
 	),
@@ -911,8 +943,8 @@ GO
 		1,
 		14,
 		NULL,
-		'2023-10-24T08:00:00',
-		'2023-10-24T23:59:59',
+		'2023-11-04T08:00:00',
+		'2023-11-05T23:59:59',
 		'public',
 		'',
 		'https://i.ibb.co/Wytq69g/IMG-3386.jpg',
@@ -942,8 +974,6 @@ GO
 		NULL
 	);
 
-	select * from events
-
 	INSERT INTO departments
 	VALUES (1, N'Ban Nhân sự'),
 		   (2, N'Ban Học thuật');
@@ -958,21 +988,22 @@ GO
 	       (3, 2, 1, 1, '', 1);
 
 	INSERT INTO pointsHistories(createdBy, receivedBy, clubId, amount, reason)
-	VALUES (1, 2, 1, -5, N'Vắng mặt trong sự kiện #0'),(1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
-
+	VALUES (1, 2, 1, 10, N'Tham gia sự kiện #0');
+	INSERT INTO pointsHistories(createdBy, receivedBy, clubId, amount, reason)
+	VALUES (1, 3, 1, '20', N'Tham gia sự kiện ABCXYZ');
 
 	INSERT INTO plans (clubId, title, content) 
 	VALUES
 		(2, N'Bản kế hoạch 1', N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.'),
 		(2, N'Bản kế hoạch 2', N'Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.')
 
-	select * from plans 
 
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>> END: DỮ LIỆU MẪU >>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 */
+<<<<<<< HEAD
 
 INSERT INTO users(email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber, major, academicYear, gender, dob, homeTown, isAdmin)
 	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', NULL, 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn Bảo', N'Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', '', 1),
@@ -994,3 +1025,6 @@ SELECT
 FROM events e
 INNER JOIN locations l ON l.id = e.locationId
 INNER JOIN clubs c ON c.id = e.clubId
+=======
+GO
+>>>>>>> 77b7d72c03974a0e9e10a10bd8555253361a2d70
