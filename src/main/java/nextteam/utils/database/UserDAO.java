@@ -196,7 +196,7 @@ public class UserDAO extends SQLDatabase {
     public int updateAvatar(User t) {
         int ketQua = 0;
         System.out.println("update avatar in dao: " + t.getAvatarURL());
-        ketQua = executeUpdatePreparedStatement(
+        ketQua = executeUpdatePregitparedStatement(
                 "UPDATE users  SET  avatarUrl=? WHERE id=?",
                 t.getAvatarURL(),
                 t.getId());

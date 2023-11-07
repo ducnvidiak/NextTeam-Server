@@ -405,7 +405,6 @@ public class EventDAO extends SQLDatabase {
                 + "FROM events e\n"
                 + "WHERE e.clubId = ? AND e.isApproved = ? AND e.startTime < GETDATE()\n"
                 + "ORDER BY e.startTime DESC", clubId, "accepted");
-        System.out.println(clubId);
 
         try {
             while (rs.next()) {
@@ -415,8 +414,6 @@ public class EventDAO extends SQLDatabase {
                         rs.getTimestamp("startTime"),
                         rs.getTimestamp("endTime")
                 );
-//                System.out.println("event");
-//                System.out.println(event.);
                 events.add(event);
             }
         } catch (SQLException ex) {
