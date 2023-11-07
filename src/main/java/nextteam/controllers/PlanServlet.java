@@ -68,6 +68,7 @@ public class PlanServlet extends HttpServlet {
         } else {
             List<Plan> p = new PlanDAO(Global.generateConnection()).getListPlanByClubId(request.getParameter("id"));
             resJsonString = this.gson.toJson(p);
+            System.out.println("log plan servlet get plan : " + id);
         }
 
         PrintWriter out = response.getWriter();
@@ -84,9 +85,9 @@ public class PlanServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         
         projectLocation= getServletContext().getRealPath("").substring(0, getServletContext().getRealPath("").indexOf("NextTeam")).replace("\\", "/");
-
-        System.out.println("received request create plan !");
+        
         int clubId = Integer.parseInt(request.getParameter("id"));
+        System.out.println("received request create plan ! " + projectLocation + " club id: " + clubId);
 
         String title = request.getParameter("title");
         String content = request.getParameter("content");
@@ -172,13 +173,20 @@ public class PlanServlet extends HttpServlet {
             }
         } else {
 
-            System.out.println("received request update plan !");
             String title = request.getParameter("title");
             String content = request.getParameter("content");
 //            String planResponse = request.getParameter("response");
 
             int numOfFile = Integer.parseInt(request.getParameter("numOfFile"));
             int numOfDeleteFile = Integer.parseInt(request.getParameter("numOfDeleteFile"));
+            
+//            System.out.println("received request update plan ! "  + planId);
+//            System.out.println("title " + title);
+//            System.out.println("content " + content);
+//            System.out.println("numOfFile " + numOfFile);
+//            System.out.println("numOfDeleteFile " + numOfDeleteFile);
+            
+            
 
             List<String> filesName = new ArrayList<>();
             List<String> filesType = new ArrayList<>();
