@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public class Config {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "https://next-team-client.vercel.app/dashboard/payment-form/result";
+    public static String vnp_ReturnUrl = "http://localhost:3000/dashboard/payment-form/result";
     public static String vnp_TmnCode = "D1DCOYAX";
     public static String secretKey = "CGWKMJZUEGVGIPRXVYAKABMRLWDOBATB";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
