@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.MultipartConfig;
 import nextteam.Global;
@@ -19,18 +18,18 @@ import nextteam.models.Event;
 import nextteam.models.response.EventResponse;
 import nextteam.utils.database.EventDAO;
 
-@WebServlet(name = "EventAdminServlet", urlPatterns = {"/admin-events"})
+@WebServlet(name = "ReviewEventServlet", urlPatterns = {"/review-event-servlet"})
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024 * 10,
         maxRequestSize = 1024 * 1024 * 50
 )
-public class EventAdminServlet extends HttpServlet {
+public class ReviewEventServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
     private final EventDAO eventDAO;
 
-    public EventAdminServlet() {
+    public ReviewEventServlet() {
         // Khởi tạo EventDAO với kết nối cơ sở dữ liệu
         this.eventDAO = Global.eventDao;
     }
@@ -43,11 +42,9 @@ public class EventAdminServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
-        System.out.println(command + "zys");
-        // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
-            List<EventResponse> events  = eventDAO.getAllEventsDetailForAdmin();
-            
+            List<EventResponse> events = eventDAO.getAllEventsDetailForAdminReview();
+
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

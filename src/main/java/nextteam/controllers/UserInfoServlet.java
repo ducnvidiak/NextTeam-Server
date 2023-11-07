@@ -58,12 +58,16 @@ public class UserInfoServlet extends HttpServlet {
 
         BufferedReader reader = request.getReader();
         User user = gson.fromJson(reader, User.class);
-
-        System.out.println("data update: " + user.getUsername());
-        System.out.println("data update hometown: " + user.getHomeTown());
-        System.out.println("data update gender: " + user.getGender());
         
-        int status = new UserDAO(Global.generateConnection()).update(user);
+        System.out.println("request update: " + user.getId());
+        
+        boolean checkEmailAvailable = new UserDAO(Global.generateConnection()).checkAvailableEmail(user);
+        boolean checkStudentCodeAvalable = new UserDAO(Global.generateConnection()).checkAvailableStuCode(user);
+        int status = 0;
+        if (checkEmailAvailable && checkStudentCodeAvalable) {
+            status = new UserDAO(Global.generateConnection()).update(user);  
+        }
+        
         String resJsonString = this.gson.toJson(status == 1 ? new Success("success") : new Success("failure"));
         PrintWriter out = response.getWriter();
         out.print(resJsonString);

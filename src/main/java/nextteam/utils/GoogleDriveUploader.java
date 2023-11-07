@@ -25,15 +25,18 @@ import java.util.Collections;
  */
 public class GoogleDriveUploader {
     private static final String APPLICATION_NAME = "Google Drive API";
-    private static final String CREDENTIALS_FILE_PATH = "E:/Fall23/project/NextTeam-Server/src/main/java/nextteam/utils/credentials.json";
+    private String CREDENTIALS_FILE_PATH = "E:/Fall23/project/NextTeam-Server/src/main/java/nextteam/utils/credentials.json";
     public String PARENT_FOLDER_ID;
+    public String projectLocation;
 
-    public GoogleDriveUploader(String PARENT_FOLDER_ID) {
+    public GoogleDriveUploader(String PARENT_FOLDER_ID, String projectLocation) {
         this.PARENT_FOLDER_ID = PARENT_FOLDER_ID;
+        this.projectLocation = projectLocation;
+        this.CREDENTIALS_FILE_PATH = projectLocation + "NextTeam-Server/src/main/java/nextteam/utils/credentials.json";
+        System.out.println("credentials file path: " + this.CREDENTIALS_FILE_PATH);
     }
-
     
-    private static GoogleCredentials authorize() throws IOException {
+    private GoogleCredentials authorize() throws IOException {
         InputStream credentialsStream = new FileInputStream(CREDENTIALS_FILE_PATH);
         GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsStream)
                 .createScoped(Collections.singleton("https://www.googleapis.com/auth/drive"));
@@ -42,7 +45,7 @@ public class GoogleDriveUploader {
     }
 
     public CloudFileInfo uploadFile(String fileName, String fileType, byte[] data) throws IOException, GeneralSecurityException {
-        GoogleCredentials credential = authorize();
+         GoogleCredentials credential = new GoogleDriveUploader(PARENT_FOLDER_ID, this.projectLocation).authorize();
 
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
 
@@ -85,7 +88,7 @@ public class GoogleDriveUploader {
     }
 
     public int deleteFile(String fileId) throws IOException, GeneralSecurityException {
-        GoogleCredentials credential = authorize();
+        GoogleCredentials credential = new GoogleDriveUploader(PARENT_FOLDER_ID, this.projectLocation).authorize();
 
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
 

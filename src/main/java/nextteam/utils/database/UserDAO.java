@@ -68,7 +68,7 @@ public class UserDAO extends SQLDatabase {
         }
         return list;
     }
-    
+
     public ArrayList<UserCard> getUsersCardListForManage(String clubId) {
         ArrayList<UserCard> list = new ArrayList<>();
         String status;
@@ -89,7 +89,7 @@ public class UserDAO extends SQLDatabase {
         return list;
     }
 
-    public User getListUserById(User t) {
+    public User getUserInfoById(User t) {
         User ketQua = null;
         try {
             ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE id=?", t.getId());
@@ -175,9 +175,7 @@ public class UserDAO extends SQLDatabase {
         int ketQua = 0;
         System.out.println("dob: " + t.getDob());
         ketQua = executeUpdatePreparedStatement(
-
                 "UPDATE users  SET  email=?, username=?, firstname=?, lastname=?, phoneNumber=?,major=?,academicYear=?,gender=?,dob=?,homeTown=?,facebookUrl=?,linkedInUrl=? WHERE id=?",
-
                 t.getEmail(),
                 t.getUsername(),
                 t.getFirstname(),
@@ -255,6 +253,30 @@ public class UserDAO extends SQLDatabase {
 
         return null;
     }
+    
+    public boolean checkAvailableEmail(User u) {
+        try {
+            ResultSet rs =  executeQueryPreparedStatement("SELECT * FROM users WHERE email=? AND id != ?", u.getEmail(), u.getId());
+            if (rs.next()) {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+    
+    public boolean checkAvailableStuCode(User u) {
+        try {
+            ResultSet rs =  executeQueryPreparedStatement("SELECT * FROM users WHERE username=? AND id != ?", u.getUsername(), u.getId());
+            if (rs.next()) {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 
     public boolean StudentCodeCheck(String studentCode) {
         try {
@@ -317,21 +339,21 @@ public class UserDAO extends SQLDatabase {
     }
 
     // dct manager
-    public int dct_manager(String clubId,String userId) {
+    public int dct_manager(String clubId, String userId) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE engagements\n" +
-"SET roleId = 1\n" +
+"SET roleId = 2\n" +
 "WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
         return ketQua;
     }
 
     // dct member
-    public int dct_member(String clubId,String userId) {
-       int ketQua = 0;
+    public int dct_member(String clubId, String userId) {
+        int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
                 "UPDATE engagements\n" +
-"SET roleId = 2\n" +
+"SET roleId = 1\n" +
 "WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
         return ketQua;
     }
@@ -357,10 +379,9 @@ public class UserDAO extends SQLDatabase {
 
         return null;
     }
-    
-    
-    public String getUserRoleById(String id,String clubId) {
-        ResultSet rs = executeQueryPreparedStatement("select r.name from engagements e    join    roles   r   on  e.roleId=r.id   where userId =  ?   and clubId=?", id,clubId);
+
+    public String getUserRoleById(String id, String clubId) {
+        ResultSet rs = executeQueryPreparedStatement("select r.name from engagements e    join    roles   r   on  e.roleId=r.id   where userId =  ?   and clubId=?", id, clubId);
         try {
             if (rs.next()) {
                 return rs.getString(1);
@@ -371,7 +392,6 @@ public class UserDAO extends SQLDatabase {
 
         return null;
     }
-    
 
     public static void main(String... args) {
         System.out.println(new UserDAO(Global.generateConnection()).getUserRoleById("1", "1"));

@@ -22,7 +22,25 @@ GO
 
 	CLOSE @Cursor DEALLOCATE @Cursor
 	GO
-	EXEC sp_MSforeachtable 'DROP TABLE ?'
+	/* */
+	DECLARE @tableName NVARCHAR(MAX)
+	DECLARE tableCursor CURSOR FOR
+	SELECT name
+	FROM sys.tables
+
+	OPEN tableCursor
+	FETCH NEXT FROM tableCursor INTO @tableName
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		DECLARE @sql NVARCHAR(MAX)
+		SET @sql = N'DROP TABLE ' + QUOTENAME(@tableName)
+		EXEC sp_executesql @sql
+		FETCH NEXT FROM tableCursor INTO @tableName
+	END
+
+	CLOSE tableCursor
+	DEALLOCATE tableCursor
 /*
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>> END: RESET DATABASE >>>>>>>>>>
@@ -43,19 +61,19 @@ GO
 
 	CREATE TABLE users (
 		id           INT NOT NULL IDENTITY(1, 1),
-		email        VARCHAR(255) NOT NULL,
+		email        VARCHAR(255),
 		username     VARCHAR(30) NOT NULL,
-		password     VARCHAR(60) NOT NULL,
+		password     VARCHAR(60),
 		avatarUrl    VARCHAR(MAX),
 		bannerUrl    VARCHAR(MAX),
-		firstname    NVARCHAR(50),
-		lastname     NVARCHAR(50),
+		firstname    NVARCHAR(50) NOT NULL,
+		lastname     NVARCHAR(50) NOT NULL,
 		/*studentCode  VARCHAR(20) NOT NULL,*/ /*remove 3*/
-		phoneNumber  VARCHAR(15) NOT NULL,
+		phoneNumber  VARCHAR(15),
 		major        INT,
 		academicYear INT,
 		gender       VARCHAR(10) NOT NULL,
-		dob          DATE,
+		dob          DATE NOT NULL,
 		homeTown     VARCHAR(10),
 		facebookUrl  VARCHAR(MAX),
 		linkedInUrl  VARCHAR(MAX),
@@ -985,4 +1003,28 @@ GO
 >>>>>>>>>> END: DỮ LIỆU MẪU >>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 */
+<<<<<<< HEAD
+
+INSERT INTO users(email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber, major, academicYear, gender, dob, homeTown, isAdmin)
+	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', NULL, 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn Bảo', N'Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', '', 1),
+
+select * from clubs
+select * from proposals
+select * from engagements
+select * from users
+
+UPDATE users SET isAdmin = 1 WHERE id=7
+
+select * from plans
+select * from events
+
+UPDATE engagements SET status = 0 WHERE userId = 4 AND clubId = 2
+
+SELECT 
+	e.id, e.name, e.type, e.description, e.bannerUrl, e.startTime, e.endTime, e.isApproved, e.planUrl, l.name AS locationName, c.subname
+FROM events e
+INNER JOIN locations l ON l.id = e.locationId
+INNER JOIN clubs c ON c.id = e.clubId
+=======
 GO
+>>>>>>> 77b7d72c03974a0e9e10a10bd8555253361a2d70
