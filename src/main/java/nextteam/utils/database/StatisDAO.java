@@ -103,7 +103,7 @@ public class StatisDAO extends SQLDatabase {
     public int getNumberEventsOccur(String clubId) {
         String sql = "SELECT COUNT(*) AS 'Number of Events Occurred'\n"
                 + "FROM dbo.events\n"
-                + "WHERE clubId = 1 AND endTime < GETDATE()";
+                + "WHERE clubId = '"+clubId+"' AND endTime < GETDATE()";
         ResultSet rs = executeQueryPreparedStatement(sql);
         try {
             if (rs.next()) {
@@ -118,7 +118,7 @@ public class StatisDAO extends SQLDatabase {
     public int getNumberEventsNotOccur(String clubId) {
         String sql = "SELECT COUNT(*) AS 'Number of Events Occurred'\n"
                 + "FROM dbo.events\n"
-                + "WHERE clubId = 1 AND startTime > GETDATE()";
+                + "WHERE clubId = '"+clubId+"' AND startTime > GETDATE()";
         ResultSet rs = executeQueryPreparedStatement(sql);
         try {
             if (rs.next()) {
