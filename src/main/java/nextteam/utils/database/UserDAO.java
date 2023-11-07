@@ -196,7 +196,7 @@ public class UserDAO extends SQLDatabase {
     public int updateAvatar(User t) {
         int ketQua = 0;
         System.out.println("update avatar in dao: " + t.getAvatarURL());
-        ketQua = executeUpdatePregitparedStatement(
+        ketQua = executeUpdatePreparedStatement(
                 "UPDATE users  SET  avatarUrl=? WHERE id=?",
                 t.getAvatarURL(),
                 t.getId());
@@ -253,10 +253,10 @@ public class UserDAO extends SQLDatabase {
 
         return null;
     }
-    
+
     public boolean checkAvailableEmail(User u) {
         try {
-            ResultSet rs =  executeQueryPreparedStatement("SELECT * FROM users WHERE email=? AND id != ?", u.getEmail(), u.getId());
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE email=? AND id != ?", u.getEmail(), u.getId());
             if (rs.next()) {
                 return false;
             }
@@ -265,10 +265,10 @@ public class UserDAO extends SQLDatabase {
         }
         return true;
     }
-    
+
     public boolean checkAvailableStuCode(User u) {
         try {
-            ResultSet rs =  executeQueryPreparedStatement("SELECT * FROM users WHERE username=? AND id != ?", u.getUsername(), u.getId());
+            ResultSet rs = executeQueryPreparedStatement("SELECT * FROM users WHERE username=? AND id != ?", u.getUsername(), u.getId());
             if (rs.next()) {
                 return false;
             }
@@ -342,9 +342,9 @@ public class UserDAO extends SQLDatabase {
     public int dct_manager(String clubId, String userId) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "UPDATE engagements\n" +
-"SET roleId = 2\n" +
-"WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
+                "UPDATE engagements\n"
+                + "SET roleId = 2\n"
+                + "WHERE  clubId='" + clubId + "' and userId='" + userId + "'");
         return ketQua;
     }
 
@@ -352,9 +352,9 @@ public class UserDAO extends SQLDatabase {
     public int dct_member(String clubId, String userId) {
         int ketQua = 0;
         ketQua = executeUpdatePreparedStatement(
-                "UPDATE engagements\n" +
-"SET roleId = 1\n" +
-"WHERE  clubId='"+clubId+"' and userId='"+userId+"'");
+                "UPDATE engagements\n"
+                + "SET roleId = 1\n"
+                + "WHERE  clubId='" + clubId + "' and userId='" + userId + "'");
         return ketQua;
     }
 
