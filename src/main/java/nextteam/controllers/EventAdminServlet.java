@@ -80,7 +80,7 @@ public class EventAdminServlet extends HttpServlet {
                     Event event = gson.fromJson(jsonInput.toString(), Event.class);
                     System.out.println(event.getName());
                     Global.eventDao.createEventForAdmin(event);
-                    List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
+                    List<EventResponse> events = eventDAO.getAllEventsDetailForAdminReview();
                     String eventsJsonString = gson.toJson(events);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
@@ -110,7 +110,7 @@ public class EventAdminServlet extends HttpServlet {
                     }
                     Event event = gson.fromJson(jsonInput.toString(), Event.class);
                     int rs = Global.eventDao.updateEventByEventId(eventId, event);
-                    List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
+                    List<EventResponse> events = eventDAO.getAllEventsDetailForAdminReview();
                     String eventsJsonString = gson.toJson(events);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
@@ -132,7 +132,7 @@ public class EventAdminServlet extends HttpServlet {
 
             case "delete" -> {
                 int rs = Global.eventDao.deleteEventByEventId(eventId);
-                List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
+                List<EventResponse> events = eventDAO.getAllEventsDetailForAdminReview();
                 String eventsJsonString = gson.toJson(events);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");

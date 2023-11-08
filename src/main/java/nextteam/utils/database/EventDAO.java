@@ -116,6 +116,7 @@ public class EventDAO extends SQLDatabase {
                 + "  bannerUrl = ?,\n"
                 + "  locationId = ?,\n"
                 + "  planUrl = ?,\n"
+                + "  isApproved = 'pending',\n"
                 + "  startTime = ?,\n"
                 + "  endTime = ?\n"
                 + "WHERE id = ?",
@@ -253,6 +254,7 @@ public class EventDAO extends SQLDatabase {
                 + "  e.endTime,\n"
                 + "  e.isApproved,\n"
                 + "  e.planUrl,\n"
+                + "  e.response,\n"
                 + "  l.name AS locationName,\n"
                 + "  c.subname AS clubSubname,\n"
                 + "  c.avatarUrl AS clubAvatarUrl\n"
@@ -275,7 +277,8 @@ public class EventDAO extends SQLDatabase {
                         rs.getString("planUrl"),
                         rs.getString("locationName"),
                         rs.getString("clubSubname"),
-                        rs.getString("clubAvatarUrl")
+                        rs.getString("clubAvatarUrl"),
+                        rs.getString("response")
                 );
                 events.add(event);
             }
@@ -300,7 +303,7 @@ public class EventDAO extends SQLDatabase {
                 + "    e.createdAt\n"
                 + "FROM events e \n"
                 + "JOIN locations l ON e.locationId = l.id\n"
-//                + "WHERE e.clubId is null\n"
+                //                + "WHERE e.clubId is null\n"
                 + "ORDER BY e.startTime DESC;");
         try {
             while (rs.next()) {
@@ -405,6 +408,7 @@ public class EventDAO extends SQLDatabase {
         }
         return events;
     }
+
     public List<EventResponse> getAllEventsDetailForAdminReview() {
         List<EventResponse> events = new ArrayList<>();
         ResultSet rs = executeQueryPreparedStatement("SELECT\n"

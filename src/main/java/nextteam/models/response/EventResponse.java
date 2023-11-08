@@ -42,6 +42,13 @@ public class EventResponse extends Event {
         this.clubSubname = clubSubname;
         this.clubAvatarUrl = clubAvatarUrl;
     }
+    
+    public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String planUrl, String locationName, String clubSubname, String clubAvatarUrl, String response) {
+        super(id, name, type, description, bannerUrl, startTime, endTime, isApproved, planUrl, response);
+        this.locationName = locationName;
+        this.clubSubname = clubSubname;
+        this.clubAvatarUrl = clubAvatarUrl;
+    }
 
     public EventResponse(int id, String name, String type, String description, String bannerUrl, Timestamp startTime, Timestamp endTime, String isApproved, String locationName, String clubSubname, String clubAvatarUrl, boolean isRegistered, float avgRating, boolean isFeedback) {
         super(id, name, type, description, bannerUrl, startTime, endTime, isApproved);

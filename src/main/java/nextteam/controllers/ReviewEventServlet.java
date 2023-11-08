@@ -42,6 +42,7 @@ public class ReviewEventServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String userId = request.getParameter("userId");
+        String eventId = request.getParameter("eventId");
         if (command.equals("list")) {
             List<EventResponse> events = eventDAO.getAllEventsDetailForAdminReview();
 
@@ -52,6 +53,9 @@ public class ReviewEventServlet extends HttpServlet {
             response.getWriter().write(eventsJsonString);
 //            out.print(events.toString());
             out.flush();
+        } else if (command.equals("get-review-event")) {
+            
+//            response.getWriter().write("hehe");
         }
 
     }
