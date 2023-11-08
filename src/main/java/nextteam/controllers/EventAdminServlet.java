@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.MultipartConfig;
 import nextteam.Global;
@@ -45,8 +46,8 @@ public class EventAdminServlet extends HttpServlet {
         System.out.println(command + "zys");
         // Xử lý yêu cầu GET, Lấy danh sách sự kiện
         if (command.equals("list")) {
-            List<EventResponse> events = eventDAO.getAllEventsDetailForAdmin();
-
+            List<EventResponse> events  = eventDAO.getAllEventsDetailForAdmin();
+            
             String eventsJsonString = gson.toJson(events);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

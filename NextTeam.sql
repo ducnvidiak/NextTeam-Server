@@ -1003,4 +1003,28 @@ GO
 >>>>>>>>>> END: DỮ LIỆU MẪU >>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 */
+<<<<<<< HEAD
+
+INSERT INTO users(email, username, password, avatarUrl, bannerUrl, firstname, lastname, phoneNumber, major, academicYear, gender, dob, homeTown, isAdmin)
+	VALUES ('thangtvb.dev@gmail.com', 'DE170145', '$2a$10$0QVDV9mai3TAhbYMqiAJlu8PbIuWRRKqPbsGS3kgS1QjeRDbowcGq', NULL, 'https://t4.ftcdn.net/jpg/04/95/28/65/360_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg', N'Trần Văn Bảo', N'Thắng', '0828828497', 1, 2021, 'Male', '2023-12-19', '', 1),
+
+select * from clubs
+select * from proposals
+select * from engagements
+select * from users
+
+UPDATE users SET isAdmin = 1 WHERE id=7
+
+select * from plans
+select * from events
+
+UPDATE engagements SET status = 0 WHERE userId = 4 AND clubId = 2
+
+SELECT 
+	e.id, e.name, e.type, e.description, e.bannerUrl, e.startTime, e.endTime, e.isApproved, e.planUrl, l.name AS locationName, c.subname
+FROM events e
+INNER JOIN locations l ON l.id = e.locationId
+INNER JOIN clubs c ON c.id = e.clubId
+=======
 GO
+>>>>>>> 77b7d72c03974a0e9e10a10bd8555253361a2d70

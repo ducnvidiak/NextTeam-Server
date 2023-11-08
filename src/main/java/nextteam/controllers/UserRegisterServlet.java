@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextteam.Global;
+import nextteam.models.Student;
 import nextteam.models.User;
 import nextteam.utils.Gmail;
 import nextteam.utils.database.UserDAO;
-import nextteam.utils.encryption.BCrypt;
 
 /**
  *
@@ -29,7 +29,7 @@ import nextteam.utils.encryption.BCrypt;
  */
 @WebServlet(name = "UserRegisterServlet", urlPatterns = {"/user-register"})
 public class UserRegisterServlet extends HttpServlet {
-    
+
     private final Gson gson = new Gson();
 
     /**
@@ -91,12 +91,40 @@ public class UserRegisterServlet extends HttpServlet {
                     .appendMacro("EMAIL", email)
                     .appendMacro("STUDENTID", studentId)
                     .appendMacro("PHONE", phone)
-                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_register.jsp"));
+                    .sendTemplate(new URL("https://nextteam.azurewebsites.net/gmail_register.jsp"));
         } catch (MalformedURLException ex) {
             Logger.getLogger(UserRegisterServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    public static String standardizeName(String fullName) {
+        if (fullName == null) {
+            return null;
+        }
+
+        // Split the full name into parts based on white spaces
+        String[] nameParts = fullName.trim().split("\\s+");
+
+        if (nameParts.length == 0) {
+            return fullName; // Unable to split, return original name
+        }
+
+        // Capitalize the first letter of each part (e.g., John Doe -> John Doe)
+        StringBuilder standardizedName = new StringBuilder();
+        for (String namePart : nameParts) {
+            if (namePart.length() > 0) {
+                standardizedName.append(namePart.substring(0, 1).toUpperCase());
+                if (namePart.length() > 1) {
+                    standardizedName.append(namePart.substring(1).toLowerCase());
+                }
+                standardizedName.append(" ");
+            }
+        }
+
+        // Remove trailing space and return the standardized name
+        return standardizedName.toString().trim();
+    }
+
     private String[] MESSAGE = {
         "Success!",
         "Email không đúng định dạng!",
@@ -104,11 +132,14 @@ public class UserRegisterServlet extends HttpServlet {
         "Mã sinh viên không đúng định dạng!",
         "Số điện thoại không đúng định dạng!",
         "Mã sinh viên đã tồn tại! Vui lòng thử mã sinh viên khác!",
-        "Email đã tồn tại! Vui lòng thử email khác"
+        "Email đã tồn tại! Vui lòng thử email khác",
+        "Mã số sinh viên không tồn tại hoặc đã được đăng ký.",
+        "Thông tin họ tên không khớp với mã số sinh viên"
     };
-    
+
     private int checkUser(User user) {
         UserDAO userDb = Global.user;
+        Student check = Global.student.check(user.getUsername());
         if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return 1;
 
@@ -123,10 +154,14 @@ public class UserRegisterServlet extends HttpServlet {
             return 5;
         } else if (userDb.selectByEmail(user.getEmail()) != null) {
             return 6;
+        } else if (check == null) {
+            return 7;
+        } else if (!check.getFirstname().equals(user.getFirstname()) || !check.getLastname().equals(user.getLastname())) {
+            return 8;
         }
         return 0;
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -140,12 +175,12 @@ public class UserRegisterServlet extends HttpServlet {
 //        String username = request.getParameter("studentCode").toUpperCase();
 //        String phoneNumber = request.getParameter("phoneNumber");
 //        String gender = request.getParameter("gender");
-        user.setFirstname(user.getFirstname().trim().replaceAll("\\s+", " "));
-        user.setLastname(user.getLastname().trim().replaceAll("\\s+", " "));
+        user.setFirstname(standardizeName(user.getFirstname()));
+        user.setLastname(standardizeName(user.getLastname()));
         System.out.println("email: " + user.getEmail());
         System.out.println("password: " + user.getPassword());
-        System.out.println("firstname: " + user.getFirstname());
-        System.out.println("lastname: " + user.getLastname());
+        System.out.println("firstname: " + standardizeName(user.getFirstname()));
+        System.out.println("lastname: " + standardizeName(user.getLastname()));
         System.out.println("student code: " + user.getUsername());
         System.out.println("phoneNumber: " + user.getPhoneNumber());
         //public User(String email, String username, String password, String studentCode, String phoneNumber, String gender)
@@ -160,9 +195,10 @@ public class UserRegisterServlet extends HttpServlet {
         ////////////////////////
         int res = checkUser(user);
         user.setPassword(Global.getHashedPassword(user.getPassword()));
-        
+
         if (res == 0) {
             Global.user.register(user);
+            Global.student.register(user.getUsername());
         }
         out.print("{\"code\": \"" + res + "\", \"msg\": \"" + MESSAGE[res] + "\"}");
         out.flush();

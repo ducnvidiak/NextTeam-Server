@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -141,6 +142,24 @@ public class Gmail {
         }
     }
 
+    public URL convertToLocalStorage(URL remoteURL) {
+        if (remoteURL == null) {
+            return null;
+        }
+
+        String localURL = "http://localhost" + remoteURL.getPath();
+        if (remoteURL.getQuery() != null) {
+            localURL += "?" + remoteURL.getQuery();
+        }
+
+        try {
+            return new URL(localURL);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Gmail.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public void sendTemplate(URL filePath) {
         if (content != null || macrosMap == null) {
             return;
@@ -155,7 +174,7 @@ public class Gmail {
 //                System.out.println(content);
                 g.send();
             } catch (IOException ex) {
-                Logger.getLogger(Gmail.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
         }
     }
@@ -170,7 +189,7 @@ public class Gmail {
 //                    .appendMacro("ID", "DE170014")
 //                    .appendMacro("WHEN", new SimpleDateFormat("HH:mm:ss 'ngày' dd 'tháng' MM 'năm' yyyy").format(new Date()))
 //                    .appendMacro("CODE", "123456")
-//                    .sendTemplate(new URL("http://127.0.0.1:8080/gmail_code.jsp"));
+//                    .sendTemplate(new URL("https://nextteam.azurewebsites.net/gmail_code.jsp"));
 //        } catch (MalformedURLException ex) {
 //            Logger.getLogger(Gmail.class.getName()).log(Level.SEVERE, null, ex);
 //        }

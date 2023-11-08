@@ -47,6 +47,14 @@ public class AttendanceServlet extends HttpServlet {
                                  }""");
         } else if (cmd.equals("get")) {
 
+        } else if (cmd.equals("take")) {
+            String mid = req.getParameter("member");
+            String eid = req.getParameter("event");
+            Global.eventRegistration.take(Integer.parseInt(mid), Integer.parseInt(eid));
+            resp.getWriter().println("""
+                                 {
+                                    "res": "0"
+                                 }""");
         } else {
             resp.getWriter().println("""
                                  {

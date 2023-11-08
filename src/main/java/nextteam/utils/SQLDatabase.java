@@ -92,6 +92,8 @@ public abstract class SQLDatabase {
                     }
                 } else if (values[i] instanceof Date) {
                     statement.setString(i + 1, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format((Date) values[i]));
+                } else if (values[i] instanceof java.sql.Date) {
+                    statement.setDate(i + 1, (java.sql.Date) values[i]);
                 } else {
                     statement.setString(i + 1, values[i].toString());
                 }
@@ -116,7 +118,7 @@ public abstract class SQLDatabase {
         try {
             i = getPreparedStatement(sql, values).executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(SQLDatabase.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(SQLDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return i;
