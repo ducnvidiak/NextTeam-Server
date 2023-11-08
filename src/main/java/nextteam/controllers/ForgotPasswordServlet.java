@@ -50,8 +50,8 @@ public class ForgotPasswordServlet extends HttpServlet {
             String email = req.getParameter("email");
             System.out.println(email);
             User user = Global.user.selectByEmail(email);
-            System.out.println(user.getEmail());
             if (user != null) {
+                System.out.println(user.getEmail());
                 String[] code = new String[1];
                 String type = Global.otpCode.generateOtp(600, user.getId(), code);
                 Thread t = new Thread(new Runnable() {

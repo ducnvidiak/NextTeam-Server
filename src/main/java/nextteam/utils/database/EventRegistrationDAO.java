@@ -107,4 +107,8 @@ public class EventRegistrationDAO extends SQLDatabase {
             setAttendance(atten);
         }
     }
+
+    public int take(int mid, int eid) {
+        return executeUpdatePreparedStatement("UPDATE eventRegistrations SET isJoined=1 WHERE event=? AND registeredBy=?", eid, mid);
+    }
 }

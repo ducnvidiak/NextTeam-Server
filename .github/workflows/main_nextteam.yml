@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'nextteam'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_60B9E4C765C04728B4E93BA3C3E7D909 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9D524B6C6D9D4737A294240FFAE4C772 }}
           package: '*.war'
