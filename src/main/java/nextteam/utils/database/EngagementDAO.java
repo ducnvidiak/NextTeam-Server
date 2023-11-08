@@ -203,8 +203,10 @@ public class EngagementDAO extends SQLDatabase {
     }
     
     public int updateUserStatus(String clubId, String userId, int status) {
+        int newStatus = status;
+        if (newStatus == 0)  newStatus= 4;
         int result = 0;
-        result = executeUpdatePreparedStatement("UPDATE engagements SET status = ? WHERE userId = ? AND clubId = ?", status, userId, clubId);
+        result = executeUpdatePreparedStatement("UPDATE engagements SET status = ? WHERE userId = ? AND clubId = ?", newStatus, userId, clubId);
         return result;
     }
     
