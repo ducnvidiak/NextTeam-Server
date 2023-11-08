@@ -50,11 +50,18 @@ public class AttendanceServlet extends HttpServlet {
         } else if (cmd.equals("take")) {
             String mid = req.getParameter("member");
             String eid = req.getParameter("event");
-            Global.eventRegistration.take(Integer.parseInt(mid), Integer.parseInt(eid));
-            resp.getWriter().println("""
+            int res = Global.eventRegistration.take(Integer.parseInt(mid), Integer.parseInt(eid));
+            if (res != 0) {
+                resp.getWriter().println("""
                                  {
                                     "res": "0"
                                  }""");
+            } else {
+                resp.getWriter().println("""
+                                 {
+                                    "res": "1"
+                                 }""");
+            }
         } else {
             resp.getWriter().println("""
                                  {
